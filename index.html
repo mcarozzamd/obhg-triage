@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B3D5C">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'">
+<meta name="robots" content="noindex, nofollow">
+<title>OBHG CLINICAL TRIAGE</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OBHG Triage">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-org">CHRISTUS ST. MICHAEL · OBHG · TEXARKANA</div>
+  <h1>OBHG CLINICAL TRIAGE</h1>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" id="tab-triage" class="on" aria-selected="true">Triage</button>
+  <button role="tab" id="tab-browse" aria-selected="false">Browse all</button>
+</nav>
+
+<main>
+<section id="view-triage">
+  <form id="hpi-form" autocomplete="off">
+    <label for="hpi" class="lbl">One-line HPI</label>
+    <div class="hpi-row">
+      <textarea id="hpi" rows="2" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        placeholder="e.g. 20 yo G2P1 at 37 weeks with blood pressure 150/100 and headache"></textarea>
+    </div>
+    <p class="privacy-line">Do not enter names, MRNs, dates of birth, or other identifiers.</p>
+    <div id="privacy-warn" class="privacy-warn" hidden></div>
+    <div class="btns">
+      <button id="go" class="primary" type="button">Triage</button>
+      <button id="clear" type="button">Clear</button>
+    </div>
+    <details class="examples"><summary>Examples</summary><div id="examples"></div></details>
+  </form>
+
+  <div id="result" hidden>
+    <div id="flags" class="chips"></div>
+    <article id="top" class="topcard"></article>
+    <section class="box"><h3>Also consider</h3><div id="alts" class="alts"></div></section>
+    <section class="box"><h3>Why this matched</h3><div id="why"></div></section>
+    <section class="box coding" id="coding-box">
+      <h3>Suggested codes · verify against documentation and payer rules · not billing advice</h3>
+      <div id="coding"></div>
+    </section>
+  </div>
+  <p class="foot"><b>Decision support only · not unit policy · not the medical record · enter no PHI.</b><br>All matching runs on this device. Nothing you type is sent, saved, or logged. Works offline after first load.</p>
+</section>
+
+<section id="view-browse" hidden>
+  <input id="q" type="search" placeholder="Search every card and diagram (e.g. magnesium, JADA, torsion)" autocomplete="off" spellcheck="false">
+  <div id="list"></div>
+</section>
+</main>
+
+<div id="viewer" class="viewer" hidden>
+  <div class="viewer-bar"><span id="viewer-title"></span>
+    <button id="zoom-out" type="button" aria-label="Zoom out">−</button><button id="zoom-in" type="button" aria-label="Zoom in">+</button>
+    <button id="viewer-close" type="button">Close</button></div>
+  <div class="viewer-body" id="viewer-body"><img id="viewer-img" alt=""></div>
+</div>
+
+<script src="js/content.js"></script>
+<script src="codes/code_tables.js"></script>
+<script src="codes/validation.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
