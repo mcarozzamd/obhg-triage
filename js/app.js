@@ -1,4 +1,4 @@
-/* OBHG Clinical Triage UI. No network calls, no storage of the HPI, no analytics. */
+/* OBHG Clinical Triage UI (with Shift Patient Log; log stored on device only, keys prefixed 'shiftlog_'). No network calls, no storage of the HPI, no analytics. */
 (function () {
   'use strict';
   const C = self.CONTENT, T = self.CODE_TABLES, V = self.CODE_VALIDATION, E = self.TriageEngine;
@@ -19,14 +19,15 @@
 
   // ---------- tabs ----------
   function tab(which) {
-    const tri = which === 'triage';
-    $('view-triage').hidden = !tri; $('view-browse').hidden = tri;
-    $('tab-triage').classList.toggle('on', tri); $('tab-browse').classList.toggle('on', !tri);
-    $('tab-triage').setAttribute('aria-selected', tri); $('tab-browse').setAttribute('aria-selected', !tri);
-    if (!tri) renderList();
+    for (const v of ['triage', 'browse', 'log']) {
+      const on = v === which; $('view-' + v).hidden = !on; $('tab-' + v).classList.toggle('on', on); $('tab-' + v).setAttribute('aria-selected', on);
+    }
+    if (which === 'browse') renderList();
+    if (which === 'log') renderLog();
   }
   $('tab-triage').onclick = () => tab('triage');
   $('tab-browse').onclick = () => tab('browse');
+  $('tab-log').onclick = () => tab('log');
 
   // ---------- rendering ----------
   function verifyBox(flags) {
@@ -174,8 +175,200 @@
   $('hpi').addEventListener('input', () => { const w = E.privacyCheck($('hpi').value); $('privacy-warn').hidden = !w.length; $('privacy-warn').innerHTML = w.length ? '<b>Check for identifiers:</b> ' + w.map(esc).join(' ') : ''; });
   $('clear').onclick = () => { $('hpi').value = ''; current = null; $('result').hidden = true; $('privacy-warn').hidden = true; $('hpi').focus(); };
   // Do not let the browser restore the HPI from page cache.
-  window.addEventListener('pagehide', () => { $('hpi').value = ''; });
+  window.addEventListener('pagehide', () => { ['hpi', 'lg-hpi', 'lg-hpi2', 'lg-ap', 'lg-apentry', 'lg-ap-sel'].forEach(id => { $(id).value = ''; }); });
   window.addEventListener('pageshow', () => { $('hpi').value = ''; });
 
-  if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
+
+  // ---------- Shift Patient Log — device-only storage, reuses engine + code tables ----------
+  const SL = self.ShiftLog, store = SL.Store();
+  try { store.autoPurge(); } catch (_) {}
+  $('lg-disposition').innerHTML = '<option value="">Select…</option>' + SL.DISPOSITIONS.map(d => '<option>' + esc(d) + '</option>').join('');
+  const F = ['initials', 'age', 'ga', 'gp', 'diagnosis', 'icd', 'cpt', 'disposition', 'clinic'];
+  let lgCard = '', viewing = null;
+  const amendTitle = r => (r.amendments || []).map(a => new Date(a.ts).toLocaleString() + ': ' + Object.keys(a.changes).map(k => k + ' "' + a.changes[k][0] + '" -> "' + a.changes[k][1] + '"').join(', ')).join(' | ');
+  const retLabel = d => d ? d + ' days' : 'keep until I delete';
+  const tableHTML = (sh, editable) => '<tr><th>#</th>' + SL.COLS.map(c => '<th>' + esc(c) + '</th>').join('') + (editable ? '<th></th>' : '') + '</tr>' +
+    (sh.entries.map(r => '<tr class="' + (r.voided ? 'void' : r.amendedTs ? 'amended' : '') + '"><td>' + r.n + (r.amendedTs ? '<span class="amtag" title="' + esc(amendTitle(r)) + '">amended ' + esc(new Date(r.amendedTs).toLocaleString()) + '</span>' : '') + '</td>' + F.map(f => '<td>' + esc(r[f]) + (f === 'cpt' && (r.icd || r.cpt) ? '<span class="amtag">suggested; provider verifies before billing</span>' : '') + '</td>').join('') +
+      (editable ? '<td>' + (r.voided ? '<span class="alt-tag">voided</span>' : '<button type="button" class="small" data-amend="' + r.n + '">Amend</button> <button type="button" class="small" data-void="' + r.n + '">Void</button>') + '</td>' : '') + '</tr>').join('') || '<tr><td colspan="11" class="alt-tag">No entries.</td></tr>');
+  function renderLog() {
+    store.autoPurge();
+    const pf = store.getProfile();
+    $('profile-box').hidden = !!pf; $('log-main').hidden = !pf;
+    if (!pf) return;
+    const cur = store.current();
+    $('log-head').innerHTML = '<b>' + esc(pf.name) + (pf.title ? ', ' + esc(pf.title) : '') + '</b> · ' + esc(pf.site) + '<br><span class="alt-tag">Current shift ' + esc(SL.shiftLabel(cur)) + '</span>';
+    $('ret-label').textContent = retLabel(store.retention());
+    $('log-table').innerHTML = tableHTML(cur, true);
+    const past = store.list().filter(x => x.end);
+    $('past').innerHTML = past.map(x => '<div class="pastrow"><span>' + esc(SL.shiftLabel(x)) + ' · ' + x.entries.length + ' entr' + (x.entries.length === 1 ? 'y' : 'ies') + '</span>' +
+      '<button type="button" class="small" data-pv="' + esc(x.id) + '">Open</button><button type="button" class="small" data-pe="' + esc(x.id) + '">Export</button><button type="button" class="small danger" data-pd="' + esc(x.id) + '">Delete</button></div>').join('') || '<p class="alt-tag">No past shifts.</p>';
+    if (viewing && !store.get(viewing)) viewing = null;
+    $('past-view').hidden = !viewing;
+    if (viewing) { const sh = store.get(viewing); $('pv-title').textContent = 'Shift ' + SL.shiftLabel(sh); $('pv-table').innerHTML = tableHTML(sh, false); }
+  }
+  async function exportShift(id) {
+    const pf = store.getProfile(), sh = store.get(id); if (!sh) return;
+    const str = SL.buildPDF(pf, sh);
+    const bytes = new Uint8Array(str.length); for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i) & 255;
+    const name = 'OBHG_Shift_Log_' + SL.shiftLabel(sh).slice(0, 16).replace(' ', '_').replace(':', '') + '.pdf';
+    const file = new File([bytes], name, { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: 'OBHG SHIFT PATIENT LOG' }); return; } catch (err) { if (err && err.name === 'AbortError') return; }
+    }
+    const url = URL.createObjectURL(file); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+  function purgeShift(id, verb) {
+    const sh = store.get(id); if (!sh) return;
+    if (confirm(verb + ' shift ' + SL.shiftLabel(sh) + ' (' + sh.entries.length + ' entries) from this device permanently?' + (verb === 'Purge' ? ' Export first.' : ''))) { store.purge(id); if (viewing === id) viewing = null; renderLog(); }
+  }
+  $('past').addEventListener('click', ev => {
+    const v = ev.target.closest('[data-pv]'), x = ev.target.closest('[data-pe]'), d = ev.target.closest('[data-pd]');
+    if (v) { viewing = v.dataset.pv; renderLog(); $('past-view').scrollIntoView({ behavior: 'smooth' }); }
+    if (x) exportShift(x.dataset.pe);
+    if (d) purgeShift(d.dataset.pd, 'Delete');
+  });
+  $('pv-export').onclick = () => viewing && exportShift(viewing);
+  $('pv-purge').onclick = () => viewing && purgeShift(viewing, 'Purge');
+  $('pv-close').onclick = () => { viewing = null; renderLog(); };
+  $('lg-new').onclick = () => {
+    const cur = store.current();
+    if (confirm('Close the current shift (' + cur.entries.length + ' entries, stays saved under Past shifts) and start a new shift now?')) { store.startNew(); renderLog(); }
+  };
+  $('pf-save').onclick = () => {
+    const name = $('pf-name').value.trim(); if (!name) { $('pf-name').focus(); return; }
+    store.setProfile({ name, title: $('pf-title').value.trim(), site: $('pf-site').value.trim() || 'CHRISTUS St. Michael', retention: +$('pf-ret').value }); renderLog();
+  };
+  $('pf-edit').onclick = () => { const pf = store.getProfile() || {}; $('pf-name').value = pf.name || ''; $('pf-title').value = pf.title || ''; $('pf-site').value = pf.site || 'CHRISTUS St. Michael'; $('pf-ret').value = String(store.retention()); $('profile-box').hidden = false; $('log-main').hidden = true; };
+  // Structured fields (initials/age/G/P/GA/HPI) drive the engine; summary auto-fills them first.
+  let lastR = null, lastAP = null, amending = null; const auto = new Set();
+  const fieldsNow = () => ({ initials: $('lg-initials').value.trim(), age: $('lg-age').value.trim(), gp: $('lg-gp').value.trim(), ga: $('lg-ga').value.trim(), hpi: $('lg-hpi2').value.trim(), disposition: $('lg-disposition').value });
+  const setIf = (k, v, el) => { el = el || $('lg-' + k); if (v && (!el.value || auto.has(el.id))) { el.value = v; auto.add(el.id); } };
+  ['lg-initials', 'lg-age', 'lg-gp', 'lg-ga', 'lg-hpi2', 'lg-diagnosis', 'lg-icd', 'lg-cpt', 'lg-disposition'].forEach(id => $(id).addEventListener('input', () => auto.delete(id)));
+  const RC = self.ROUTINE_CODES; const CIDX = SL.codeIndex(T, V, RC);
+  const svc = () => SL.serviceFor($('lg-svc').value, fieldsNow());
+  const showSvc = () => { const b = svc(); $('lg-svc-now').textContent = 'Active service: ' + b; $('lg-routine').classList.toggle('dim', b !== 'OB'); $('lg-routine-gyn').classList.toggle('dim', b !== 'GYN'); };
+  $('lg-svc').addEventListener('change', () => { showSvc(); schedule(true); });
+  ['lg-ga', 'lg-gp'].forEach(id => $(id).addEventListener('input', showSvc));
+  $('lg-routine-gyn').innerHTML = RC.sets.filter(x => x.book === 'GYN').map(x => '<button type="button" data-rt="' + esc(x.id) + '">' + esc(x.label) + '</button>').join('');
+  $('lg-routine').innerHTML = RC.sets.filter(x => x.book !== 'GYN').map(x => '<button type="button" data-rt="' + esc(x.id) + '">' + esc(x.label) + '</button>').join('');
+  let activeRt = null;
+  const rtOpts = () => ({ delivered: $('lg-deliv').value === 'yes', patient: $('lg-pt').value, obs: $('lg-obs').value, surgeon: $('lg-surg').value === 'yes' });
+  function applyRoutine(id, force) { // force = user tapped (overwrites); auto = only empty/auto fields
+    const rf = SL.routineFill(RC, id, fieldsNow(), rtOpts()); if (!rf) return null; activeRt = id;
+    const put = (k, v) => { const el = $('lg-' + k); if (force) { el.value = v; auto.delete(el.id); } else setIf(k, v); };
+    if (/OTHER$/.test(id)) { if (force) ['diagnosis', 'icd', 'cpt', 'disposition'].forEach(k => put(k, '')); }
+    else { put('diagnosis', rf.diagnosis); put('icd', rf.icd); put('cpt', rf.cpt); put('disposition', rf.disposition); }
+    lgCard = rf.card;
+    document.querySelectorAll('[data-rt]').forEach(b => b.classList.toggle('on', b.dataset.rt === id));
+    $('lg-routine-alts').innerHTML = (rf.needsGA ? '<p><b>Enter GA for Z3A.xx.</b></p>' : '') +
+      (rf.notes.length ? '<ul class="rules">' + rf.notes.map(n => '<li>' + esc(n) + '</li>').join('') + '</ul>' : '') +
+      (rf.alts.length ? '<div>Also: ' + rf.alts.map(c => '<button type="button" class="small altcode" data-addcode="' + esc(c.code) + '" data-kind="' + c.kind + '" title="' + esc(c.rationale) + '">+ ' + esc(c.code) + ' ' + esc(c.label) + '</button>').join('') + '</div>' : '') +
+      '<p class="alt-tag"><b>' + esc(RC.disclaimer) + '</b> Verify with OBHG coding.</p>';
+    if (force) { flash(['lg-diagnosis', 'lg-icd', 'lg-cpt', 'lg-disposition']); toast(/OTHER$/.test(id) ? 'Cleared for manual entry' : 'Filled: ' + rf.set.label); }
+    return rf;
+  }
+  ['lg-deliv', 'lg-pt', 'lg-obs', 'lg-surg'].forEach(id => $(id).addEventListener('change', () => { if (activeRt) applyRoutine(activeRt, true); }));
+  $('lg-codeq').addEventListener('input', () => {
+    const hits = SL.codeSearch(CIDX, $('lg-codeq').value, 15);
+    $('lg-coderes').innerHTML = hits.map(h => '<button type="button" data-addcode="' + esc(h.code) + '" data-kind="' + h.kind + '"><span class="k">' + h.kind + ' ' + esc(h.code) + '</span>' + esc(h.label) + ' <span class="alt-tag">' + esc(h.src) + '</span></button>').join('') || ($('lg-codeq').value.trim().length > 1 ? '<p class="alt-tag">No matches.</p>' : '');
+  });
+  showSvc();
+  function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => { t.hidden = true; }, 1800); }
+  function flash(ids) { ids.forEach(id => { const el = $(id); if (!el) return; el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }); }
+  // Re-runs triage + DDx/codes from structured fields. carry=true parses the summary into fields first.
+  function runTriage(carry) {
+    const text = $('lg-hpi').value.trim(); const w = E.privacyCheck(text + ' ' + $('lg-hpi2').value);
+    $('lg-warn').hidden = !w.length; $('lg-warn').innerHTML = w.length ? '<b>Check for identifiers:</b> ' + w.map(esc).join(' ') : '';
+    if (w.length) return;
+    if (carry && text) { const ps = SL.parseSummary(text, E); setIf('initials', ps.initials); setIf('age', ps.age); setIf('gp', ps.gp); setIf('ga', ps.ga); setIf('hpi2', ps.hpi); setIf('disposition', ps.disposition); }
+    const fl = fieldsNow(); const q = SL.composeText(fl);
+    if (!q) { $('lg-sugg').hidden = true; $('lg-triage').hidden = true; lastR = null; return; }
+    const r = E.triage(q, C, T, V), sg = SL.suggest(r); lastR = r;
+    for (const k of ['diagnosis', 'icd', 'cpt']) setIf(k, sg[k]); // only empty or still-auto-filled fields
+    lgCard = sg.card || lgCard;
+    $('lg-sugg').hidden = false;
+    $('lg-sugg').innerHTML = !r.top ? '<p class="alt-tag">No confident match; enter fields manually.</p>' :
+      '<details class="companion"><summary>DDx: ' + esc(label(r.top.card || r.top.diagram)) + ' + ' + r.alternates.length + ' alternates</summary><ul class="rules">' +
+      [r.top].concat(r.alternates).map(a => { const it = a.diagram || a.card; return it ? '<li><b>' + esc(label(it)) + '</b> ' + esc(it.title) + '</li>' : ''; }).join('') + '</ul></details>' +
+      '<details class="companion"><summary>Suggested codes (verify)</summary>' + codingHTML(r.coding, r.top.id) + '</details>';
+    const rt = SL.routineMatch(RC, [fl.hpi, text].join(' '), svc()) || SL.routineMatch(RC, [fl.hpi, text].join(' ')); showSvc();
+    if (!r.top && rt) { const rf = applyRoutine(rt, false); $('lg-sugg').innerHTML = '<p><b>No card match. Routine encounter suggested: ' + esc(rf.set.label) + '</b> (codes filled where empty; pending Doc review). Tap a routine button to change.</p>'; }
+    else if (r.top && rt) $('lg-sugg').innerHTML += '<p class="alt-tag">Routine encounter? <button type="button" class="small" data-rt="' + esc(rt) + '">' + esc(RC.sets.find(x => x.id === rt).label) + '</button></p>';
+    lastAP = SL.assessPlan(r, fl, rt && !r.top ? RC.sets.find(x => x.id === rt) : null);
+    $('lg-triage').hidden = false; $('lg-ap').value = lastAP.text;
+    $('lg-using').textContent = 'Using HPI: ' + (fl.hpi || '(none)') + ' · ' + [fl.age && fl.age + ' yo', fl.gp, fl.ga].filter(Boolean).join(' ');
+    $('lg-tri-cards').innerHTML = !r.top ? '' : (r.flags.length ? '<div class="chips">' + r.flags.map(fl2 => '<span class="chip ' + (fl2.level === 'amber' ? 'amber' : '') + '">' + esc(fl2.text) + '</span>').join('') + '</div>' : '') +
+      '<details class="companion"><summary>Top match: ' + esc(label(r.top.card || r.top.diagram)) + ' · ' + esc((r.top.card || r.top.diagram).title) + '</summary>' + itemHTML(r.top.diagram || r.top.card, r.top.diagram ? r.top.card : null) + '</details>' +
+      r.alternates.map(a => { const it = a.diagram || a.card; return it ? '<details class="companion"><summary>Also consider: ' + esc(label(it)) + ' · ' + esc(it.title) + '</summary>' + itemHTML(it, a.diagram ? a.card : null) + '</details>' : ''; }).join('');
+  }
+  let deb = null; const schedule = carry => { clearTimeout(deb); deb = setTimeout(() => { try { runTriage(carry); } catch (err) { console.error(err); } }, 600); };
+  $('lg-hpi').addEventListener('input', () => schedule(true));
+  ['lg-initials', 'lg-age', 'lg-gp', 'lg-ga', 'lg-hpi2'].forEach(id => $(id).addEventListener('input', () => schedule(false)));
+  $('lg-suggest').onclick = () => { clearTimeout(deb); runTriage(true); $('lg-hpi').value = ''; toast('Triage refreshed'); };
+  function insertAP() {
+    if (lastR && !lastR.top && lgCard.startsWith('RT-')) { applyRoutine(lgCard.slice(3), true); $('lg-apentry').value = $('lg-ap').value; flash(['lg-apentry']); toast('Inserted'); return; }
+    if (!lastR || !lastR.top) { toast('Nothing to insert yet'); return; } const sg = SL.suggest(lastR);
+    for (const k of ['diagnosis', 'icd', 'cpt']) if (sg[k]) { $('lg-' + k).value = sg[k]; auto.add('lg-' + k); }
+    lgCard = sg.card; $('lg-apentry').value = SL.assessPlan(lastR, fieldsNow()).text;
+    flash(['lg-diagnosis', 'lg-icd', 'lg-cpt', 'lg-apentry']); $('lg-diagnosis').scrollIntoView({ behavior: 'smooth', block: 'center' }); toast('Inserted');
+  }
+  function copyText(t) {
+    const fallback = () => { // iOS-safe: hidden textarea + execCommand inside the same user gesture
+      const ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.className = 'copybuf';
+      document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, t.length); let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} ta.remove(); return ok;
+    };
+    const manual = () => { $('lg-ap-fallback').hidden = false; $('lg-ap-sel').value = t; $('lg-ap-sel').focus(); $('lg-ap-sel').select(); toast('Select and copy manually'); };
+    if (fallback()) { toast('Copied'); return; }
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(() => toast('Copied'), manual); else manual();
+  }
+  // Delegated so handlers survive any re-render of the triage box.
+  document.addEventListener('click', ev => {
+    const rb = ev.target.closest('[data-rt]'); if (rb) { applyRoutine(rb.dataset.rt, true); return; }
+    const ab = ev.target.closest('[data-addcode]'); if (ab) { const f = ab.dataset.kind === 'CPT' ? 'lg-cpt' : 'lg-icd'; let v = SL.addCode($(f).value, ab.dataset.addcode), note = ''; if (f === 'lg-icd') { const ir = SL.icdRules(v.split(/\s*,\s*/)); v = ir.list.join(', '); note = ir.notes.join(' '); } $(f).value = v; auto.delete(f); flash([f]); toast('Added ' + ab.dataset.addcode + (note ? '. ' + note : '')); return; }
+    const b = ev.target.closest('[data-act]'); if (!b) return;
+    if (b.dataset.act === 'ap-insert') insertAP();
+    if (b.dataset.act === 'ap-copy') { const t = $('lg-ap').value; if (!t) { toast('Nothing to copy yet'); return; } copyText(t); }
+  });
+  const clearForm = () => { F.forEach(f => { $('lg-' + f).value = ''; }); ['lg-hpi', 'lg-hpi2', 'lg-ap', 'lg-apentry', 'lg-ap-sel'].forEach(id => { $(id).value = ''; }); $('lg-ap-fallback').hidden = true; clearTimeout(deb); $('lg-codeq').value = ''; $('lg-coderes').innerHTML = ''; $('lg-routine-alts').innerHTML = ''; $('lg-svc').value = 'AUTO'; document.querySelectorAll('[data-rt].on').forEach(b => b.classList.remove('on')); activeRt = null; auto.clear(); lgCard = ''; lastR = null; lastAP = null;
+    $('lg-sugg').hidden = true; $('lg-triage').hidden = true; amending = null; $('lg-form-title').textContent = 'NEW ENTRY'; $('lg-add').textContent = 'Add to log'; $('lg-cancel').hidden = true; $('lg-amend-note').hidden = true; };
+  $('lg-cancel').onclick = clearForm;
+  $('lg-add').onclick = () => {
+    const e = {}; F.forEach(f => { e[f] = $('lg-' + f).value.trim(); }); e.card = lgCard;
+    const errs = SL.validateEntry(e).concat(E.privacyCheck([e.diagnosis, e.clinic].join(' ')));
+    $('lg-err').hidden = !errs.length; $('lg-err').innerHTML = errs.map(esc).join('<br>');
+    if (errs.length) return;
+    try {
+      if (amending) { const res = store.amend(amending.shift, amending.n, e); if (res === null) { $('lg-err').hidden = false; $('lg-err').textContent = 'No changes to amend.'; return; } }
+      else store.add(e);
+    } catch (err) { $('lg-err').hidden = false; $('lg-err').textContent = err.message; return; }
+    clearForm(); renderLog(); // HPI + A&P are cleared, never persisted
+  };
+  $('log-table').addEventListener('click', ev => {
+    const am = ev.target.closest('[data-amend]');
+    if (am) {
+      const sh = store.current(); const r = sh.entries.find(x => x.n === +am.dataset.amend); if (!r || r.voided) return;
+      clearForm(); F.forEach(f => { $('lg-' + f).value = r[f] || ''; }); lgCard = r.card || ''; amending = { shift: sh.id, n: r.n };
+      $('lg-form-title').textContent = 'AMEND ENTRY #' + r.n; $('lg-add').textContent = 'Save amendment'; $('lg-cancel').hidden = false;
+      $('lg-amend-note').hidden = false; $('lg-amend-note').textContent = 'Amending entry #' + r.n + ' (logged ' + new Date(r.ts).toLocaleString() + '). Changes are saved in place with an amended timestamp and an audit trail of prior values.';
+      $('log-form').scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+    }
+    const b = ev.target.closest('[data-void]'); if (!b) return;
+    if (confirm('Void entry #' + b.dataset.void + '? It will remain visible with a strikethrough.')) { store.void(store.current().id, +b.dataset.void); renderLog(); }
+  });
+  $('lg-export').onclick = () => exportShift(store.current().id);
+  $('lg-purge').onclick = () => purgeShift(store.current().id, 'Purge');
+
+  // Service worker + 'new version' prompt (new SW skipWaiting + clients.claim -> controllerchange).
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    const hadController = !!navigator.serviceWorker.controller;
+    const prompt = () => { $('sw-update').hidden = false; };
+    $('sw-reload').onclick = () => location.reload();
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController) prompt(); });
+    navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => {
+      reg.addEventListener('updatefound', () => { const nw = reg.installing; if (nw) nw.addEventListener('statechange', () => { if (nw.state === 'activated' && hadController) prompt(); }); });
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+      reg.update().catch(() => {});
+    }).catch(() => {});
+  }
 })();

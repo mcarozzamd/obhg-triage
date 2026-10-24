@@ -196,18 +196,33 @@
     // pregnancy / fever split (Michael, 18 Oct 2026): IAI first for intrapartum fever unless sepsis red flags
     f.febrile = f.feverC || (!!f.kw.fever && f.tempC === undefined);
     f.lowGradeFever = f.feverC && f.tempC < 38.5;
-    f.iaiContext = !!f.antepartum && !!(f.labor || f.kw.rom || f.kw.iai || f.kw.contractions);
     f.fetalTachy = /fetal tachy/i.test(t) || f.fhr > 160;
+    // IAI context (Michael, 23 Oct 2026): fever + fetal tachycardia is a strong IAI discriminator even without labor wording
+    f.iaiFeatures = [];
+    if (f.fetalTachy) f.iaiFeatures.push('fetal tachycardia' + (f.fhr > 160 ? ' (FHR ' + f.fhr + ')' : ''));
+    if (/uterine (tenderness|tender)|fundal tender|tender (uterus|fundus)/i.test(t)) f.iaiFeatures.push('uterine tenderness');
+    if (/(foul|malodor|purulent|cloudy)[\w\s-]{0,20}(fluid|discharge|amniotic)/i.test(t)) f.iaiFeatures.push('foul / purulent fluid');
+    f.iaiContext = !!f.antepartum && !!(f.labor || f.kw.rom || f.kw.iai || f.kw.contractions || (f.fetalTachy && (f.febrile || f.feverC)));
+    // true sepsis / organ-dysfunction flags. Maternal tachycardia + fever alone is NOT a sepsis flag in the IAI context
     f.sepsisFlags = [];
+    f.hypotensionWord = /hypotens|\bsoft (BP|pressures?)\b/i.test(t);
+    f.pressors = /vasopressor|pressors|norepinephrine|levophed|phenylephrine drip|vasopressin/i.test(t);
+    f.organDysfx = /end-?organ|organ dysfunction|\bAKI\b|acute kidney|rising creatinine|\bDIC\b|coagulopathy/i.test(t);
+    f.lactateHigh = f.lactate >= 2 || /(elevated|high|rising|up-?trending) lactate|lactate (is )?(elevated|high|up)/i.test(t);
     if (f.sbpMin !== undefined && f.sbpMin < 90) f.sepsisFlags.push('SBP ' + f.sbpMin + ' (<90)');
     if (f.mapMin !== undefined && f.mapMin < 65) f.sepsisFlags.push('MAP ' + f.mapMin + ' (<65)');
-    if (f.hr > 110) f.sepsisFlags.push('HR ' + f.hr + ' (>110)');
-    if (f.rr >= 22) f.sepsisFlags.push('RR ' + f.rr + ' (≥22)');
+    if (f.hypotensionWord) f.sepsisFlags.push('hypotension');
+    if (f.hr > 110 && !f.iaiContext) f.sepsisFlags.push('HR ' + f.hr + ' (>110)');
+    if (f.iaiContext ? (f.rr >= 25 || (f.rr >= 22 && f.spo2 !== undefined && f.spo2 < 95)) : f.rr >= 22) f.sepsisFlags.push('RR ' + f.rr + (f.rr >= 25 || !f.iaiContext ? ' (≥22)' : ' (≥22 with hypoxia)'));
     if (f.spo2 !== undefined && f.spo2 < 95) f.sepsisFlags.push('SpO2 ' + f.spo2 + '% (<95)');
     if (f.kw.ams) f.sepsisFlags.push('altered mental status');
-    if (f.lactate >= 2) f.sepsisFlags.push('lactate ' + f.lactate + ' (≥2)');
+    if (f.lactateHigh) f.sepsisFlags.push(f.lactate >= 2 ? 'lactate ' + f.lactate + ' (≥2)' : 'elevated lactate');
     if (f.kw.oliguria) f.sepsisFlags.push('oliguria');
-    if (f.kw.sepsis || f.kw.shock) f.sepsisFlags.push('sepsis / septic / shock wording');
+    if (f.pressors) f.sepsisFlags.push('vasopressors');
+    if (f.organDysfx) f.sepsisFlags.push('end-organ dysfunction');
+    if (f.kw.shock) f.sepsisFlags.push('shock wording');
+    // explicit 'sepsis' wording counts on its own outside IAI; in the IAI context it needs an objective feature above
+    if (f.kw.sepsis && (!f.iaiContext || f.sepsisFlags.length)) f.sepsisFlags.push('sepsis / septic wording');
     // maternal cause in the HPI (Michael, 18 Oct 2026): LND-01 is then 'also consider', never the top card
     f.maternalCauses = [];
     if (f.febrile) f.maternalCauses.push('maternal fever');
@@ -242,17 +257,18 @@
     // SYS-03 sepsis
     ['SYS-03', 96, f => ob(f) && f.sepsisFlags.length && f.infectionPicture, f => `${f.febrile ? (f.iaiContext ? f.iaiWhy : f.postpartum ? 'Postpartum fever' : 'Fever in pregnancy') + ' (' + f.feverText + ')' : 'Infection picture'} WITH sepsis red flags: ${f.sepsisFlags.join(', ')} → sepsis first`],
     ['SYS-03', 88, f => f.sirs.length >= 2 && ob(f) && !(f.iaiContext && !f.sepsisFlags.length), f => `Sepsis screen ≥2 criteria (CMQCC Box 1): ${f.sirs.join(', ')}`],
-    ['SYS-03', 86, f => f.kw.sepsis && ob(f), () => 'Sepsis / septic keyword in pregnancy or postpartum'],
+    ['SYS-03', 86, f => f.kw.sepsis && ob(f) && !(f.iaiContext && !f.sepsisFlags.length), () => 'Sepsis / septic keyword in pregnancy or postpartum'],
     ['SYS-03', 80, f => f.feverC && f.postpartum && !(f.lowGradeFever && !f.sepsisFlags.length), f => `Temp ${f.tempC} °C (≥38.0) postpartum`],
     ['SYS-03', 64, f => f.feverC && f.postpartum && f.lowGradeFever && !f.sepsisFlags.length, f => `Low-grade postpartum fever (${f.tempC} °C) without sepsis red flags: look for the source card first`],
     ['SYS-03', 74, f => f.feverC && f.antepartum && !f.iaiContext, f => `Temp ${f.tempC} °C (≥38.0) in pregnancy, no labor/ROM context${f.sepsisFlags.length ? '' : ', no sepsis red flags'}`],
     ['SYS-03', 72, f => f.kw.fever && f.tempC === undefined && ob(f) && !f.iaiContext, () => 'Fever reported (no number) in pregnancy/postpartum'],
-    ['SYS-03', 60, f => f.febrile && f.iaiContext && !f.sepsisFlags.length, f => `${f.iaiWhy} without sepsis red flags: keep screening (HR >110, SBP <90 / MAP <65, RR ≥22, SpO2 <95, AMS, lactate ≥2, oliguria)`],
+    ['SYS-03', 60, f => f.febrile && f.iaiContext && !f.sepsisFlags.length, f => `${f.iaiWhy} without sepsis red flags: sepsis is a secondary differential. Escalate to SYS-03 if hypotension (SBP <90 / MAP <65), AMS, lactate ≥2, RR ≥25 or RR ≥22 with SpO2 <95, oliguria, or pressors${f.hr > 110 ? ' (maternal HR ' + f.hr + ' with fever alone is expected with IAI)' : ''}`],
     ['SYS-03', 12, f => (f.kw.chills || f.kw.foulLochia) && ob(f), () => 'Chills / foul lochia or discharge'],
     ['SYS-03', 40, f => f.postpartum && f.kw.foulLochia, () => 'Foul or purulent lochia postpartum'],
     // LND-04
     ['LND-04', 94, f => f.febrile && f.iaiContext && f.fetalTachy && !f.sepsisFlags.length, f => `Maternal fever (${f.feverText}) plus fetal tachycardia${f.fhr > 160 ? ' (FHR ' + f.fhr + ')' : ''} in labor / ROM: classic IAI (LND-04)`],
     ['LND-04', 92, f => f.febrile && f.iaiContext && !f.sepsisFlags.length, f => `${f.iaiWhy} (${f.feverText}) without sepsis red flags: IAI first (LND-04)`],
+    ['LND-04', 95, f => f.febrile && f.iaiContext && f.iaiFeatures.length >= 2 && !f.sepsisFlags.length, f => `Maternal fever with ${f.iaiFeatures.join(', ')}: strong IAI picture (LND-04)`],
     ['LND-04', 90, f => f.kw.iai && f.antepartum, () => 'Intraamniotic infection / chorio keyword'],
     ['LND-04', 80, f => f.febrile && f.iaiContext && f.sepsisFlags.length, f => `${f.iaiWhy} with sepsis red flags: IAI is the likely source; run the sepsis bundle first (SYS-03)`],
     // PP-01
@@ -388,7 +404,7 @@
     if (f.kw.seizure && f.obContext) out.push({ level: 'red', text: 'SEIZURE: treat as eclampsia — magnesium per formulary' });
     if (f.obContext && f.sepsisFlags.length && f.infectionPicture) out.push({ level: 'red', text: 'SEPSIS RED FLAGS (' + f.sepsisFlags.join(', ') + '): time-zero bundle; antibiotics within 1 h (SYS-03)' + (f.iaiContext ? '; IAI is the likely source (LND-04)' : '') });
     else if (f.sirs.length >= 2 && f.obContext && !f.iaiContext) out.push({ level: 'red', text: 'SEPSIS SCREEN POSITIVE (≥2): time-zero bundle; antibiotics within 1 h (SYS-03)' });
-    else if (f.febrile && f.iaiContext) out.push({ level: 'amber', text: f.iaiWhy.toUpperCase() + ' without sepsis red flags: treat as suspected IAI (LND-04); recheck VS and escalate to SYS-03 if HR >110, SBP <90 / MAP <65, RR ≥22, SpO2 <95, AMS, lactate ≥2, or oliguria' });
+    else if (f.febrile && f.iaiContext) out.push({ level: 'amber', text: f.iaiWhy.toUpperCase() + ' without sepsis red flags: treat as suspected IAI (LND-04); recheck VS and escalate to SYS-03 if hypotension (SBP <90 / MAP <65), AMS, lactate ≥2, RR ≥25 or RR ≥22 with SpO2 <95, oliguria, or pressors' + (f.hr > 110 ? '; maternal tachycardia with fever alone is expected with IAI' : '') });
     else if (f.feverC && f.obContext) out.push({ level: 'amber', text: 'FEVER ≥38.0 °C: run the sepsis screen' + (f.postpartum && f.lowGradeFever ? '; low-grade, no red flags: look for the source' : '') });
     if (f.pphByQbl) out.push({ level: 'red', text: 'PPH (CMQCC Stage 1): QBL ' + f.qbl + ' mL ≥ ' + f.qblThreshold });
     if (f.qbl > 1500) out.push({ level: 'red', text: 'QBL >1500 mL: Stage 3 — OR, MTP 1:1:1 (PP-01 pearl)' });

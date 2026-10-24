@@ -1,0 +1,853 @@
+{
+ "version": "0.4.0-pending",
+ "status": "PENDING DOC REVIEW (Doc review 1 + Michael override (admit E/M tracking with delivery; OBED 9928x default) applied 2026-10-23). ICD-10-CM validated against CMS FY2026/FY2027 by codes/build_routine.py; CPT/E-M are suggestions (AMA CPT not machine-verified). Codes are suggestions; provider verifies before billing.",
+ "z3a_rule": "Z3A.xx from GA field (for inpatient, GA on the admission date). No Z3A when GA blank. Not with Z03.7x primary unless an O code is present. 'optional' sets offer Z3A as an add-on; 'ifga' adds only if GA entered; GYN non-pregnant sets never.",
+ "icd_rules": [
+  "O80 requires Z37.0",
+  "O80 never with any other O code (O80 dropped when another O code added)",
+  "Z03.7x primary: no Z3A unless an O code present"
+ ],
+ "obs_note": "Observation requires a physician order: same-day 99234-99236; multi-day 99221-99223 + 99238/99239. OB triage/OBED alone uses ED E/M 99281-99285.",
+ "disclaimer": "Codes are suggestions; provider verifies before billing.",
+ "verify_tag": "verify with OBHG coding",
+ "em_rules": {
+  "new": {
+   "default": "99203",
+   "alts": [
+    "99202",
+    "99204",
+    "99205"
+   ],
+   "label": "Outpatient visit, NEW patient (99202-99205 by MDM) - alternate (office/clinic only)"
+  },
+  "est": {
+   "default": "99213",
+   "alts": [
+    "99212",
+    "99214",
+    "99215"
+   ],
+   "label": "Outpatient visit, ESTABLISHED patient (99212-99215 by MDM) - alternate (office/clinic only)"
+  },
+  "obs_multi": {
+   "default": [
+    "99222",
+    "99238"
+   ],
+   "alts": [
+    "99221",
+    "99223",
+    "99239"
+   ],
+   "label": "Observation multi-day: initial 99221-99223 + discharge 99238/99239"
+  },
+  "admit": {
+   "default": "99222",
+   "alts": [
+    "99221",
+    "99223"
+   ],
+   "label": "Initial hospital inpatient/observation care",
+   "tracking": "tracking only (OBHG), not billed"
+  },
+  "ed": {
+   "default": "99283",
+   "alts": [
+    "99281",
+    "99282",
+    "99284",
+    "99285"
+   ],
+   "label": "OB ED (OBED) visit, 99281-99285 by MDM (default for triage/OBED encounters)"
+  },
+  "surgeon": {
+   "default": "99024",
+   "label": "Postoperative follow-up visit within global (surgeon/surgeon's group only)"
+  },
+  "obs_same": {
+   "default": [
+    "99234"
+   ],
+   "alts": [
+    "99235",
+    "99236"
+   ],
+   "label": "Observation admit + discharge same date (99234-99236)"
+  }
+ },
+ "em_labels": {
+  "99202": "New pt, straightforward MDM",
+  "99203": "New pt, low MDM",
+  "99204": "New pt, moderate MDM",
+  "99205": "New pt, high MDM",
+  "99212": "Est pt, straightforward MDM",
+  "99213": "Est pt, low MDM",
+  "99214": "Est pt, moderate MDM",
+  "99215": "Est pt, high MDM",
+  "99221": "Initial inpatient/obs care, straightforward/low",
+  "99222": "Initial inpatient/obs care, moderate",
+  "99223": "Initial inpatient/obs care, high",
+  "99238": "Discharge day, <=30 min",
+  "99239": "Discharge day, >30 min",
+  "99283": "ED visit, low MDM",
+  "99284": "ED visit, moderate MDM",
+  "99285": "ED visit, high MDM",
+  "99024": "Postop follow-up in global",
+  "99281": "ED visit, may not need physician",
+  "99282": "ED visit, straightforward MDM",
+  "99234": "Same-day obs admit+discharge, straightforward/low MDM",
+  "99235": "Same-day obs admit+discharge, moderate MDM",
+  "99236": "Same-day obs admit+discharge, high MDM"
+ },
+ "sets": [
+  {
+   "id": "IOL",
+   "book": "OB",
+   "label": "Term induction (elective / indicated)",
+   "diagnosis": "Admit for induction of labor, term",
+   "disposition": "Admitted L&D",
+   "z3a": "yes",
+   "em": "admit",
+   "keywords": [
+    "induction",
+    "induce",
+    "iol",
+    "cervical ripening",
+    "cytotec",
+    "misoprostol",
+    "foley bulb",
+    "pitocin induction",
+    "elective induction"
+   ],
+   "icd": [
+    {
+     "code": "O80",
+     "label": "Encounter for full-term uncomplicated delivery",
+     "rationale": "Uncomplicated term delivery; requires Z37.0; never with any other O code. If induced for an indication, code the indication instead.",
+     "alt": false
+    },
+    {
+     "code": "Z37.0",
+     "label": "Single live birth",
+     "rationale": "Required outcome code with O80.",
+     "alt": false
+    },
+    {
+     "code": "O48.0",
+     "label": "Post-term pregnancy",
+     "rationale": "Indicated IOL >40w0d to 42w0d (replaces O80).",
+     "alt": true
+    },
+    {
+     "code": "O48.1",
+     "label": "Prolonged pregnancy",
+     "rationale": "IOL >42 completed weeks (replaces O80).",
+     "alt": true
+    }
+   ],
+   "cpt": [
+    {
+     "code": "59409",
+     "label": "Vaginal delivery only",
+     "rationale": "Delivery-only. Admit E/M also logged for tracking (OBHG), not billed.",
+     "alt": false,
+     "when": "delivered"
+    },
+    {
+     "code": "59410",
+     "label": "Vaginal delivery + postpartum care",
+     "rationale": "If OBHG provides postpartum care.",
+     "alt": true,
+     "when": "delivered"
+    },
+    {
+     "code": "59400",
+     "label": "Global OB, vaginal",
+     "rationale": "Only if this group provides global care.",
+     "alt": true,
+     "when": "delivered"
+    },
+    {
+     "code": "59200",
+     "label": "Insertion of cervical dilator (balloon/laminaria)",
+     "rationale": "Mechanical ripening only.",
+     "alt": true
+    }
+   ],
+   "notes": [
+    "Admit E/M 99221-99223 logged with delivery codes for OBHG tracking; when delivered it is tracking only (OBHG), not billed.",
+    "O80/Z37.0 apply to the delivery encounter."
+   ]
+  },
+  {
+   "id": "LABOR",
+   "book": "OB",
+   "label": "Active labor admit",
+   "diagnosis": "Active labor, term, admitted",
+   "disposition": "Admitted L&D",
+   "z3a": "yes",
+   "em": "admit",
+   "keywords": [
+    "active labor",
+    "in labor",
+    "labor admit",
+    "laboring",
+    "spontaneous labor",
+    "regular contractions"
+   ],
+   "icd": [
+    {
+     "code": "O80",
+     "label": "Encounter for full-term uncomplicated delivery",
+     "rationale": "Spontaneous term labor, uncomplicated delivery; requires Z37.0; never with other O codes.",
+     "alt": false
+    },
+    {
+     "code": "Z37.0",
+     "label": "Single live birth",
+     "rationale": "Required outcome code with O80.",
+     "alt": false
+    }
+   ],
+   "cpt": [
+    {
+     "code": "59409",
+     "label": "Vaginal delivery only",
+     "rationale": "Delivery-only. Admit E/M also logged for tracking (OBHG), not billed.",
+     "alt": false,
+     "when": "delivered"
+    },
+    {
+     "code": "59410",
+     "label": "Vaginal delivery + postpartum care",
+     "rationale": "If OBHG provides postpartum care.",
+     "alt": true,
+     "when": "delivered"
+    },
+    {
+     "code": "59400",
+     "label": "Global OB, vaginal",
+     "rationale": "Only if this group provides global care.",
+     "alt": true,
+     "when": "delivered"
+    }
+   ],
+   "notes": [
+    "Admit E/M logged with delivery code; tracking only (OBHG), not billed, when delivered."
+   ]
+  },
+  {
+   "id": "RULEOUT",
+   "book": "OB",
+   "label": "SROM / labor check (ruled out, discharged)",
+   "diagnosis": "Labor/ROM evaluation, ruled out, discharged",
+   "disposition": "Discharged home",
+   "z3a": "optional",
+   "em": "ed",
+   "keywords": [
+    "r/o labor",
+    "rule out labor",
+    "ruled out",
+    "labor check",
+    "srom",
+    "rom check",
+    "r/o rom",
+    "leaking fluid",
+    "false labor",
+    "braxton",
+    "not in labor",
+    "contractions"
+   ],
+   "icd": [
+    {
+     "code": "O47.1",
+     "label": "False labor at or after 37 completed weeks",
+     "rationale": "Contractions without cervical change, >=37w.",
+     "alt": false,
+     "gaMin": 37
+    },
+    {
+     "code": "O47.03",
+     "label": "False labor before 37 weeks, third trimester",
+     "rationale": "28w0d-36w6d.",
+     "alt": false,
+     "gaMin": 28,
+     "gaMax": 36.99
+    },
+    {
+     "code": "O47.02",
+     "label": "False labor before 37 weeks, second trimester",
+     "rationale": "14w0d-27w6d.",
+     "alt": false,
+     "gaMin": 14,
+     "gaMax": 27.99
+    },
+    {
+     "code": "Z03.71",
+     "label": "Encounter for suspected problem with amniotic cavity and membrane ruled out",
+     "rationale": "ROM ruled out (fluid complaint). As primary, Z3A is optional and not forced unless an O code is also present.",
+     "alt": false
+    }
+   ],
+   "cpt": [
+    {
+     "code": "59025-26",
+     "label": "Fetal non-stress test, professional component",
+     "rationale": "If NST performed and interpreted.",
+     "alt": true
+    },
+    {
+     "code": "76815-26",
+     "label": "Limited OB ultrasound (fluid/presentation), professional component",
+     "rationale": "Fluid check / AFI.",
+     "alt": true
+    }
+   ],
+   "notes": [
+    "OBED/triage visit: ED E/M 99281-99285; observation requires an order."
+   ]
+  },
+  {
+   "id": "CS",
+   "book": "OB",
+   "label": "Scheduled cesarean admit",
+   "diagnosis": "Scheduled cesarean delivery",
+   "disposition": "To OR",
+   "z3a": "yes",
+   "em": "admit",
+   "keywords": [
+    "scheduled cesarean",
+    "scheduled c-section",
+    "scheduled c section",
+    "repeat cesarean",
+    "repeat c-section",
+    "rlctcs",
+    "elective cesarean",
+    "planned cesarean",
+    "primary cesarean",
+    "breech"
+   ],
+   "icd": [
+    {
+     "code": "O34.211",
+     "label": "Maternal care for low transverse scar from previous cesarean",
+     "rationale": "Repeat cesarean, prior LTCS.",
+     "alt": false
+    },
+    {
+     "code": "Z37.0",
+     "label": "Single live birth",
+     "rationale": "Required outcome code.",
+     "alt": false
+    },
+    {
+     "code": "O34.219",
+     "label": "Maternal care for unspecified type scar from previous cesarean",
+     "rationale": "Prior scar type not documented.",
+     "alt": true
+    },
+    {
+     "code": "O32.1XX0",
+     "label": "Maternal care for breech presentation",
+     "rationale": "Primary cesarean for breech.",
+     "alt": true
+    }
+   ],
+   "cpt": [
+    {
+     "code": "59514",
+     "label": "Cesarean delivery only",
+     "rationale": "Delivery-only. Admit E/M also logged for tracking (OBHG), not billed.",
+     "alt": false,
+     "when": "delivered"
+    },
+    {
+     "code": "59515",
+     "label": "Cesarean delivery + postpartum care",
+     "rationale": "If OBHG provides postpartum care.",
+     "alt": true,
+     "when": "delivered"
+    },
+    {
+     "code": "59510",
+     "label": "Global cesarean",
+     "rationale": "Only with global care.",
+     "alt": true,
+     "when": "delivered"
+    }
+   ],
+   "notes": [
+    "Admit E/M logged with delivery code; tracking only (OBHG), not billed, when delivered."
+   ]
+  },
+  {
+   "id": "NST",
+   "book": "OB",
+   "label": "NST / fetal monitoring",
+   "diagnosis": "Fetal monitoring / NST, reactive",
+   "disposition": "Discharged home",
+   "z3a": "yes",
+   "em": "ed",
+   "keywords": [
+    "nst",
+    "non-stress",
+    "nonstress",
+    "fetal monitoring",
+    "decreased fetal movement",
+    "dfm",
+    "decreased fm",
+    "reduced fetal movement"
+   ],
+   "icd": [
+    {
+     "code": "O36.8130",
+     "label": "Decreased fetal movements, third trimester",
+     "rationale": "DFM >=28w.",
+     "alt": false,
+     "gaMin": 28
+    },
+    {
+     "code": "O36.8120",
+     "label": "Decreased fetal movements, second trimester",
+     "rationale": "DFM 14w0d-27w6d.",
+     "alt": false,
+     "gaMin": 14,
+     "gaMax": 27.99
+    }
+   ],
+   "cpt": [
+    {
+     "code": "59025-26",
+     "label": "Fetal non-stress test, professional component",
+     "rationale": "NST interpreted (-26 professional).",
+     "alt": false
+    }
+   ],
+   "notes": [
+    "Separate E/M with NST only if significant, separately identifiable work (modifier 25)."
+   ]
+  },
+  {
+   "id": "PP",
+   "book": "OB",
+   "label": "Postpartum check (triage/outpatient)",
+   "diagnosis": "Postpartum check",
+   "disposition": "Discharged home",
+   "z3a": "no",
+   "em": "ed",
+   "keywords": [
+    "postpartum check",
+    "pp check",
+    "postpartum visit",
+    "postpartum follow",
+    "pp visit",
+    "routine postpartum"
+   ],
+   "icd": [
+    {
+     "code": "Z39.2",
+     "label": "Encounter for routine postpartum follow-up",
+     "rationale": "Triage/outpatient routine PP check only.",
+     "alt": false
+    },
+    {
+     "code": "O90.89",
+     "label": "Other complications of the puerperium, NEC",
+     "rationale": "Use O85-O92 (e.g., O90.x) for any complication instead of Z39.2.",
+     "alt": true
+    }
+   ],
+   "cpt": [
+    {
+     "code": "59430",
+     "label": "Postpartum care only",
+     "rationale": "Postpartum care billed separately.",
+     "alt": true
+    }
+   ],
+   "notes": [
+    "Inpatient PP after an OBHG delivery is in the global (59410/59515/59430): no separate 99231 or Z39.2 (verify with OBHG coding)."
+   ]
+  },
+  {
+   "id": "OTHER",
+   "book": "OB",
+   "label": "Other",
+   "diagnosis": "",
+   "disposition": "",
+   "z3a": "yes",
+   "em": "none",
+   "keywords": [],
+   "icd": [],
+   "cpt": [],
+   "notes": []
+  },
+  {
+   "id": "AUB",
+   "book": "GYN",
+   "label": "Abnormal uterine bleeding",
+   "diagnosis": "Abnormal uterine bleeding",
+   "disposition": "Discharged home",
+   "z3a": "no",
+   "em": "ed",
+   "ed": true,
+   "keywords": [
+    "aub",
+    "abnormal uterine bleeding",
+    "heavy menstrual",
+    "menorrhagia",
+    "heavy period",
+    "vaginal bleeding",
+    "metrorrhagia"
+   ],
+   "icd": [
+    {
+     "code": "N93.9",
+     "label": "Abnormal uterine and vaginal bleeding, unspecified",
+     "rationale": "Non-pregnant AUB.",
+     "alt": false
+    },
+    {
+     "code": "N92.0",
+     "label": "Excessive and frequent menstruation, regular cycle",
+     "rationale": "HMB, regular.",
+     "alt": true
+    },
+    {
+     "code": "N92.1",
+     "label": "Excessive and frequent menstruation, irregular cycle",
+     "rationale": "HMB, irregular.",
+     "alt": true
+    }
+   ],
+   "cpt": [
+    {
+     "code": "76830-26",
+     "label": "Transvaginal ultrasound, non-OB, professional component",
+     "rationale": "If TVUS interpreted.",
+     "alt": true
+    }
+   ],
+   "notes": [
+    "Confirm hCG negative before AUB codes.",
+    "OBED default 99281-99285; office new/established codes are alternates only."
+   ]
+  },
+  {
+   "id": "TORSION",
+   "book": "GYN",
+   "label": "Pelvic pain / r/o torsion",
+   "diagnosis": "Pelvic pain, torsion ruled out",
+   "disposition": "Discharged home",
+   "z3a": "no",
+   "em": "ed",
+   "keywords": [
+    "pelvic pain",
+    "r/o torsion",
+    "rule out torsion",
+    "torsion",
+    "adnexal pain",
+    "lower abdominal pain"
+   ],
+   "icd": [
+    {
+     "code": "R10.20",
+     "label": "Pelvic and perineal pain, unspecified side",
+     "rationale": "CMS FY2026: R10.2 is now a non-billable header; R10.20 is billable. Use R10.21/R10.22/R10.23 if side documented.",
+     "alt": false
+    },
+    {
+     "code": "R10.21",
+     "label": "Pelvic and perineal pain, right side",
+     "rationale": "Side documented.",
+     "alt": true
+    },
+    {
+     "code": "R10.22",
+     "label": "Pelvic and perineal pain, left side",
+     "rationale": "Side documented.",
+     "alt": true
+    },
+    {
+     "code": "R10.23",
+     "label": "Pelvic and perineal pain, bilateral",
+     "rationale": "Bilateral.",
+     "alt": true
+    },
+    {
+     "code": "N83.519",
+     "label": "Torsion of ovary and ovarian pedicle, unspecified side",
+     "rationale": "Confirmed torsion (N83.511/N83.512 by side).",
+     "alt": true
+    }
+   ],
+   "cpt": [
+    {
+     "code": "76830-26",
+     "label": "Transvaginal ultrasound, non-OB, professional component",
+     "rationale": "TVUS.",
+     "alt": true
+    },
+    {
+     "code": "93975-26",
+     "label": "Duplex Doppler, abdominal/pelvic/scrotal, complete, professional",
+     "rationale": "Complete ovarian Doppler.",
+     "alt": true
+    },
+    {
+     "code": "93976-26",
+     "label": "Duplex Doppler, abdominal/pelvic/scrotal, limited, professional",
+     "rationale": "Limited ovarian Doppler.",
+     "alt": true
+    }
+   ],
+   "notes": []
+  },
+  {
+   "id": "CYST",
+   "book": "GYN",
+   "label": "Ovarian cyst",
+   "diagnosis": "Ovarian cyst",
+   "disposition": "Discharged home",
+   "z3a": "no",
+   "em": "ed",
+   "keywords": [
+    "ovarian cyst",
+    "adnexal cyst",
+    "hemorrhagic cyst",
+    "ruptured cyst",
+    "cyst"
+   ],
+   "icd": [
+    {
+     "code": "N83.209",
+     "label": "Unspecified ovarian cyst, unspecified side",
+     "rationale": "N83.201 right / N83.202 left when side documented.",
+     "alt": false
+    }
+   ],
+   "cpt": [
+    {
+     "code": "76830-26",
+     "label": "Transvaginal ultrasound, non-OB, professional component",
+     "rationale": "TVUS.",
+     "alt": true
+    }
+   ],
+   "notes": []
+  },
+  {
+   "id": "EPB",
+   "book": "GYN",
+   "label": "Early pregnancy bleeding / r/o ectopic",
+   "diagnosis": "Early pregnancy bleeding, r/o ectopic",
+   "disposition": "Discharged home",
+   "z3a": "ifga",
+   "em": "ed",
+   "keywords": [
+    "r/o ectopic",
+    "rule out ectopic",
+    "ectopic",
+    "early pregnancy bleeding",
+    "pul",
+    "pregnancy of unknown location",
+    "threatened abortion",
+    "spotting positive hcg",
+    "bleeding in early pregnancy",
+    "miscarriage",
+    "missed abortion"
+   ],
+   "icd": [
+    {
+     "code": "O20.9",
+     "label": "Hemorrhage in early pregnancy, unspecified",
+     "rationale": "Bleeding <20w; GA optional.",
+     "alt": false
+    },
+    {
+     "code": "O20.0",
+     "label": "Threatened abortion",
+     "rationale": "IUP, closed os.",
+     "alt": true
+    },
+    {
+     "code": "O03.9",
+     "label": "Complete or unspecified spontaneous abortion without complication",
+     "rationale": "SAB.",
+     "alt": true
+    },
+    {
+     "code": "O02.1",
+     "label": "Missed abortion",
+     "rationale": "Nonviable IUP retained.",
+     "alt": true
+    },
+    {
+     "code": "O00.90",
+     "label": "Unspecified ectopic pregnancy without intrauterine pregnancy",
+     "rationale": "Confirmed ectopic.",
+     "alt": true
+    }
+   ],
+   "cpt": [
+    {
+     "code": "76817-26",
+     "label": "Transvaginal OB ultrasound, professional component",
+     "rationale": "TV OB US.",
+     "alt": true
+    },
+    {
+     "code": "84702",
+     "label": "hCG, quantitative",
+     "rationale": "Lab (billed by lab).",
+     "alt": true
+    }
+   ],
+   "notes": [
+    "Check Rh(D) status; anti-D if indicated."
+   ]
+  },
+  {
+   "id": "PID",
+   "book": "GYN",
+   "label": "PID / TOA",
+   "diagnosis": "Pelvic inflammatory disease",
+   "disposition": "Admitted GYN",
+   "z3a": "no",
+   "em": "ed",
+   "keywords": [
+    "pid",
+    "pelvic inflammatory",
+    "toa",
+    "tubo-ovarian",
+    "tuboovarian",
+    "cervical motion tenderness"
+   ],
+   "icd": [
+    {
+     "code": "N73.9",
+     "label": "Female pelvic inflammatory disease, unspecified",
+     "rationale": "PID without TOA.",
+     "alt": false
+    },
+    {
+     "code": "N70.03",
+     "label": "Acute salpingitis and oophoritis",
+     "rationale": "N70.03 for acute TOA (default).",
+     "alt": true
+    },
+    {
+     "code": "N70.93",
+     "label": "Salpingitis and oophoritis, unspecified",
+     "rationale": "TOA only if acuity not documented.",
+     "alt": true
+    }
+   ],
+   "cpt": [],
+   "notes": [
+    "OBED default 99281-99285; if admitted for IV antibiotics, 99221-99223 (alternates)."
+   ],
+   "admitAlt": true
+  },
+  {
+   "id": "POSTOP",
+   "book": "GYN",
+   "label": "Postop GYN check / complication",
+   "diagnosis": "Postoperative GYN check",
+   "disposition": "Discharged home",
+   "z3a": "no",
+   "em": "surgeon",
+   "keywords": [
+    "postop",
+    "post-op",
+    "post op",
+    "s/p hysterectomy",
+    "s/p laparoscopy",
+    "wound check",
+    "incision",
+    "pod"
+   ],
+   "icd": [
+    {
+     "code": "Z48.816",
+     "label": "Surgical aftercare following surgery on the genitourinary system",
+     "rationale": "Routine postop check.",
+     "alt": false
+    },
+    {
+     "code": "T81.40XA",
+     "label": "Infection following a procedure, unspecified, initial",
+     "rationale": "Postop infection.",
+     "alt": true
+    },
+    {
+     "code": "T81.31XA",
+     "label": "Disruption of external surgical wound, initial",
+     "rationale": "Dehiscence.",
+     "alt": true
+    }
+   ],
+   "cpt": [],
+   "notes": [
+    "99024 only if you or your group did the surgery; otherwise standard E/M. Modifier 24 only for an unrelated problem in the global."
+   ]
+  },
+  {
+   "id": "BART",
+   "book": "GYN",
+   "label": "Bartholin abscess",
+   "diagnosis": "Bartholin gland abscess",
+   "disposition": "Discharged home",
+   "z3a": "no",
+   "em": "ed",
+   "keywords": [
+    "bartholin",
+    "bartholin abscess",
+    "bartholin cyst",
+    "vulvar abscess"
+   ],
+   "icd": [
+    {
+     "code": "N75.1",
+     "label": "Abscess of Bartholin's gland",
+     "rationale": "Abscess.",
+     "alt": false
+    },
+    {
+     "code": "N75.0",
+     "label": "Cyst of Bartholin's gland",
+     "rationale": "Non-infected cyst.",
+     "alt": true
+    }
+   ],
+   "cpt": [
+    {
+     "code": "56420",
+     "label": "Incision and drainage, Bartholin gland abscess",
+     "rationale": "I&D; E/M same day only with modifier 25.",
+     "alt": false
+    },
+    {
+     "code": "56440",
+     "label": "Marsupialization of Bartholin cyst",
+     "rationale": "If marsupialized.",
+     "alt": true
+    }
+   ],
+   "notes": []
+  },
+  {
+   "id": "GOTHER",
+   "book": "GYN",
+   "label": "Other (GYN)",
+   "diagnosis": "",
+   "disposition": "",
+   "z3a": "no",
+   "em": "none",
+   "keywords": [],
+   "icd": [],
+   "cpt": [],
+   "notes": []
+  }
+ ]
+}

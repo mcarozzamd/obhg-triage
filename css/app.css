@@ -64,3 +64,28 @@ mark{background:#FFE58F}
 .viewer-body img{display:block;width:100%;height:auto;max-width:none}
 [hidden]{display:none!important}
 .box,.topcard,#result{scroll-margin-top:52px}
+
+.testbanner{background:#B00020;color:#fff;text-align:center;font-weight:800;padding:6px;letter-spacing:.05em;position:sticky;top:0;z-index:30}
+#view-log input,#view-log select{width:100%;box-sizing:border-box;font-size:15px;padding:7px;border:1px solid var(--line);border-radius:8px;margin:2px 0 6px}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:4px 10px;margin-top:8px}
+.lgrid label{font-size:12px;font-weight:700;color:#567}.lgrid .wide{grid-column:1/-1}
+.logwrap{overflow-x:auto}.logtab{border-collapse:collapse;font-size:12px;width:100%}
+.logtab th,.logtab td{border-bottom:1px solid var(--line);padding:4px;text-align:left;vertical-align:top}
+.logtab tr.void td{text-decoration:line-through;color:#999}
+button.small{font-size:12px;padding:4px 8px}button.danger{color:#B00020}
+.pastrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:5px 0;border-bottom:1px solid var(--line);font-size:13px}.pastrow span{flex:1}
+
+.amend-note{background:#FFF4D6;border:1px solid #E0B040;padding:6px;border-radius:6px;font-size:13px;margin:4px 0}
+.triagebox{border:2px solid #B00020}
+#lg-ap,#lg-apentry,#lg-hpi2{width:100%;box-sizing:border-box;font:13px/1.35 ui-monospace,Menlo,monospace}
+tr.amended td{background:#FFFBEA}
+.amtag{display:block;font-size:11px;color:#8a6d00}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#0B3D5C;color:#fff;padding:10px 18px;border-radius:20px;font-weight:700;z-index:60;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.sw-update{position:fixed;left:8px;right:8px;top:calc(40px + env(safe-area-inset-top));background:#FFF4D6;border:1px solid #E0B040;padding:8px;border-radius:8px;z-index:61;text-align:center}
+.flash{animation:flash 1.6s ease-out}@keyframes flash{0%{background:#FFE58A;box-shadow:0 0 0 3px #E0B040}100%{background:inherit;box-shadow:none}}
+#lg-ap-sel{width:100%;box-sizing:border-box;font:13px/1.35 ui-monospace,Menlo,monospace;-webkit-user-select:text;user-select:text}
+.copybuf{position:fixed;top:0;left:0;opacity:0;font-size:16px;width:1px;height:1px}
+.qpick{display:flex;flex-wrap:wrap;gap:6px}.qpick button{flex:1 1 45%;min-height:44px}.qpick button.on{outline:3px solid #E0B040}
+.coderes button{display:block;width:100%;text-align:left;margin:2px 0;min-height:40px}.coderes .k{font-weight:800;margin-right:6px}
+.altcode{margin:2px 4px 2px 0}
+.qpick.dim button{opacity:.55}

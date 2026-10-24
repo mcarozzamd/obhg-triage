@@ -24,6 +24,7 @@
 <nav class="tabs" role="tablist">
   <button role="tab" id="tab-triage" class="on" aria-selected="true">Triage</button>
   <button role="tab" id="tab-browse" aria-selected="false">Browse all</button>
+  <button role="tab" id="tab-log" aria-selected="false">Shift log</button>
 </nav>
 
 <main>
@@ -60,8 +61,87 @@
   <input id="q" type="search" placeholder="Search every card and diagram (e.g. magnesium, JADA, torsion)" autocomplete="off" spellcheck="false">
   <div id="list"></div>
 </section>
+<section id="view-log" hidden>
+  <div id="profile-box" class="box" hidden>
+    <h3>PROVIDER PROFILE (STORED ON THIS DEVICE ONLY)</h3>
+    <label class="lbl" for="pf-name">Provider name</label><input id="pf-name" maxlength="80" autocomplete="off">
+    <label class="lbl" for="pf-title">Credentials / title</label><input id="pf-title" maxlength="40" placeholder="MD, DO, CNM..." autocomplete="off">
+    <label class="lbl" for="pf-site">Site</label><input id="pf-site" maxlength="80" value="CHRISTUS St. Michael" autocomplete="off">
+    <label class="lbl" for="pf-ret">Keep closed shift logs for</label><select id="pf-ret"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option><option value="0">Keep until I delete</option></select>
+    <div class="btns"><button id="pf-save" class="primary" type="button">Save profile</button></div>
+  </div>
+  <div id="log-main" hidden>
+    <div class="box"><div id="log-head"></div><button id="pf-edit" type="button" class="small">Edit profile</button></div>
+    <div class="box" id="log-form">
+      <h3 id="lg-form-title">NEW ENTRY</h3>
+      <div id="lg-amend-note" class="amend-note" hidden></div>
+      <label class="lbl" for="lg-hpi">One-line summary (auto-fills fields below; never saved)</label>
+      <textarea id="lg-hpi" rows="2" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="e.g. AB 22 yo G1P0 at 32 weeks with leaking fluid, admit antepartum"></textarea>
+      <div id="lg-warn" class="privacy-warn" hidden></div>
+      <div class="lgrid">
+        <label>Initials<input id="lg-initials" maxlength="3" pattern="[A-Za-z]{2,3}" autocomplete="off" autocapitalize="characters"></label>
+        <label>Age<input id="lg-age" inputmode="numeric" maxlength="3" autocomplete="off"></label>
+        <label>G/P<input id="lg-gp" maxlength="16" placeholder="G2P1" autocomplete="off"></label>
+        <label>GA<input id="lg-ga" maxlength="7" placeholder="37w2d" autocomplete="off"></label>
+        <label class="wide">HPI (used for DDx, codes, triage; cleared on save, never stored)<textarea id="lg-hpi2" rows="3" maxlength="600" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="e.g. leaking fluid since this morning, positive fern, afebrile"></textarea></label>
+      </div>
+      <div class="btns"><button id="lg-suggest" class="primary" type="button">Refresh DDx / codes + triage</button></div>
+      <p class="alt-tag">Triage updates automatically as you type the summary, HPI, or demographics.</p>
+      <div class="box routinebox">
+        <h3>ROUTINE ENCOUNTER (ONE TAP)</h3>
+        <label class="lbl" for="lg-svc">Service</label><select id="lg-svc"><option value="AUTO">Auto (blank GA and G/P = GYN)</option><option value="OB">OB</option><option value="GYN">GYN</option></select>
+        <div id="lg-svc-now" class="alt-tag"></div>
+        <div class="lgrid">
+          <label>I delivered<select id="lg-deliv"><option value="no">No</option><option value="yes">Yes</option></select></label>
+          <label>Patient<select id="lg-pt"><option value="NEW">New</option><option value="EST">Established</option></select></label>
+          <label>Observation<select id="lg-obs"><option value="">No (OBED/triage)</option><option value="same">Same-day (99234-99236)</option><option value="multi">Multi-day (99221-99223 + 99238/99239)</option></select></label>
+          <label>My group did surgery<select id="lg-surg"><option value="no">No</option><option value="yes">Yes</option></select></label>
+        </div>
+        <p class="alt-tag">OBED default E/M 99281-99285; office new/established are alternates. Admit E/M is logged with delivery codes for OBHG tracking (not billed). Observation requires an order. Verify with OBHG coding.</p>
+        <div class="subh">OB</div><div id="lg-routine" class="qpick"></div>
+        <div class="subh">GYN</div><div id="lg-routine-gyn" class="qpick"></div>
+        <div id="lg-routine-alts" class="alt-tag"></div>
+        <p class="alt-tag">Routine codes are PENDING DOC REVIEW (review 1 applied). Z3A.xx comes from the GA field (none when GA blank). GYN entries need no GA or G/P.</p>
+      </div>
+      <div id="lg-sugg" hidden></div>
+      <div id="lg-triage" class="box triagebox" hidden>
+        <h3>TRIAGE · DECISION SUPPORT ONLY · CLINICIAN MUST VERIFY</h3>
+        <div id="lg-using" class="alt-tag"></div>
+        <div id="lg-tri-cards"></div>
+        <div class="subh">ASSESSMENT AND PLAN DRAFT (rule-based from card content, on-device, no AI)</div>
+        <textarea id="lg-ap" rows="14" readonly spellcheck="false" autocomplete="off"></textarea>
+        <div class="btns"><button id="lg-ap-insert" data-act="ap-insert" class="primary" type="button">Insert A&amp;P + codes into entry ↓</button><button id="lg-ap-copy" data-act="ap-copy" type="button">Copy A&amp;P to clipboard</button></div>
+        <div id="lg-ap-fallback" hidden><p class="privacy-warn">Copy not available here. Press and hold the text below, then Select All and Copy.</p><textarea id="lg-ap-sel" rows="8" spellcheck="false"></textarea></div>
+        <p class="alt-tag">Insert fills Diagnosis / ICD / CPT / Disposition (saved) and places the A&amp;P text in the entry's A&amp;P box (on screen only, cleared on save, never stored).</p>
+      </div>
+      <div class="lgrid">
+        <label class="wide">Diagnosis<input id="lg-diagnosis" maxlength="120" autocomplete="off"></label>
+        <label>ICD<input id="lg-icd" maxlength="120" autocomplete="off"></label>
+        <label>CPT<input id="lg-cpt" maxlength="120" autocomplete="off"></label>
+        <label>Disposition<select id="lg-disposition"></select></label>
+        <label>Clinic<input id="lg-clinic" maxlength="40" autocomplete="off"></label>
+        <label class="wide">Code search (ICD/CPT text or code prefix)<input id="lg-codeq" type="search" maxlength="40" autocomplete="off" spellcheck="false" placeholder="e.g. false labor, O80, 5940"></label>
+        <div id="lg-coderes" class="wide coderes"></div>
+        <label class="wide">A&amp;P for this entry (copy to your note; not saved)<textarea id="lg-apentry" rows="4" autocomplete="off" spellcheck="false"></textarea></label>
+      </div>
+      <p class="privacy-line">Initials only (2-3 letters). No names, MRNs, DOBs, or other identifiers.</p>
+      <p class="alt-tag"><b>Codes are suggestions; provider verifies before billing.</b></p>
+      <div id="lg-err" class="privacy-warn" hidden></div>
+      <div class="btns"><button id="lg-add" class="primary" type="button">Add to log</button><button id="lg-cancel" type="button" hidden>Cancel amendment</button></div>
+    </div>
+    <div class="box"><h3>THIS SHIFT</h3><p class="alt-tag"><b>Codes are suggestions; provider verifies before billing.</b></p><div class="logwrap"><table id="log-table" class="logtab"></table></div>
+      <div class="btns"><button id="lg-export" class="primary" type="button">Export PDF</button><button id="lg-purge" type="button" class="danger">Purge after export</button><button id="lg-new" type="button">Start new shift</button></div>
+      <p class="alt-tag">Entries are append-only; use Amend to correct in place (timestamped audit trail kept) or Void to strike through. Shifts roll over automatically at 08:00. Closed shifts are purged automatically per your retention setting (<span id="ret-label"></span>). All data stays on this device.</p>
+    </div>
+    <div class="box"><h3>PAST SHIFTS</h3><div id="past"></div></div>
+    <div class="box" id="past-view" hidden><h3 id="pv-title"></h3><p class="alt-tag">Read-only.</p><div class="logwrap"><table id="pv-table" class="logtab"></table></div>
+      <div class="btns"><button id="pv-export" class="primary" type="button">Export PDF</button><button id="pv-purge" type="button" class="danger">Purge after export</button><button id="pv-close" type="button">Close</button></div></div>
+  </div>
+</section>
 </main>
 
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<div id="sw-update" class="sw-update" hidden>New version available. <button id="sw-reload" type="button" class="small">Reload</button></div>
 <div id="viewer" class="viewer" hidden>
   <div class="viewer-bar"><span id="viewer-title"></span>
     <button id="zoom-out" type="button" aria-label="Zoom out">−</button><button id="zoom-in" type="button" aria-label="Zoom in">+</button>
@@ -73,6 +153,8 @@
 <script src="codes/code_tables.js"></script>
 <script src="codes/validation.js"></script>
 <script src="js/engine.js"></script>
+<script src="js/routine_codes.js"></script>
+<script src="js/shiftlog.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
