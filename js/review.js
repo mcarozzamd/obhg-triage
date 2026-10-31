@@ -57,7 +57,17 @@ self.REVIEW = {
     'FD-ANT-02': 'Oct 2026',
     'FD-LND-05': 'Oct 2026',
     'FD-LND-02': 'Oct 2026',
-    'FD-ANT-08': 'Oct 2026'
+    'FD-ANT-08': 'Oct 2026',
+    'SYS-04': 'Oct 2026',
+    'SYS-05': 'Oct 2026',
+    'ANT-11': 'Oct 2026',
+    'LND-09': 'Oct 2026',
+    'LND-10': 'Oct 2026',
+    'FD-SYS-04': 'Oct 2026',
+    'FD-SYS-05': 'Oct 2026',
+    'FD-ANT-11': 'Oct 2026',
+    'FD-LND-09': 'Oct 2026',
+    'FD-LND-10': 'Oct 2026'
   }
 };
 (function () {
