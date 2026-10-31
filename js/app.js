@@ -37,6 +37,10 @@
   function cardHTML(card, open) {
     return '<div class="cardtext">' + card.html + '</div>';
   }
+  function reviewedHTML(item) {
+    const d = item.lastReviewed || (self.REVIEW && self.REVIEW.DEFAULT);
+    return d ? '<div class="reviewed">Last reviewed: ' + esc(d) + '</div>' : '';
+  }
   function itemHTML(item, companionCard) {
     let h = '<div class="th"><div class="id">' + esc(label(item)) + (item.kind === 'diagram' ? ' · FLOW DIAGRAM' : ' · CARD') +
       (item.superseded ? '<span class="badge warn">SUPERSEDED</span>' : '') +
@@ -46,11 +50,12 @@
       h += '<img class="diag" src="' + esc(item.img) + '" alt="' + esc(item.title) + '" data-zoom="' + esc(item.id) + '">';
       h += verifyBox(item.flags);
       if (item.html) h += '<details class="companion" open><summary>Tree logic (text)</summary><div class="cardtext">' + item.html + '</div></details>';
-      if (companionCard) h += '<details class="companion"' + (companionCard.flags.length ? '' : '') + '><summary>Companion card: ' + esc(label(companionCard)) + ' · ' + esc(companionCard.title) + '</summary>' + verifyBox(companionCard.flags) + cardHTML(companionCard) + '</details>';
+      if (companionCard) h += '<details class="companion"' + (companionCard.flags.length ? '' : '') + '><summary>Companion card: ' + esc(label(companionCard)) + ' · ' + esc(companionCard.title) + '</summary>' + verifyBox(companionCard.flags) + cardHTML(companionCard) + reviewedHTML(companionCard) + '</details>';
     } else {
       h += verifyBox(item.flags) + cardHTML(item);
     }
     h += '<div class="hint">Source: ' + esc(item.source.split('/').slice(-2).join('/')) + '</div>';
+    h += reviewedHTML(item);
     return h;
   }
   function factsHTML(f) {

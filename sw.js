@@ -1,12 +1,13 @@
 // OBHG CLINICAL TRIAGE service worker. Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v16-2026-10-27';
+const CACHE = PREFIX + 'v17-2026-10-31';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './css/app.css',
   './js/content.js',
+  './js/review.js',
   './js/engine.js',
   './js/routine_codes.js',
   './js/shiftlog.js',
