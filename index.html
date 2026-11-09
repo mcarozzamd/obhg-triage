@@ -82,7 +82,7 @@
       <div class="lgrid">
         <label>Initials<input id="lg-initials" maxlength="3" pattern="[A-Za-z]{2,3}" autocomplete="off" autocapitalize="characters"></label>
         <label>Age<input id="lg-age" inputmode="numeric" maxlength="3" autocomplete="off"></label>
-        <label>G/P<input id="lg-gp" maxlength="16" placeholder="G2P1" autocomplete="off"></label>
+        <label>G/P<input id="lg-gp" maxlength="40" placeholder="2/1 or G2P1" autocomplete="off"></label>
         <label>GA<input id="lg-ga" maxlength="7" placeholder="37w2d" autocomplete="off"></label>
         <label class="wide">HPI (used for DDx, codes, triage; cleared on save, never stored)<textarea id="lg-hpi2" rows="3" maxlength="600" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="e.g. leaking fluid since this morning, positive fern, afebrile"></textarea></label>
       </div>
@@ -113,7 +113,7 @@
         <textarea id="lg-ap" rows="14" readonly spellcheck="false" autocomplete="off"></textarea>
         <div class="btns"><button id="lg-ap-insert" data-act="ap-insert" class="primary" type="button">Insert A&amp;P + codes into entry ↓</button><button id="lg-ap-copy" data-act="ap-copy" type="button">Copy A&amp;P to clipboard</button></div>
         <div id="lg-ap-fallback" hidden><p class="privacy-warn">Copy not available here. Press and hold the text below, then Select All and Copy.</p><textarea id="lg-ap-sel" rows="8" spellcheck="false"></textarea></div>
-        <p class="alt-tag">Insert fills Diagnosis / ICD / CPT / Disposition (saved) and places the A&amp;P text in the entry's A&amp;P box (on screen only, cleared on save, never stored).</p>
+        <p class="alt-tag">Insert fills Diagnosis / ICD / CPT / Disposition (saved) and places the A&amp;P text in the entry's A&amp;P box (on screen only, cleared on save, never stored). A short Plan excerpt is saved in the log; review it before saving. Ellipses mark omitted text.</p>
       </div>
       <div class="lgrid">
         <label class="wide">Diagnosis<input id="lg-diagnosis" maxlength="120" autocomplete="off"></label>
@@ -123,6 +123,7 @@
         <label>Clinic<input id="lg-clinic" maxlength="40" autocomplete="off"></label>
         <label class="wide">Code search (ICD/CPT text or code prefix)<input id="lg-codeq" type="search" maxlength="40" autocomplete="off" spellcheck="false" placeholder="e.g. false labor, O80, 5940"></label>
         <div id="lg-coderes" class="wide coderes"></div>
+        <label class="wide">Plan (short log summary; verify before saving)<textarea id="lg-plan" rows="2" maxlength="240" autocomplete="off" spellcheck="false" placeholder="Brief actions / follow-up only; no identifiers"></textarea></label>
         <label class="wide">A&amp;P for this entry (copy to your note; not saved)<textarea id="lg-apentry" rows="4" autocomplete="off" spellcheck="false"></textarea></label>
       </div>
       <p class="privacy-line">Initials only (2-3 letters). No names, MRNs, DOBs, or other identifiers.</p>

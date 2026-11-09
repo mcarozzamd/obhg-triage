@@ -6,8 +6,49 @@
   const K_PROFILE = PREFIX + 'profile', K_LOGS = PREFIX + 'logs';
   const RETAIN_DEFAULT = 30;
   const DISPOSITIONS = ['Discharged home', 'Admitted L&D', 'Admitted antepartum', 'Admitted GYN', 'Admitted postpartum', 'Observation', 'To OR', 'Transferred', 'Other'];
-  const AMEND_FIELDS = ['initials', 'age', 'ga', 'gp', 'diagnosis', 'icd', 'cpt', 'disposition', 'clinic', 'card'];
-  const COLS = ['Initials', 'Age', 'GA', 'G/P', 'Diagnosis', 'ICD', 'CPT', 'Disposition', 'Clinic'];
+  const AMEND_FIELDS = ['initials', 'age', 'ga', 'gp', 'diagnosis', 'icd', 'cpt', 'disposition', 'clinic', 'plan', 'card'];
+  const COLS = ['Initials', 'G/P', 'GA', 'Clinic', 'Age', 'Diagnosis', 'ICD', 'CPT', 'Disposition', 'Time (CT)', 'Plan'];
+  const LOG_FIELDS = ['initials', 'gp', 'ga', 'clinic', 'age', 'diagnosis', 'icd', 'cpt', 'disposition', 'ts', 'plan'];
+  const PLAN_LIMIT = 240;
+  // Normalize presentation only: legacy records keep their original values/audit trails.
+  function normalizeGP(value) {
+    const t = String(value == null ? '' : value).trim();
+    let m = t.match(/^(\d{1,2})\s*\/\s*(\d{1,2})(?:\s*\([^)]*\))?$/);
+    if (!m) m = t.match(/\b(?:G|gravida)\s*(\d{1,2})\s*(?:P|para)\s*(\d{1,2})(?!\d)/i);
+    if (!m && !/(?:P|para)\s*\d/i.test(t)) m = t.match(/\b(?:G|gravida)\s*(\d{1,2})\b/i);
+    return m ? Number(m[1]) + '/' + Number(m[2] || 0) : '';
+  }
+  function logTime(value) {
+    if (!value || !Number.isFinite(new Date(value).getTime())) return '';
+    return new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(value));
+  }
+  // Extract (never invent) up to three PLAN actions. Omitted text is marked '...'.
+  // Full A&P remains in its existing on-screen boxes; it is never persisted here.
+  function summarizePlan(value) {
+    const text = String(value || '').trim(); if (!text) return '';
+    const lines = text.split(/\r?\n/); const start = lines.findIndex(l => /^PLAN(?:\s*\(|\s*:|\s*$)/i.test(l.trim()));
+    if (start < 0 && /^ASSESSMENT AND PLAN\b/i.test(text)) return '';
+    let actions;
+    if (start >= 0) {
+      const body = [];
+      for (const line of lines.slice(start + 1)) {
+        if (/^(?:CODES\b|Generated on-device\b|Card has\b|Disposition:)/i.test(line.trim())) break;
+        body.push(line.trim());
+      }
+      const bullets = body.filter(l => /^[-•]\s+/.test(l));
+      actions = bullets.length ? bullets : body.filter(l => /^Bottom line:/i.test(l));
+    } else actions = lines.map(l => l.trim()).filter(Boolean);
+    actions = actions.map(l => l.replace(/^[-•]\s+|^Bottom line:\s*/gi, '').replace(/\s+/g, ' ').trim())
+      .filter(l => l && !/^(?:Codes?:|Codes are suggestions|Generated on-device|Disposition:)/i.test(l));
+    const omitted = actions.length > 3; let out = actions.slice(0, 3).join('; ');
+    if (out.length > PLAN_LIMIT - (omitted ? 3 : 0)) {
+      out = out.slice(0, PLAN_LIMIT - 3).replace(/\s+\S*$/, '').replace(/[;,.\s]+$/, '') + '...';
+    } else if (omitted) out = out.replace(/[;.\s]+$/, '') + '...';
+    return out;
+  }
+  function entryCells(entry) {
+    return LOG_FIELDS.map(f => f === 'gp' ? normalizeGP(entry.gp) : f === 'ts' ? logTime(entry.ts) : f === 'plan' ? summarizePlan(entry.plan) : (entry[f] == null ? '' : String(entry[f])));
+  }
 
   const pad = n => String(n).padStart(2, '0');
   const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
@@ -27,12 +68,13 @@
     if (!/^[A-Za-z]{2,3}$/.test(e.initials || '')) errs.push('Initials must be 2-3 letters only.');
     if (e.age !== '' && e.age != null && !/^\d{1,3}$/.test(String(e.age))) errs.push('Age must be a number.');
     if (e.ga && !/^\d{1,2}w(\d)?d?$|^\d{1,2}w\dd$|^\d{1,2}$/i.test(e.ga.replace(/\s/g, ''))) errs.push('GA format e.g. 37w2d.');
-    if (e.gp && !/^G\d{1,2}\s*P\d{1,2}(\s*\(?[\d\-]+\)?)?$/i.test(e.gp)) errs.push('G/P format e.g. G2P1.');
+    if (e.gp && !normalizeGP(e.gp)) errs.push('G/P format e.g. 2/1, G2P1, G1, or G0.');
     if (!e.diagnosis) errs.push('Diagnosis required.');
     if (!e.disposition) errs.push('Disposition required.');
     for (const f of ['diagnosis', 'icd', 'cpt', 'clinic']) if ((e[f] || '').length > 120) errs.push(f + ' too long.');
+    if ((e.plan || '').length > PLAN_LIMIT) errs.push('Plan must be a short summary (240 characters or less).');
     // Block obvious identifiers in any text field
-    const joined = [e.diagnosis, e.icd, e.cpt, e.clinic].join(' ');
+    const joined = [e.diagnosis, e.icd, e.cpt, e.clinic, e.plan].join(' ');
     if (/\b\d{6,}\b/.test(joined)) errs.push('Remove long numbers (possible MRN).');
     if (/\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(joined)) errs.push('Remove dates (possible DOB).');
     return errs;
@@ -79,7 +121,7 @@
         const errs = validateEntry(entry); if (errs.length) throw new Error(errs.join(' '));
         const id = api.current(now).id; const o = load(); const sh = o[id];
         const rec = { n: sh.entries.length + 1, ts: new Date(now || Date.now()).toISOString(), voided: false };
-        for (const c of ['initials', 'age', 'ga', 'gp', 'diagnosis', 'icd', 'cpt', 'disposition', 'clinic', 'card']) rec[c] = String(entry[c] == null ? '' : entry[c]).trim();
+        for (const c of AMEND_FIELDS) rec[c] = String(entry[c] == null ? '' : entry[c]).trim();
         rec.initials = rec.initials.toUpperCase(); sh.entries.push(rec); save(o); return rec;
       },
       // Amend in place (not voided rows). Keeps an audit trail: amendedTs + amendments[{ts, changes:{field:[old,new]}}].
@@ -124,8 +166,11 @@
   }
   function buildPDF(profile, shift, now) {
     const entries = shift.entries;
-    const W = 792, H = 612, M = 36; const widths = [50, 34, 46, 50, 190, 100, 80, 100, 70]; // sum 720
-     const pages = []; let ops = [], y;
+    const W = 792, H = 612, M = 36;
+    // Reference shift-log builder proportions, scaled to the printable 720 pt width.
+    const proportions = [40, 28, 36, 56, 28, 100, 76, 76, 72, 32, 176];
+    const widths = proportions.map(w => w * (W - 2 * M) / proportions.reduce((a, b) => a + b, 0));
+    const pages = []; let ops = [], y;
     const T = (x, yy, s, size, bold) => ops.push('BT /' + (bold ? 'F2' : 'F1') + ' ' + size + ' Tf ' + x + ' ' + yy + ' Td ' + pdfStr(s) + ' Tj ET');
     const L = (x1, y1, x2, y2, w) => ops.push((w || 0.5) + ' w ' + x1 + ' ' + y1 + ' m ' + x2 + ' ' + y2 + ' l S');
     const footer = () => {
@@ -138,17 +183,19 @@
       T(M, y, 'OBHG SHIFT PATIENT LOG', 16, true); y -= 18;
       T(M, y, 'Provider: ' + profile.name + (profile.title ? ', ' + profile.title : '') + '    Site: ' + profile.site, 10, false); y -= 13;
       T(M, y, 'Shift: ' + shiftLabel(shift), 10, false); y -= 16;
-      let x = M; COLS.forEach((c, i) => { T(x + 2, y, c, 9, true); x += widths[i]; }); y -= 4; L(M, y, W - M, y, 1); y -= 11;
+      let x = M; COLS.forEach((c, i) => { wrap(c, widths[i] - 4, 7).forEach((ln, j) => T(x + 2, y - j * 9, ln, 7, true)); x += widths[i]; }); y -= 14; L(M, y, W - M, y, 1); y -= 11;
     };
     const newPage = () => { if (ops.length) { footer(); pages.push(ops); } ops = []; header(); };
     newPage();
     const live = entries.filter(e => !e.voided).length;
     if (!entries.length) { T(M, y, 'No entries this shift.', 10, false); y -= 14; }
     for (const e of entries) {
-      const cells = [e.initials, e.age, e.ga, e.gp, e.diagnosis + (e.voided ? ' [VOIDED]' : '') + (e.amendedTs ? ' [AMENDED ' + fmt(e.amendedTs) + ']' : ''), e.icd, e.cpt, e.disposition, e.clinic].map((v, i) => wrap(v, widths[i] - 4, 8));
+      const values = entryCells(e);
+      values[5] += (e.voided ? ' [VOIDED]' : '') + (e.amendedTs ? ' [AMENDED ' + fmt(e.amendedTs) + ']' : '');
+      const cells = values.map((v, i) => wrap(v, widths[i] - 4, 7));
       const lines = Math.max(...cells.map(c => c.length)); const h = lines * 10 + 4;
       if (y - h < 50) newPage();
-      let x = M; cells.forEach((c, i) => { c.forEach((ln, j) => T(x + 2, y - j * 10, ln, 8, false)); x += widths[i]; });
+      let x = M; cells.forEach((c, i) => { c.forEach((ln, j) => T(x + 2, y - j * 10, ln, 7, false)); x += widths[i]; });
       if (e.voided) for (let j = 0; j < lines; j++) L(M, y - j * 10 + 3, W - M, y - j * 10 + 3, 0.7);
       y -= h; L(M, y + 8, W - M, y + 8, 0.2);
     }
@@ -180,7 +227,7 @@
     return {
       age: f.age != null ? String(f.age) : '',
       ga: f.gaWeeks != null ? f.gaWeeks + 'w' + (f.gaDays || 0) + 'd' : '',
-      gp: f.G != null ? 'G' + f.G + 'P' + f.P : '',
+      gp: f.G != null ? 'G' + f.G + 'P' + (f.P == null ? 0 : f.P) : '',
       diagnosis: item ? item.title : '',
       card: top ? top.id : '',
       icd: cd ? cd.icd.filter(c => !c.alt && c.verified).map(c => c.code).join(', ') : '',
@@ -207,7 +254,7 @@
     let m = t.match(/\binitials?\s*:?\s*([A-Za-z]{2,3})\b/i) || t.match(/^\s*(?:pt\.?\s+)?([A-Z]{2,3})\b(?=[\s,:;-]+(?:\d|is\b|a\b|an\b))/);
     if (m && !NOT_INITIALS.has(m[1].toUpperCase())) out.initials = m[1].toUpperCase();
     if (f.age != null) out.age = String(f.age);
-    if (f.G != null) out.gp = 'G' + f.G + 'P' + f.P + (f.TPAL ? ' (' + f.TPAL + ')' : '');
+    if (f.G != null) out.gp = 'G' + f.G + 'P' + (f.P == null ? 0 : f.P) + (f.TPAL ? ' (' + f.TPAL + ')' : '');
     if (f.gaWeeks != null) out.ga = f.gaWeeks + 'w' + (f.gaDays || 0) + 'd';
     for (const [re, d] of DISPO_RULES) if (re.test(t)) { out.disposition = d; break; }
     // HPI = summary with the demographic prefix removed (stays on screen only; never stored)
@@ -224,7 +271,7 @@
   function composeText(fl) {
     fl = fl || {}; const parts = [];
     if (fl.age) parts.push(fl.age + ' yo');
-    if (fl.gp) parts.push(fl.gp.replace(/\s*\(.*\)/, ''));
+    if (fl.gp) { const gp = normalizeGP(fl.gp); parts.push(gp ? gp.replace(/^(\d+)\/(\d+)$/, 'G$1P$2') : fl.gp.replace(/\s*\(.*\)/, '')); }
     if (fl.ga) { const g = String(fl.ga).replace(/\s/g, ''); parts.push('at ' + (/^\d{1,2}$/.test(g) ? g + ' weeks' : g)); }
     if (fl.hpi) parts.push('with ' + fl.hpi);
     if (fl.diagnosis) parts.push(fl.diagnosis);
@@ -264,7 +311,7 @@
     if (!top) { L.push('No confident card match. Add GA/postpartum status, vitals, or key symptom.'); return { text: L.join('\n'), sources: [] }; }
     const card = top.card || top.diagram; const w = f.gaWeeks != null ? f.ga : null;
     const status = f.postpartum ? 'postpartum' + (f.ppText ? ' (' + f.ppText + ')' : '') : f.labor ? 'in labor' : f.gaWeeks != null ? 'at ' + f.gaWeeks + 'w' + (f.gaDays || 0) + 'd' : '';
-    const demo = [fl.age || (f.age != null ? f.age : '') ? (fl.age || f.age) + ' yo' : '', fl.gp || (f.G != null ? 'G' + f.G + 'P' + f.P : ''), status].filter(Boolean).join(' ');
+    const demo = [fl.age || (f.age != null ? f.age : '') ? (fl.age || f.age) + ' yo' : '', fl.gp || (f.G != null ? 'G' + f.G + 'P' + (f.P == null ? 0 : f.P) : ''), status].filter(Boolean).join(' ');
     const vit = [];
     if (f.bpReadings) vit.push('BP ' + f.bpReadings.join(', ') + (f.severeBP ? ' (severe range)' : f.htn ? ' (>=140/90)' : ''));
     if (f.hr != null) vit.push('HR ' + f.hr); if (f.tempC != null) vit.push('T ' + f.tempC + ' C'); if (f.rr != null) vit.push('RR ' + f.rr);
@@ -372,6 +419,6 @@
   }
   const addCode = (field, code) => { const list = String(field || '').split(/\s*,\s*/).filter(Boolean); if (!list.includes(code)) list.push(code); return list.join(', '); };
 
-  const api = { icdRules, serviceFor, gaWeeks, z3aFor, routineFill, routineMatch, codeIndex, codeSearch, addCode, parseSummary, composeText, assessPlan, cardBlocks, gaApplies, AMEND_FIELDS, PREFIX, K_PROFILE, K_LOGS, RETAIN_DEFAULT, RETENTION_OPTS, shiftLabel, DISPOSITIONS, COLS, shiftStart, shiftKey, shiftRange, validateEntry, Store, buildPDF, suggest, mem };
+  const api = { LOG_FIELDS, PLAN_LIMIT, normalizeGP, logTime, summarizePlan, entryCells, icdRules, serviceFor, gaWeeks, z3aFor, routineFill, routineMatch, codeIndex, codeSearch, addCode, parseSummary, composeText, assessPlan, cardBlocks, gaApplies, AMEND_FIELDS, PREFIX, K_PROFILE, K_LOGS, RETAIN_DEFAULT, RETENTION_OPTS, shiftLabel, DISPOSITIONS, COLS, shiftStart, shiftKey, shiftRange, validateEntry, Store, buildPDF, suggest, mem };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.ShiftLog = api;
 })(typeof self !== 'undefined' ? self : this);

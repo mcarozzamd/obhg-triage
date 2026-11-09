@@ -188,13 +188,15 @@
   const SL = self.ShiftLog, store = SL.Store();
   try { store.autoPurge(); } catch (_) {}
   $('lg-disposition').innerHTML = '<option value="">Select…</option>' + SL.DISPOSITIONS.map(d => '<option>' + esc(d) + '</option>').join('');
-  const F = ['initials', 'age', 'ga', 'gp', 'diagnosis', 'icd', 'cpt', 'disposition', 'clinic'];
+  const F = ['initials', 'age', 'ga', 'gp', 'diagnosis', 'icd', 'cpt', 'disposition', 'clinic', 'plan'];
   let lgCard = '', viewing = null;
   const amendTitle = r => (r.amendments || []).map(a => new Date(a.ts).toLocaleString() + ': ' + Object.keys(a.changes).map(k => k + ' "' + a.changes[k][0] + '" -> "' + a.changes[k][1] + '"').join(', ')).join(' | ');
   const retLabel = d => d ? d + ' days' : 'keep until I delete';
-  const tableHTML = (sh, editable) => '<tr><th>#</th>' + SL.COLS.map(c => '<th>' + esc(c) + '</th>').join('') + (editable ? '<th></th>' : '') + '</tr>' +
-    (sh.entries.map(r => '<tr class="' + (r.voided ? 'void' : r.amendedTs ? 'amended' : '') + '"><td>' + r.n + (r.amendedTs ? '<span class="amtag" title="' + esc(amendTitle(r)) + '">amended ' + esc(new Date(r.amendedTs).toLocaleString()) + '</span>' : '') + '</td>' + F.map(f => '<td>' + esc(r[f]) + (f === 'cpt' && (r.icd || r.cpt) ? '<span class="amtag">suggested; provider verifies before billing</span>' : '') + '</td>').join('') +
-      (editable ? '<td>' + (r.voided ? '<span class="alt-tag">voided</span>' : '<button type="button" class="small" data-amend="' + r.n + '">Amend</button> <button type="button" class="small" data-void="' + r.n + '">Void</button>') + '</td>' : '') + '</tr>').join('') || '<tr><td colspan="11" class="alt-tag">No entries.</td></tr>');
+  const tableHTML = (sh, editable) => '<tr>' + SL.COLS.map(c => '<th>' + esc(c) + '</th>').join('') + (editable ? '<th></th>' : '') + '</tr>' +
+    (sh.entries.length ? sh.entries.map(r => '<tr class="' + (r.voided ? 'void' : r.amendedTs ? 'amended' : '') + '">' + SL.entryCells(r).map((v, i) => '<td>' + esc(v) +
+      (i === 0 ? '<span class="amtag">#' + r.n + '</span>' + (r.amendedTs ? '<span class="amtag" title="' + esc(amendTitle(r)) + '">amended ' + esc(new Date(r.amendedTs).toLocaleString()) + '</span>' : '') : '') +
+      (i === 7 && (r.icd || r.cpt) ? '<span class="amtag">suggested; provider verifies before billing</span>' : '') + '</td>').join('') +
+      (editable ? '<td>' + (r.voided ? '<span class="alt-tag">voided</span>' : '<button type="button" class="small" data-amend="' + r.n + '">Amend</button> <button type="button" class="small" data-void="' + r.n + '">Void</button>') + '</td>' : '') + '</tr>').join('') : '<tr><td colspan="' + (SL.COLS.length + (editable ? 1 : 0)) + '" class="alt-tag">No entries.</td></tr>');
   function renderLog() {
     store.autoPurge();
     const pf = store.getProfile();
@@ -312,11 +314,12 @@
   ['lg-initials', 'lg-age', 'lg-gp', 'lg-ga', 'lg-hpi2'].forEach(id => $(id).addEventListener('input', () => schedule(false)));
   $('lg-suggest').onclick = () => { clearTimeout(deb); runTriage(true); $('lg-hpi').value = ''; toast('Triage refreshed'); };
   function insertAP() {
-    if (lastR && !lastR.top && lgCard.startsWith('RT-')) { applyRoutine(lgCard.slice(3), true); $('lg-apentry').value = $('lg-ap').value; flash(['lg-apentry']); toast('Inserted'); return; }
+    if (lastR && !lastR.top && lgCard.startsWith('RT-')) { applyRoutine(lgCard.slice(3), true); $('lg-apentry').value = $('lg-ap').value; $('lg-plan').value = SL.summarizePlan($('lg-apentry').value); flash(['lg-apentry', 'lg-plan']); toast('Inserted'); return; }
     if (!lastR || !lastR.top) { toast('Nothing to insert yet'); return; } const sg = SL.suggest(lastR);
     for (const k of ['diagnosis', 'icd', 'cpt']) if (sg[k]) { $('lg-' + k).value = sg[k]; auto.add('lg-' + k); }
     lgCard = sg.card; $('lg-apentry').value = SL.assessPlan(lastR, fieldsNow()).text;
-    flash(['lg-diagnosis', 'lg-icd', 'lg-cpt', 'lg-apentry']); $('lg-diagnosis').scrollIntoView({ behavior: 'smooth', block: 'center' }); toast('Inserted');
+    $('lg-plan').value = SL.summarizePlan($('lg-apentry').value);
+    flash(['lg-diagnosis', 'lg-icd', 'lg-cpt', 'lg-apentry', 'lg-plan']); $('lg-diagnosis').scrollIntoView({ behavior: 'smooth', block: 'center' }); toast('Inserted');
   }
   function copyText(t) {
     const fallback = () => { // iOS-safe: hidden textarea + execCommand inside the same user gesture
@@ -340,7 +343,8 @@
   $('lg-cancel').onclick = clearForm;
   $('lg-add').onclick = () => {
     const e = {}; F.forEach(f => { e[f] = $('lg-' + f).value.trim(); }); e.card = lgCard;
-    const errs = SL.validateEntry(e).concat(E.privacyCheck([e.diagnosis, e.clinic].join(' ')));
+    e.plan = SL.summarizePlan(e.plan || $('lg-apentry').value);
+    const errs = SL.validateEntry(e).concat(E.privacyCheck([e.diagnosis, e.clinic, e.plan].join(' ')));
     $('lg-err').hidden = !errs.length; $('lg-err').innerHTML = errs.map(esc).join('<br>');
     if (errs.length) return;
     try {
