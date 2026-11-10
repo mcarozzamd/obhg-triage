@@ -17,6 +17,7 @@
 <script data-goatcounter="https://obhgtriage.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
+<div class="testbanner">STAGED TEST · LOCAL ONLY · SYNTHETIC DATA ONLY</div>
 <header class="hdr">
   <div class="hdr-org">CHRISTUS ST. MICHAEL · OBHG · TEXARKANA</div>
   <h1>OBHG CLINICAL TRIAGE</h1>
@@ -55,7 +56,7 @@
       <div id="coding"></div>
     </section>
   </div>
-  <p class="foot"><b>Decision support only · not unit policy · not the medical record · enter no PHI.</b><br>All matching runs on this device. Nothing you type is sent, saved, or logged. Works offline after first load.</p>
+  <p class="foot"><b>Decision support only · not unit policy · not the medical record · enter no PHI.</b><br>All matching runs on this device. Triage text is not sent, saved, or logged. Shift log entries stay on-device; optional lookup links send only your reviewed clinical query. Works offline after first load.</p>
 </section>
 
 <section id="view-browse" hidden>
@@ -132,8 +133,20 @@
       <div class="btns"><button id="lg-add" class="primary" type="button">Add to log</button><button id="lg-cancel" type="button" hidden>Cancel amendment</button></div>
     </div>
     <div class="box"><h3>THIS SHIFT</h3><p class="alt-tag"><b>Codes are suggestions; provider verifies before billing.</b></p><div class="logwrap"><table id="log-table" class="logtab"></table></div>
-      <div class="btns"><button id="lg-export" class="primary" type="button">Export PDF</button><button id="lg-purge" type="button" class="danger">Purge after export</button><button id="lg-new" type="button">Start new shift</button></div>
-      <p class="alt-tag">Entries are append-only; use Amend to correct in place (timestamped audit trail kept) or Void to strike through. Shifts roll over automatically at 08:00. Closed shifts are purged automatically per your retention setting (<span id="ret-label"></span>). All data stays on this device.</p>
+      <div class="btns"><button id="lg-closeout" type="button">Shift closeout</button><button id="lg-carry" type="button">Bring carry-overs into this shift</button><button id="lg-export" class="primary" type="button">Export PDF</button><button id="lg-purge" type="button" class="danger">Purge after export</button><button id="lg-new" type="button">Start new shift</button></div>
+      <section id="closeout-panel" class="box" aria-label="Shift closeout review" hidden>
+        <h3>SHIFT CLOSEOUT REVIEW</h3>
+        <p id="closeout-summary"></p><p class="alt-tag">Open = anything not discharged home or transferred. Inpatients are preselected; review each selection. This is a handoff aid, not a medical disposition order. Save any entry or update drafts first; unsaved drafts are not included.</p>
+        <div id="closeout-list"></div>
+        <div class="btns"><button id="closeout-finalize" class="primary" type="button">Finalize + export PDF</button><button id="closeout-cancel" type="button">Cancel</button></div>
+      </section>
+      <section id="carry-panel" class="box" aria-label="Carry-over review" hidden>
+        <h3>CARRY OVER TO THIS SHIFT</h3><p class="alt-tag">Review current status before import. Original notes are retained; each source row can be imported only once. Unimported rows expire with the source shift's retention setting.</p>
+        <div id="carry-list"></div><div class="btns"><button id="carry-import" class="primary" type="button">Import selected</button><button id="carry-cancel" type="button">Cancel</button></div>
+      </section>
+      <p id="closeout-status" role="status" hidden></p>
+      <p class="alt-tag">Entries are append-only; use Amend to correct in place (timestamped audit trail kept) or Void to strike through. Shifts roll over automatically at 08:00. Closed shifts are purged automatically per your retention setting (<span id="ret-label"></span>). Log data stays on this device except PDF sharing and explicitly reviewed external lookups.</p>
+      <div id="row-actions" aria-label="Per-row updates and lookups"></div>
     </div>
     <div class="box"><h3>PAST SHIFTS</h3><div id="past"></div></div>
     <div class="box" id="past-view" hidden><h3 id="pv-title"></h3><p class="alt-tag">Read-only.</p><div class="logwrap"><table id="pv-table" class="logtab"></table></div>

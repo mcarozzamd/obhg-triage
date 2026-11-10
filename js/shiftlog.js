@@ -1,5 +1,5 @@
 /* OBHG Shift Patient Log — pure logic: shift window, validation, storage, purge, PDF.
- * All data stays on the device (localStorage, keys prefixed 'shiftlog_'). No network calls. */
+ * Storage is device-local (localStorage, keys prefixed 'shiftlog_'). External lookups are explicit, reviewed actions; no automatic transmission. */
 (function (root) {
   'use strict';
   const PREFIX = 'shiftlog_';
@@ -50,6 +50,47 @@
     return LOG_FIELDS.map(f => f === 'gp' ? normalizeGP(entry.gp) : f === 'ts' ? logTime(entry.ts) : f === 'plan' ? summarizePlan(entry.plan) : (entry[f] == null ? '' : String(entry[f])));
   }
 
+  const UPDATE_LIMIT = 2000;
+  // Updates are append-only and separate from the 240-character Plan summary.
+  function updateText(u) { return logTime(u.ts) + ' CT update: ' + u.text; }
+  function validateUpdate(text) {
+    const t = String(text || '').trim();
+    if (!t) return ['Enter an update.'];
+    if (t.length > UPDATE_LIMIT) return ['Update must be 2000 characters or less.'];
+    return privacyIssues(t);
+  }
+  // Conservative guard, not an anonymizer. The user must review clinical free text.
+  function privacyIssues(text) {
+    const t = String(text || '');
+    return /\b\d{5,}\b|\b\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}\b|\b\d{1,2}:\d{2}\b|\b(?:MRN|DOB|SSN|patient\s*(?:name|id)|name\s*:|address\s*:|phone\s*:|email\s*:)|\b(?:medical record|account (?:no|number)|name is|named)\b|\b[A-Z][a-z]{2,},\s*[A-Z][a-z]{2,}\b|\b\d{1,2}\s*(?:am|pm)\b|\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}\b|[\w.+-]+@[\w.-]+\.\w+|\b\d{3}[-. )]+\d{3}[-. ]+\d{4}\b/i.test(t)
+      ? ['Remove identifiers, dates, times, contact details, and long numbers.'] : [];
+  }
+  // Deliberately whitelist only diagnosis, normalized GA, and the ephemeral question.
+  // Never serialize a row, Plan, updates, or demographics to an external service.
+  function lookupQuery(entry, question) {
+    const diagnosis = String(entry.diagnosis || '').trim();
+    const q = String(question || '').trim();
+    if (!diagnosis) throw new Error('Diagnosis is required for lookup.');
+    if (diagnosis.length > 120 || q.length > 500) throw new Error('Keep the clinical question under 500 characters.');
+    const ga = String(entry.ga || '').replace(/\s/g, '');
+    if (ga && (!/^(?:[0-3]?\d|4[0-5])(?:w(?:[0-6]d?)?)?$/i.test(ga))) throw new Error('Use only gestational age, e.g. 32w1d.');
+    const text = [diagnosis, q].join(' ');
+    if (privacyIssues(text).length || /\b(?:G\s*\d+\s*P\s*\d+|\d+\s*\/\s*\d+|\d{1,3}\s*(?:yo|y\/o|years?[- ]old)|(?:age|initials|born|patient|pt|Mrs|Ms|Mr|Dr)\b|(?:19|20)\d{2})\b/i.test(text))
+      throw new Error('Remove all identifiers and demographics from diagnosis/question; clinical terms only.');
+    const initials = String(entry.initials || '').trim();
+    if (initials && /^[A-Za-z]{2,3}$/.test(initials) && new RegExp('\\b' + initials + '\\b', 'i').test(text))
+      throw new Error('Remove patient initials from diagnosis/question.');
+    // A bare age matching this row is also blocked (conservative: may flag a dose).
+    const age = String(entry.age || '').trim();
+    if (/^\d{1,3}$/.test(age) && new RegExp('\\b' + age + '\\b').test(text)) throw new Error('Remove the age from diagnosis/question.');
+    return 'Diagnosis: ' + diagnosis + (ga ? '; GA: ' + ga : '') + (q ? '; Clinical question: ' + q : '');
+  }
+  function closeoutSummary(shift) {
+    const active = shift.entries.filter(e => !e.voided);
+    const open = active.filter(e => !['Discharged home', 'Transferred'].includes(e.disposition));
+    return { active: active.length, open, inpatients: open.filter(e => /^Admitted\b/.test(e.disposition || '')) };
+  }
+
   const pad = n => String(n).padStart(2, '0');
   const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
   // Shift runs 08:00 -> 08:00 local time.
@@ -95,7 +136,7 @@
       return raw;
     };
     const save = o => ls.setItem(K_LOGS, JSON.stringify(o));
-    const mk = (o, t) => { const id = 's' + t.getTime() + (o['s' + t.getTime()] ? 'b' : ''); o[id] = { id, start: t.toISOString(), end: null, entries: [] }; return o[id]; };
+    const mk = (o, t) => { let id = 's' + t.getTime(); while (o[id]) id += 'b'; o[id] = { id, start: t.toISOString(), end: null, entries: [] }; return o[id]; };
     const api = {
       getProfile: () => read(K_PROFILE, null),
       setProfile: p => { const r = Number(p.retention); ls.setItem(K_PROFILE, JSON.stringify({ name: String(p.name || '').slice(0, 80), title: String(p.title || '').slice(0, 40), site: String(p.site || 'CHRISTUS St. Michael').slice(0, 80), retention: RETENTION_OPTS.includes(r) ? r : 30 })); },
@@ -136,6 +177,48 @@
         const ts = new Date(now || Date.now()).toISOString();
         for (const c of Object.keys(changes)) r[c] = next[c];
         r.amendedTs = ts; (r.amendments = r.amendments || []).push({ ts, changes }); save(o); return r;
+      },
+      appendUpdate(id, n, text, now) {
+        const t = String(text || '').trim(), errs = validateUpdate(t);
+        if (errs.length) throw new Error(errs.join(' '));
+        const o = load(), sh = o[id], r = ((sh || {}).entries || []).find(x => x.n === n);
+        if (!r || r.voided || sh.end) throw new Error('Updates require an active row in an open shift.');
+        const u = { ts: new Date(now || Date.now()).toISOString(), text: t };
+        (r.updates = r.updates || []).push(u); save(o); return u;
+      },
+      // Queue is stored inside the finalized shift, atomically with its closure.
+      // Retention/purge thus removes its unimported carry-overs too; no orphan copy.
+      finalize(id, carryNumbers, now) {
+        const o = load(), sh = o[id];
+        if (!sh || sh.end) throw new Error('This shift is already closed.');
+        const eligible = closeoutSummary(sh).open.map(e => e.n);
+        const selected = [...new Set(carryNumbers || [])];
+        if (selected.some(n => !eligible.includes(n))) throw new Error('Only open, non-voided rows can carry over.');
+        const t = new Date(now || Date.now());
+        if (t < new Date(sh.start)) throw new Error('Closeout cannot precede shift start.');
+        sh.end = t.toISOString(); sh.finalizedTs = sh.end;
+        sh.carryover = { selected, imported: {} }; mk(o, t); save(o); return sh;
+      },
+      pendingCarryovers() {
+        return Object.values(load()).filter(sh => sh.end && sh.carryover).flatMap(sh => sh.carryover.selected
+          .filter(n => !sh.carryover.imported[n])
+          .map(n => ({ key: sh.id + ':' + n, shiftId: sh.id, shiftStart: sh.start, entry: sh.entries.find(e => e.n === n && !e.voided) }))
+          .filter(x => x.entry));
+      },
+      importCarryovers(keys, targetId, now) {
+        const o = load(), target = o[targetId];
+        if (!target || target.end) throw new Error('Choose an open destination shift.');
+        let count = 0;
+        for (const key of new Set(keys || [])) {
+          const split = key.lastIndexOf(':'), id = key.slice(0, split), n = +key.slice(split + 1), sh = o[id];
+          if (!sh || !sh.end || !sh.carryover || !sh.carryover.selected.includes(n) || sh.carryover.imported[n]) continue;
+          const e = sh.entries.find(e => e.n === n && !e.voided); if (!e) continue;
+          const rec = { n: target.entries.length + 1, ts: new Date(now || Date.now()).toISOString(), voided: false,
+            carriedFrom: { shiftId: id, n, ts: e.ts }, updates: JSON.parse(JSON.stringify(e.updates || [])) };
+          for (const f of AMEND_FIELDS) rec[f] = e[f] || '';
+          target.entries.push(rec); sh.carryover.imported[n] = targetId; count++;
+        }
+        save(o); return count;
       },
       void(id, n, now) { // append-only: mark voided, never delete the row
         const o = load(); const r = ((o[id] || {}).entries || []).find(x => x.n === n); if (!r || r.voided) return false;
@@ -198,7 +281,16 @@
       let x = M; cells.forEach((c, i) => { c.forEach((ln, j) => T(x + 2, y - j * 10, ln, 7, false)); x += widths[i]; });
       if (e.voided) for (let j = 0; j < lines; j++) L(M, y - j * 10 + 3, W - M, y - j * 10 + 3, 0.7);
       y -= h; L(M, y + 8, W - M, y + 8, 0.2);
+      const notes = (e.carriedFrom ? ['Carried over from prior shift, entry #' + e.carriedFrom.n + '. Verify current status.'] : [])
+        .concat((e.updates || []).map(updateText));
+      for (const note of notes) for (const ln of wrap('Entry #' + e.n + ' - ' + note, W - 2 * M - 8, 8)) {
+        if (y - 14 < 50) newPage();
+        T(M + 4, y, ln, 8, false); y -= 11;
+      }
+      if (notes.length) { y -= 5; L(M, y + 8, W - M, y + 8, 0.2); }
+
     }
+    if (y - 18 < 50) newPage();
     T(M, y - 4, 'Entries: ' + live + ' active, ' + (entries.length - live) + ' voided, ' + entries.filter(e => e.amendedTs).length + ' amended.', 9, false);
     footer(); pages.push(ops);
     // assemble objects
@@ -419,6 +511,6 @@
   }
   const addCode = (field, code) => { const list = String(field || '').split(/\s*,\s*/).filter(Boolean); if (!list.includes(code)) list.push(code); return list.join(', '); };
 
-  const api = { LOG_FIELDS, PLAN_LIMIT, normalizeGP, logTime, summarizePlan, entryCells, icdRules, serviceFor, gaWeeks, z3aFor, routineFill, routineMatch, codeIndex, codeSearch, addCode, parseSummary, composeText, assessPlan, cardBlocks, gaApplies, AMEND_FIELDS, PREFIX, K_PROFILE, K_LOGS, RETAIN_DEFAULT, RETENTION_OPTS, shiftLabel, DISPOSITIONS, COLS, shiftStart, shiftKey, shiftRange, validateEntry, Store, buildPDF, suggest, mem };
+  const api = { UPDATE_LIMIT, updateText, validateUpdate, privacyIssues, lookupQuery, closeoutSummary, LOG_FIELDS, PLAN_LIMIT, normalizeGP, logTime, summarizePlan, entryCells, icdRules, serviceFor, gaWeeks, z3aFor, routineFill, routineMatch, codeIndex, codeSearch, addCode, parseSummary, composeText, assessPlan, cardBlocks, gaApplies, AMEND_FIELDS, PREFIX, K_PROFILE, K_LOGS, RETAIN_DEFAULT, RETENTION_OPTS, shiftLabel, DISPOSITIONS, COLS, shiftStart, shiftKey, shiftRange, validateEntry, Store, buildPDF, suggest, mem };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.ShiftLog = api;
 })(typeof self !== 'undefined' ? self : this);

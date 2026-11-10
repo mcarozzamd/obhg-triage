@@ -1,4 +1,4 @@
-/* OBHG Clinical Triage UI (with Shift Patient Log; log stored on device only, keys prefixed 'shiftlog_'). No network calls, no storage of the HPI, no analytics. */
+/* OBHG Clinical Triage UI (with Shift Patient Log; log stored on device only, keys prefixed 'shiftlog_'). No automatic transmission of clinical text; reviewed external lookups are opt-in. No storage of the HPI. */
 (function () {
   'use strict';
   const C = self.CONTENT, T = self.CODE_TABLES, V = self.CODE_VALIDATION, E = self.TriageEngine;
@@ -189,14 +189,120 @@
   try { store.autoPurge(); } catch (_) {}
   $('lg-disposition').innerHTML = '<option value="">Select…</option>' + SL.DISPOSITIONS.map(d => '<option>' + esc(d) + '</option>').join('');
   const F = ['initials', 'age', 'ga', 'gp', 'diagnosis', 'icd', 'cpt', 'disposition', 'clinic', 'plan'];
-  let lgCard = '', viewing = null;
+  let lgCard = '', viewing = null, closingId = null;
+  const rowDrafts = new Map(); // ephemeral only; lookup questions are never persisted
+  const rowKey = (id, n) => id + ':' + n;
   const amendTitle = r => (r.amendments || []).map(a => new Date(a.ts).toLocaleString() + ': ' + Object.keys(a.changes).map(k => k + ' "' + a.changes[k][0] + '" -> "' + a.changes[k][1] + '"').join(', ')).join(' | ');
   const retLabel = d => d ? d + ' days' : 'keep until I delete';
   const tableHTML = (sh, editable) => '<tr>' + SL.COLS.map(c => '<th>' + esc(c) + '</th>').join('') + (editable ? '<th></th>' : '') + '</tr>' +
     (sh.entries.length ? sh.entries.map(r => '<tr class="' + (r.voided ? 'void' : r.amendedTs ? 'amended' : '') + '">' + SL.entryCells(r).map((v, i) => '<td>' + esc(v) +
       (i === 0 ? '<span class="amtag">#' + r.n + '</span>' + (r.amendedTs ? '<span class="amtag" title="' + esc(amendTitle(r)) + '">amended ' + esc(new Date(r.amendedTs).toLocaleString()) + '</span>' : '') : '') +
+      (i === 10 ? notesHTML(r) : '') +
       (i === 7 && (r.icd || r.cpt) ? '<span class="amtag">suggested; provider verifies before billing</span>' : '') + '</td>').join('') +
       (editable ? '<td>' + (r.voided ? '<span class="alt-tag">voided</span>' : '<button type="button" class="small" data-amend="' + r.n + '">Amend</button> <button type="button" class="small" data-void="' + r.n + '">Void</button>') + '</td>' : '') + '</tr>').join('') : '<tr><td colspan="' + (SL.COLS.length + (editable ? 1 : 0)) + '" class="alt-tag">No entries.</td></tr>');
+  function notesHTML(r) {
+    return (r.carriedFrom ? '<span class="amtag">Carried over from prior shift #' + r.carriedFrom.n + '; verify status.</span>' : '') +
+      ((r.updates || []).length ? '<div class="row-notes">' + r.updates.map(u => esc(SL.updateText(u))).join('\n') + '</div>' : '');
+  }
+  function renderRowTools(sh) {
+    $('row-actions').innerHTML = sh.entries.filter(r => !r.voided).map(r => {
+      const draft = rowDrafts.get(rowKey(sh.id, r.n)) || {};
+      return '<section class="box row-tools" data-row="' + r.n + '" data-shift="' + esc(sh.id) + '">' +
+        '<h3>ENTRY #' + r.n + ' · ' + esc(r.initials) + ' · ' + esc(r.diagnosis) + '</h3>' + notesHTML(r) +
+        '<label for="update-' + r.n + '">Clinical update (typing or keyboard dictation)</label>' +
+        '<textarea id="update-' + r.n + '" data-update-text maxlength="2000" rows="2" autocomplete="off" placeholder="Brief update; no names, MRNs or dates">' + esc(draft.update || '') + '</textarea>' +
+        '<p class="alt-tag">Use your phone keyboard microphone to dictate. Notes are saved separately from the 240-character Plan and included in the PDF.</p>' +
+        '<button type="button" data-update-save>Append timestamped update</button>' +
+        '<details class="row-lookup"><summary>OpenEvidence / Grok · clinical lookup</summary>' +
+        '<p class="privacy-line">External site: diagnosis + GA + clinical question ONLY. No initials, age, G/P, names, dates, times, MRNs, or identifying details. Review the exact query before opening. Automated checks cannot detect every name or identifier.</p>' +
+        '<label for="question-' + r.n + '">Optional clinical question (not saved)</label><textarea id="question-' + r.n + '" data-lookup-question rows="2" maxlength="500" autocomplete="off" placeholder="e.g. Recommended monitoring and treatment?"></textarea>' +
+        '<button type="button" data-lookup-review>Preview clinical query</button>' +
+        '<div data-lookup-panel hidden><label>Exact text for external lookup<textarea class="lookup-preview" data-lookup-preview rows="4" readonly autocomplete="off"></textarea></label>' +
+        '<label><input type="checkbox" data-lookup-confirm> I reviewed this query: clinical information only, no identifiers.</label>' +
+        '<button type="button" data-lookup-open="oe">Copy query + open OpenEvidence</button><button type="button" data-lookup-open="grok">Open Grok</button>' +
+        '<p class="alt-tag">OpenEvidence opens its homepage; paste the copied query. If copying fails, select and copy the exact text above. External services may require sign-in. No automatic lookups.</p></div></details>' +
+        '<p class="privacy-warn" data-row-status role="status" hidden></p></section>';
+    }).join('');
+    for (const card of $('row-actions').querySelectorAll('[data-row]')) {
+      const draft = rowDrafts.get(rowKey(sh.id, +card.dataset.row));
+      if (draft) card.querySelector('[data-lookup-question]').value = draft.question || '';
+    }
+  }
+  const choiceHTML = (e, checked, value, extra) => '<label class="carry-choice"><input type="checkbox" value="' + esc(value) + '"' + (checked ? ' checked' : '') + '><span>#' + e.n + ' · ' + esc(e.initials) + ' · ' + esc(e.diagnosis) + ' · <b>' + esc(e.disposition || 'No disposition') + '</b>' + (extra ? '<br>' + esc(extra) : '') + '</span></label>';
+  $('lg-closeout').onclick = () => {
+    const sh = store.current(), summary = SL.closeoutSummary(sh); closingId = sh.id;
+    $('closeout-summary').textContent = summary.active + ' active entries · ' + summary.open.length + ' open dispositions · ' + summary.inpatients.length + ' inpatients (preselected to carry over).';
+    $('closeout-list').innerHTML = summary.open.map(e => choiceHTML(e, summary.inpatients.some(r => r.n === e.n), e.n)).join('') || '<p>No open dispositions.</p>';
+    $('carry-panel').hidden = true; $('closeout-panel').hidden = false; $('closeout-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  $('closeout-cancel').onclick = () => { closingId = null; $('closeout-panel').hidden = true; };
+  $('closeout-finalize').onclick = async () => {
+    const id = closingId; if (!id) return;
+    // Never finalize a different shift if 08:00 rollover occurred during review.
+    if (store.current().id !== id) { $('closeout-panel').hidden = true; closingId = null; renderLog(); toast('Shift changed. Review closeout again.'); return; }
+    const selected = [...$('closeout-list').querySelectorAll('input:checked')].map(el => +el.value);
+    try {
+      store.finalize(id, selected); closingId = null; $('closeout-panel').hidden = true; clearForm(); rowDrafts.clear(); renderLog();
+      $('closeout-status').hidden = false;
+      $('closeout-status').textContent = 'Shift finalized and saved under Past shifts. ' + selected.length + ' carry-over(s) ready to import. A new empty shift is open. Exporting PDF…';
+      const result = await exportShift(id);
+      $('closeout-status').textContent = 'Shift finalized and saved under Past shifts. ' + selected.length + ' carry-over(s) ready to import. ' + (result === 'cancelled' ? 'PDF share cancelled; use Past shifts → Export to try again.' : 'PDF handed to download/share; verify the file saved.');
+    } catch (err) { $('closeout-status').hidden = false; $('closeout-status').textContent = 'Closeout/export: ' + err.message + '. Any finalized log remains under Past shifts; export there if needed.'; }
+  };
+  $('lg-carry').onclick = () => {
+    const pending = store.pendingCarryovers();
+    $('carry-list').innerHTML = pending.map(x => choiceHTML(x.entry, true, x.key, 'Source shift: ' + SL.shiftLabel(store.get(x.shiftId)))).join('') || '<p>No pending carry-overs. Select rows during shift closeout first.</p>';
+    $('closeout-panel').hidden = true; closingId = null; $('carry-panel').hidden = false; $('carry-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  $('carry-cancel').onclick = () => { $('carry-panel').hidden = true; };
+  $('carry-import').onclick = () => {
+    try { const keys = [...$('carry-list').querySelectorAll('input:checked')].map(el => el.value);
+      const n = store.importCarryovers(keys, store.current().id); $('carry-panel').hidden = true; renderLog(); toast('Imported ' + n + ' carry-over(s). Verify current status.');
+    } catch (err) { toast(err.message); }
+  };
+  const rowStatus = (card, message) => { const el = card.querySelector('[data-row-status]'); el.textContent = message; el.hidden = !message; };
+  $('row-actions').addEventListener('input', ev => {
+    const card = ev.target.closest('[data-row]'); if (!card) return;
+    rowDrafts.set(rowKey(card.dataset.shift, +card.dataset.row), { update: card.querySelector('[data-update-text]').value, question: card.querySelector('[data-lookup-question]').value });
+    if (ev.target.matches('[data-lookup-confirm]')) rowStatus(card, '');
+    if (ev.target.matches('[data-lookup-question]')) { card.querySelector('[data-lookup-panel]').hidden = true; card.querySelector('[data-lookup-confirm]').checked = false; }
+  });
+  $('row-actions').addEventListener('click', ev => {
+    const card = ev.target.closest('[data-row]'); if (!card) return;
+    const id = card.dataset.shift, n = +card.dataset.row, sh = store.get(id), row = sh && sh.entries.find(r => r.n === n);
+    if (!row || row.voided) return;
+    if (ev.target.closest('[data-update-save]')) {
+      try {
+        if (store.current().id !== id) throw new Error('Shift changed. Refresh the log before updating.');
+        const text = card.querySelector('[data-update-text]').value.trim(), issues = E.privacyCheck(text);
+        if (issues.length) throw new Error(issues.join(' '));
+        store.appendUpdate(id, n, text); const draft = rowDrafts.get(rowKey(id, n)) || {}; draft.update = ''; rowDrafts.set(rowKey(id, n), draft); renderLog(); toast('Update appended (CT).');
+      } catch (err) { rowStatus(card, err.message); } return;
+    }
+    if (ev.target.closest('[data-lookup-review]')) {
+      try { const query = SL.lookupQuery(row, card.querySelector('[data-lookup-question]').value);
+        card.querySelector('[data-lookup-preview]').value = query; card.querySelector('[data-lookup-confirm]').checked = false;
+        card.querySelector('[data-lookup-panel]').hidden = false; rowStatus(card, '');
+      } catch (err) { card.querySelector('[data-lookup-panel]').hidden = true; rowStatus(card, err.message); } return;
+    }
+    const link = ev.target.closest('[data-lookup-open]'); if (!link) return;
+    try {
+      // Recompute against the latest row; stale previews can never leak new text.
+      const query = SL.lookupQuery(row, card.querySelector('[data-lookup-question]').value);
+      if (!card.querySelector('[data-lookup-confirm]').checked || card.querySelector('[data-lookup-panel]').hidden || card.querySelector('[data-lookup-preview]').value !== query)
+        throw new Error('Preview the query and confirm it has no identifiers first.');
+      const site = link.dataset.lookupOpen;
+      if (site === 'grok') { window.open('https://grok.com/?q=' + encodeURIComponent(query), '_blank', 'noopener,noreferrer'); rowStatus(card, 'Opening Grok with the reviewed clinical query.'); return; }
+      // Open synchronously to preserve the user gesture; clipboard errors never send extra data.
+      window.open('https://www.openevidence.com/', '_blank', 'noopener,noreferrer');
+      const fallback = () => { const ta = card.querySelector('[data-lookup-preview]'); ta.focus(); ta.select(); ta.setSelectionRange(0, query.length);
+        let copied = false; try { copied = document.execCommand('copy'); } catch (_) {}
+        rowStatus(card, copied ? 'Query copied. Paste it into OpenEvidence.' : 'Clipboard unavailable. Select and copy the exact query above, then paste into OpenEvidence.'); };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(query).then(() => rowStatus(card, 'Query copied. Paste it into OpenEvidence.'), fallback); else fallback();
+    } catch (err) { rowStatus(card, err.message); }
+  });
+  window.addEventListener('pagehide', () => { rowDrafts.clear(); $('row-actions').innerHTML = ''; });
+  window.addEventListener('pageshow', () => { if (!$('view-log').hidden) renderLog(); });
   function renderLog() {
     store.autoPurge();
     const pf = store.getProfile();
@@ -206,6 +312,9 @@
     $('log-head').innerHTML = '<b>' + esc(pf.name) + (pf.title ? ', ' + esc(pf.title) : '') + '</b> · ' + esc(pf.site) + '<br><span class="alt-tag">Current shift ' + esc(SL.shiftLabel(cur)) + '</span>';
     $('ret-label').textContent = retLabel(store.retention());
     $('log-table').innerHTML = tableHTML(cur, true);
+    renderRowTools(cur);
+    const pending = store.pendingCarryovers().length;
+    $('lg-carry').textContent = 'Bring carry-overs into this shift (' + pending + ')';
     const past = store.list().filter(x => x.end);
     $('past').innerHTML = past.map(x => '<div class="pastrow"><span>' + esc(SL.shiftLabel(x)) + ' · ' + x.entries.length + ' entr' + (x.entries.length === 1 ? 'y' : 'ies') + '</span>' +
       '<button type="button" class="small" data-pv="' + esc(x.id) + '">Open</button><button type="button" class="small" data-pe="' + esc(x.id) + '">Export</button><button type="button" class="small danger" data-pd="' + esc(x.id) + '">Delete</button></div>').join('') || '<p class="alt-tag">No past shifts.</p>';
@@ -220,10 +329,10 @@
     const name = 'OBHG_Shift_Log_' + SL.shiftLabel(sh).slice(0, 16).replace(' ', '_').replace(':', '') + '.pdf';
     const file = new File([bytes], name, { type: 'application/pdf' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: 'OBHG SHIFT PATIENT LOG' }); return; } catch (err) { if (err && err.name === 'AbortError') return; }
+      try { await navigator.share({ files: [file], title: 'OBHG SHIFT PATIENT LOG' }); return 'shared'; } catch (err) { if (err && err.name === 'AbortError') return 'cancelled'; }
     }
     const url = URL.createObjectURL(file); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    setTimeout(() => URL.revokeObjectURL(url), 10000); return 'downloaded';
   }
   function purgeShift(id, verb) {
     const sh = store.get(id); if (!sh) return;
