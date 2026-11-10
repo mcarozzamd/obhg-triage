@@ -29,7 +29,7 @@ let count=0;const check=(name,f)=>{f();count++;console.log('PASS '+name);};
  await page.clock.install({time:new Date('2026-11-10T00:43:00.000Z')});
  try{
  await page.goto(URL);await page.waitForLoadState('networkidle');
- check('phone viewport, staged banner and triage controls',()=>{assert.equal(page.viewportSize().width,390);});
+ check('phone viewport, production page and triage controls',()=>{assert.equal(page.viewportSize().width,390);});
  await page.locator('#hpi').fill('22 yo G1P0 at 32 weeks with leaking fluid since this morning');await page.locator('#go').click();await page.locator('#coding').waitFor({state:'visible'});
  check('triage and coding panels preserved',async()=>{});assert.match(await page.locator('#coding').innerText(),/ICD-10-CM/);
  await page.locator('#tab-log').click();
@@ -102,7 +102,7 @@ let count=0;const check=(name,f)=>{f();count++;console.log('PASS '+name);};
  await page.clock.runFor(2000);await page.locator('#row-actions').screenshot({path:path.join(OUT,'05-imported-phone.png')});
  // Service worker must precache all assets and support reload without network.
  await page.waitForFunction(()=>navigator.serviceWorker.controller);
- const cacheNames=await page.evaluate(()=>caches.keys());assert.ok(cacheNames.includes('obhg-triage-v22-2026-11-09-staged-closeout'));
+ const cacheNames=await page.evaluate(()=>caches.keys());assert.ok(cacheNames.includes('obhg-triage-v23-2026-11-10-fixes'));
  await context.setOffline(true);await page.reload();await page.locator('#tab-log').click();assert.ok(await page.locator('#lg-closeout').isVisible());await context.setOffline(false);
  check('bumped service worker installs and staged app works offline',()=>{});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);

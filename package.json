@@ -1,1 +1,13 @@
-{"name":"obhg-triage-local-staging","private":true,"scripts":{"test":"node --test tests/closeout.test.cjs && TZ=America/Chicago node tests/regression.cjs","smoke":"node tests/smoke.cjs"},"devDependencies":{"jsdom":"31.0.0","playwright":"1.65.0"}}
+{
+  "name": "obhg-triage-local-staging",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/closeout.test.cjs tests/fixes.test.cjs && TZ=America/Chicago node tests/regression.cjs",
+    "smoke": "node tests/smoke.cjs",
+    "smoke:fixes": "node tests/fixes-smoke.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "31.0.0",
+    "playwright": "1.65.0"
+  }
+}

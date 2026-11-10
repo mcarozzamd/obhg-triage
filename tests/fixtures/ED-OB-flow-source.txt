@@ -1,0 +1,81 @@
+ED TO OB PATHWAY: TRIAGE DECISION TREE
+Rebuild of the CSM ED to OB Pathway Guideline (created 10/2026) · Decision support only, not unit policy
+CHRISTUS St. Michael / OBHG - Texarkana
+14 October 2026
+HOW TO READ THIS CHART: pick a branch, start at STEP 0, follow the arrows, and answer each yes/no question. Hexagons are questions; shaded rectangles are actions; follow any THEN arrow.
+SHADING KEY: WHITE = patient stays in the Main ED LIGHT GRAY = give report, then transfer to OBED DARK GRAY = delivery imminent: L&D team to the ED
+PREGNANT PATIENT AT THE MAIN ED Gestational age, then non-OB S&S, then delivery
+STEP 0: START
+Pregnant patient
+arrives at Main ED.
+Triage per protocol.
+STEP 1: LESS THAN
+20 WEEKS GESTATION?
+YES
+MAIN ED · WHITE
+Stays in the Main ED for evaluation
+• Consult OB as needed.
+• Consider US for fetal wellbeing.
+• Contact L&D if help is needed with fetal heart tones.
+NO
+STEP 2: ANY NON-OB S&S?
+(Non-OB list in band below)
+YES
+MAIN ED · WHITE
+Stays in the Main ED for evaluation and
+treatment
+Provider-to-provider consult between ED and OB for
+maternal/fetal evaluation.
+THEN
+TO OBED · LIGHT GRAY
+1. Contact the L&D charge RN
+2. Once medically cleared, call L&D.
+3. Transfer the patient to OBED.
+NO
+STEP 3: IS DELIVERY
+IMMINENT?
+YES
+DELIVERY IMMINENT · DARK GRAY
+Call L&D at 427-2606
+The Neo/L&D team comes to the ED.
+NO
+TO OBED · LIGHT GRAY
+Contact OBED RN or L&D charge RN to give report
+Then transfer the patient to OBED.
+POSTPARTUM: 6 WEEKS OR LESS
+STEP 0P: START
+Patient arrives at the Main ED and is 6 weeks or
+less postpartum. Triage per protocol.
+STEP 1P: ANY NON-OB S&S?
+(Non-OB list in band below)
+YES NO
+MAIN ED
+Stays in the ED for
+evaluation
+Consult OB as
+needed.
+TO OBED
+Contact
+OBED/L&D charge
+RN for report
+Then transfer the
+patient to OBED.
+Preeclampsia S&S apply from 20 weeks
+gestation through 6 weeks postpartum (criteria in
+band below). Listed with OB S&S.
+L&D: 427-2606
+NON-OB S&S
+(YES at STEP 2 / 1P)
+Any cardiac complaint(s) · SOB/respiratory infection · Trauma/non-OB injury · Suicide attempt · Communicable diseases · Sore throat/ear infections · GI symptoms ·
+Stroke/Bell palsy
+OB S&S
+Decreased fetal movement · Vaginal bleeding · Contractions/abdominal cramping/constant pain · Leaking of fluid · Pelvic pressure · HTN/S&S of preeclampsia ·
+Delivery complications
+S&S OF PREECLAMPSIA
+(20 weeks to 6 weeks PP)
+SBP 160 or higher and/or DBP 110 or higher, OR SBP 140 to 159 and/or DBP 90 to 109 WITH unremitting headache, visual disturbances, or RUQ/epigastric pain.
+ABBREVIATIONS
+ED = emergency department; OBED = obstetric emergency department; L&D = labor and delivery; S&S = signs and symptoms; US = ultrasound; Neo = neonatal; PP =
+postpartum; HTN = hypertension; SOB = shortness of breath; RUQ = right upper quadrant.
+Decision support only, not unit policy. Source: CSM ED to OB Pathway Guideline (10/2026) + annotated paper copy; checked vs ED to OB Fast Pass (rev. 10/2026) and OB Triage ED/OBED guideline. 14 October 2026
+

@@ -3,6 +3,7 @@
 (function (root) {
   'use strict';
   const PREFIX = 'shiftlog_';
+  const FLOW_TEXT = typeof module !== 'undefined' && module.exports ? require('./flowplans.js') : root.FlowPlanText || {};
   const K_PROFILE = PREFIX + 'profile', K_LOGS = PREFIX + 'logs';
   const RETAIN_DEFAULT = 30;
   const DISPOSITIONS = ['Discharged home', 'Admitted L&D', 'Admitted antepartum', 'Admitted GYN', 'Admitted postpartum', 'Observation', 'To OR', 'Transferred', 'Other'];
@@ -25,7 +26,7 @@
   // Extract (never invent) up to three PLAN actions. Omitted text is marked '...'.
   // Full A&P remains in its existing on-screen boxes; it is never persisted here.
   function summarizePlan(value) {
-    const text = String(value || '').trim(); if (!text) return '';
+    const text = String(value || '').trim(); if (!text || text.includes('FLOW BRANCH REFERENCE:')) return '';
     const lines = text.split(/\r?\n/); const start = lines.findIndex(l => /^PLAN(?:\s*\(|\s*:|\s*$)/i.test(l.trim()));
     if (start < 0 && /^ASSESSMENT AND PLAN\b/i.test(text)) return '';
     let actions;
@@ -67,9 +68,18 @@
   }
   // Deliberately whitelist only diagnosis, normalized GA, and the ephemeral question.
   // Never serialize a row, Plan, updates, or demographics to an external service.
+  function readableLookupText(value) {
+    let text = String(value || '').trim();
+    // Accept accidentally pasted URL-encoded clinical text, but validate AFTER decoding.
+    for (let i = 0; i < 2 && /%[0-9a-f]{2}/i.test(text); i++) {
+      try { text = decodeURIComponent(text); } catch (_) { throw new Error('Use plain readable clinical text, not encoded text or a URL.'); }
+    }
+    if (/%[0-9a-f]{2}|https?:\/\/|www\./i.test(text)) throw new Error('Use plain readable clinical text, not a URL.');
+    return text.replace(/\s+/g, ' ');
+  }
   function lookupQuery(entry, question) {
-    const diagnosis = String(entry.diagnosis || '').trim();
-    const q = String(question || '').trim();
+    const diagnosis = readableLookupText(entry.diagnosis);
+    const q = readableLookupText(question);
     if (!diagnosis) throw new Error('Diagnosis is required for lookup.');
     if (diagnosis.length > 120 || q.length > 500) throw new Error('Keep the clinical question under 500 characters.');
     const ga = String(entry.ga || '').replace(/\s/g, '');
@@ -84,6 +94,10 @@
     const age = String(entry.age || '').trim();
     if (/^\d{1,3}$/.test(age) && new RegExp('\\b' + age + '\\b').test(text)) throw new Error('Remove the age from diagnosis/question.');
     return 'Diagnosis: ' + diagnosis + (ga ? '; GA: ' + ga : '') + (q ? '; Clinical question: ' + q : '');
+  }
+  function lookupPayload(entry, question) {
+    const text = lookupQuery(entry, question);
+    return { text, grokURL: 'https://grok.com/?q=' + encodeURIComponent(text), openEvidenceURL: 'https://www.openevidence.com/' };
   }
   function closeoutSummary(shift) {
     const active = shift.entries.filter(e => !e.voided);
@@ -328,7 +342,7 @@
   }
 
   // ---------- summary -> structured fields ----------
-  const NOT_INITIALS = new Set(['BP', 'HR', 'RR', 'GA', 'PP', 'CS', 'SVD', 'IUP', 'LMP', 'RLQ', 'LLQ', 'RUQ', 'LUQ', 'ED', 'OR', 'LD', 'POD', 'PPD', 'IOL', 'ROM', 'GBS', 'HCG', 'EBL', 'QBL', 'FHR', 'TOA', 'PID', 'AUB', 'VTE', 'DVT', 'PE', 'UTI', 'IUD', 'NST', 'BPP', 'AFI', 'MVP', 'PTL', 'IAI', 'HTN', 'CAT', 'SOB', 'CP', 'HA', 'LOF', 'VB', 'PT', 'YO', 'NPO', 'IV', 'OB', 'GYN', 'MFM', 'ICU', 'CPT', 'ICD']);
+  const NOT_INITIALS = new Set(['AN', 'AS', 'AT', 'NO', 'YES', 'THE', 'SHE', 'HER', 'HE', 'HIS', 'HAS', 'FOR', 'NEW', 'NOW', 'NOT', 'AND', 'ALL', 'OUT', 'BP', 'HR', 'RR', 'GA', 'PP', 'CS', 'SVD', 'IUP', 'LMP', 'RLQ', 'LLQ', 'RUQ', 'LUQ', 'ED', 'OR', 'LD', 'POD', 'PPD', 'IOL', 'ROM', 'GBS', 'HCG', 'EBL', 'QBL', 'FHR', 'TOA', 'PID', 'AUB', 'VTE', 'DVT', 'PE', 'UTI', 'IUD', 'NST', 'BPP', 'AFI', 'MVP', 'PTL', 'IAI', 'HTN', 'CAT', 'SOB', 'CP', 'HA', 'LOF', 'VB', 'PT', 'YO', 'NPO', 'IV', 'OB', 'GYN', 'MFM', 'ICU', 'CPT', 'ICD']);
   const DISPO_RULES = [
     [/\b(discharg\w*|d\/?c(?:'?d)? home|sent home|send home|home with)\b/i, 'Discharged home'],
     [/\badmit\w*\b[^.;]{0,30}\b(l\s*&\s*d|l and d|labor)\b/i, 'Admitted L&D'],
@@ -343,15 +357,20 @@
     const t = String(text || '').trim(); const out = { initials: '', age: '', ga: '', gp: '', hpi: '', disposition: '' };
     if (!t) return out;
     const f = E.parse(t);
-    let m = t.match(/\binitials?\s*:?\s*([A-Za-z]{2,3})\b/i) || t.match(/^\s*(?:pt\.?\s+)?([A-Z]{2,3})\b(?=[\s,:;-]+(?:\d|is\b|a\b|an\b))/);
-    if (m && !NOT_INITIALS.has(m[1].toUpperCase())) out.initials = m[1].toUpperCase();
+    // Leading initials need not be followed by an age: phone dictation often starts
+    // 'AB. leaking fluid'. Title-case tokens require a demographic prefix to avoid pronouns.
+    const explicit = t.match(/\binitials?\s*:?\s*([A-Za-z]{2,3})\b/i);
+    const leading = t.match(/^\s*(?:pt\.?\s+)?([A-Z]{2,3}|[A-Z][a-z]{1,2})\b(?=[\s.,:;\u2013\u2014-]|$)/);
+    const m = explicit || leading;
+    const demographicLead = leading && /^\s*[.,:;-]?\s*\d{1,3}\s*(?:yo|y\/o|years?[- ]old)\b/i.test(t.slice(leading[0].length));
+    if (m && (explicit || demographicLead || (/^[A-Z]{2,3}$/.test(m[1]) && !NOT_INITIALS.has(m[1].toUpperCase())))) out.initials = m[1].toUpperCase();
     if (f.age != null) out.age = String(f.age);
     if (f.G != null) out.gp = 'G' + f.G + 'P' + (f.P == null ? 0 : f.P) + (f.TPAL ? ' (' + f.TPAL + ')' : '');
     if (f.gaWeeks != null) out.ga = f.gaWeeks + 'w' + (f.gaDays || 0) + 'd';
     for (const [re, d] of DISPO_RULES) if (re.test(t)) { out.disposition = d; break; }
     // HPI = summary with the demographic prefix removed (stays on screen only; never stored)
     let h = t.replace(/\binitials?\s*:?\s*[A-Za-z]{2,3}\b[,;:]?/i, ' ');
-    if (out.initials) h = h.replace(new RegExp('^\\s*(?:pt\\.?\\s+)?' + out.initials + '\\b[,;:]?', 'i'), ' ');
+    if (out.initials) h = h.replace(new RegExp('^\\s*(?:pt\\.?\\s+)?' + out.initials + '\\b[.,;:]?', 'i'), ' ');
     h = h.replace(/\b\d{1,3}\s*(?:yo|y\/o|y\.o\.|yrs?|years?[- ]old|year[- ]old|yof|f)\b,?/i, ' ')
       .replace(/\bG\d{1,2}\s*P\d{1,2}(?:\s*\(?\d{4}\)?|\s*[\d-]{4,7})?\b,?/i, ' ')
       .replace(/\b(?:at\s+)?\d{1,2}\s*(?:w|wk|wks|weeks?)(?:\s*\+?\s*\d\s*(?:d|days?)?|\s*\d)?\b(?:\s*(?:gestation|GA|IUP))?,?/i, ' ')
@@ -372,15 +391,36 @@
   }
 
   // ---------- deterministic ASSESSMENT AND PLAN draft from existing card content ----------
-  const ent = s => String(s).replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
-  function cardBlocks(html) { // ordered [{type:'h'|'li'|'bottom', text}]
-    const out = []; const re = /<p( class="([^"]*)")?>([\s\S]*?)<\/p>|<li>([\s\S]*?)<\/li>/g; let m;
-    while ((m = re.exec(html || ''))) {
-      if (m[4] != null) out.push({ type: 'li', text: ent(m[4]) });
-      else if (/bottomline/.test(m[2] || '') || /^BOTTOM LINE/i.test(ent(m[3]))) out.push({ type: 'bottom', text: ent(m[3]).replace(/^BOTTOM LINE\.?\s*/i, '') });
-      else if (!/flagged/.test(m[2] || '')) out.push({ type: 'h', text: ent(m[3]) });
+  const ent = s => String(s).replace(/<br\s*\/?>/gi, ' ').replace(/<sup(?:er)?>([\s\S]*?)<\/sup(?:er)?>/gi, '^$1')
+    .replace(/<[^>]+>/g, '').replace(/&#(x[0-9a-f]+|\d+);/gi, (_, n) => String.fromCodePoint(n[0].toLowerCase() === 'x' ? parseInt(n.slice(1), 16) : +n))
+    .replace(/&(lt|gt|quot|apos|nbsp|le|ge|amp);/g, (_, n) => ({lt:'<',gt:'>',quot:'"',apos:"'",nbsp:' ',le:'≤',ge:'≥',amp:'&'}[n]))
+    .replace(/\s+/g, ' ').trim();
+  function cardBlocks(html) { // preserve attributed list items, headings, action paragraphs, and table rows
+    html = String(html || ''); const out = [];
+    const re = /<(p|li|h[1-6]|tr)\b([^>]*)>([\s\S]*?)<\/\1>/gi; let m;
+    while ((m = re.exec(html))) {
+      const tag = m[1].toLowerCase(), body = m[3], text = ent(body); if (!text) continue;
+      if (tag === 'tr') {
+        const cells = [...body.matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(x => ent(x[1]));
+        out.push({ type: /<th\b/i.test(body) ? 'h' : 'li', text: cells.join(' | ') });
+      } else if (/bottomline/i.test(m[2]) || /^BOTTOM LINE\b/i.test(text)) out.push({ type: 'bottom', text: text.replace(/^BOTTOM LINE\.?\s*/i, '') });
+      else if (/^h/.test(tag) || (tag === 'p' && /^\s*<(?:ul|ol|table)\b/i.test(html.slice(re.lastIndex)))) out.push({ type: 'h', text });
+      else out.push({ type: 'li', text });
     }
     return out;
+  }
+  function planSource(top, content) {
+    const items = ((content || root.CONTENT || {}).items || []);
+    const diagram = top.diagram;
+    const card = top.card || items.find(i => i.kind === 'card' && i.id === ((diagram || {}).card || top.id));
+    for (const source of [card, diagram].filter(Boolean)) {
+      const blocks = cardBlocks(source.html);
+      if (blocks.some(b => b.type !== 'h')) return { source, blocks, flowReference: false };
+    }
+    const reference = diagram && FLOW_TEXT[diagram.id];
+    if (reference && (!diagram.sha || reference.sourceSHA256.startsWith(diagram.sha)))
+      return { source: diagram, blocks: reference.blocks, flowReference: true };
+    return { source: card || diagram, blocks: [], flowReference: false };
   }
   // Does a bullet that starts with a GA range apply to this GA (weeks)? Unknown GA or no range -> applies.
   function gaApplies(text, w) {
@@ -392,7 +432,7 @@
     if (/^(periviable|previable)/i.test(t)) return w < 26;
     return true;
   }
-  function assessPlan(r, fl, routine) {
+  function assessPlan(r, fl, routine, content) {
     fl = fl || {}; const f = r.facts || {}; const top = r.top;
     const L = ['ASSESSMENT AND PLAN (DRAFT, DECISION SUPPORT ONLY, CLINICIAN MUST VERIFY)'];
     if (!top && routine) {
@@ -415,18 +455,19 @@
     L.push('Most consistent with: ' + card.title + ' (' + top.id + ').');
     const alts = (r.alternates || []).map(a => { const it = a.card || a.diagram; return it ? it.title + ' (' + a.id + ')' : ''; }).filter(Boolean);
     if (alts.length) L.push('Also consider: ' + alts.join('; ') + '.');
-    L.push('', 'PLAN (from card ' + top.id + (top.card ? '' : ' flow') + ')');
-    const src = top.card || top.diagram; const blocks = cardBlocks(src.html); const bottom = blocks.find(b => b.type === 'bottom');
-    if (bottom) L.push('Bottom line: ' + bottom.text);
-    let count = 0, head = null, skipped = 0;
+    const extracted = planSource(top, content), src = extracted.source, blocks = extracted.blocks;
+    L.push('', 'PLAN (from ' + (src.kind === 'diagram' ? 'flow ' : 'card ') + src.id + ')');
+    if (extracted.flowReference) L.push('FLOW BRANCH REFERENCE: follow the matched diagram arrows; alternative branches are not simultaneous orders.');
+    let count = 0, heads = [], skipped = 0;
     for (const b of blocks) {
-      if (b.type === 'h') { head = b.text; continue; }
+      if (b.type === 'h') { heads.push(b.text); continue; }
+      if (b.type === 'bottom') { L.push('Bottom line: ' + b.text); continue; }
       if (b.type !== 'li') continue;
       if (!gaApplies(b.text, w)) { skipped++; continue; }
-      if (count >= 12) break;
-      if (head) { L.push(head.toUpperCase() + ':'); head = null; }
+      if (heads.length) { L.push(...heads.map(text => text + ':')); heads = []; }
       L.push('- ' + b.text); count++;
     }
+    if (!count && !blocks.some(b => b.type === 'bottom')) L.push('No extractable action text is available. Open the matched source and verify its plan; no clinical content was invented.');
     if (skipped) L.push('(' + skipped + ' GA-specific item(s) omitted as not applicable to ' + f.gaWeeks + 'w; see card.)');
     if (r.coding) {
       const icd = r.coding.icd.filter(c => !c.alt && c.verified).map(c => c.code + ' ' + c.label);
@@ -511,6 +552,6 @@
   }
   const addCode = (field, code) => { const list = String(field || '').split(/\s*,\s*/).filter(Boolean); if (!list.includes(code)) list.push(code); return list.join(', '); };
 
-  const api = { UPDATE_LIMIT, updateText, validateUpdate, privacyIssues, lookupQuery, closeoutSummary, LOG_FIELDS, PLAN_LIMIT, normalizeGP, logTime, summarizePlan, entryCells, icdRules, serviceFor, gaWeeks, z3aFor, routineFill, routineMatch, codeIndex, codeSearch, addCode, parseSummary, composeText, assessPlan, cardBlocks, gaApplies, AMEND_FIELDS, PREFIX, K_PROFILE, K_LOGS, RETAIN_DEFAULT, RETENTION_OPTS, shiftLabel, DISPOSITIONS, COLS, shiftStart, shiftKey, shiftRange, validateEntry, Store, buildPDF, suggest, mem };
+  const api = { readableLookupText, lookupPayload, planSource, UPDATE_LIMIT, updateText, validateUpdate, privacyIssues, lookupQuery, closeoutSummary, LOG_FIELDS, PLAN_LIMIT, normalizeGP, logTime, summarizePlan, entryCells, icdRules, serviceFor, gaWeeks, z3aFor, routineFill, routineMatch, codeIndex, codeSearch, addCode, parseSummary, composeText, assessPlan, cardBlocks, gaApplies, AMEND_FIELDS, PREFIX, K_PROFILE, K_LOGS, RETAIN_DEFAULT, RETENTION_OPTS, shiftLabel, DISPOSITIONS, COLS, shiftStart, shiftKey, shiftRange, validateEntry, Store, buildPDF, suggest, mem };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.ShiftLog = api;
 })(typeof self !== 'undefined' ? self : this);

@@ -219,7 +219,7 @@
         '<button type="button" data-lookup-review>Preview clinical query</button>' +
         '<div data-lookup-panel hidden><label>Exact text for external lookup<textarea class="lookup-preview" data-lookup-preview rows="4" readonly autocomplete="off"></textarea></label>' +
         '<label><input type="checkbox" data-lookup-confirm> I reviewed this query: clinical information only, no identifiers.</label>' +
-        '<button type="button" data-lookup-open="oe">Copy query + open OpenEvidence</button><button type="button" data-lookup-open="grok">Open Grok</button>' +
+        '<button type="button" data-lookup-copy>Copy plain query</button><button type="button" data-lookup-open="oe">Copy query + open OpenEvidence</button><button type="button" data-lookup-open="grok">Open Grok</button>' +
         '<p class="alt-tag">OpenEvidence opens its homepage; paste the copied query. If copying fails, select and copy the exact text above. External services may require sign-in. No automatic lookups.</p></div></details>' +
         '<p class="privacy-warn" data-row-status role="status" hidden></p></section>';
     }).join('');
@@ -251,7 +251,7 @@
   };
   $('lg-carry').onclick = () => {
     const pending = store.pendingCarryovers();
-    $('carry-list').innerHTML = pending.map(x => choiceHTML(x.entry, true, x.key, 'Source shift: ' + SL.shiftLabel(store.get(x.shiftId)))).join('') || '<p>No pending carry-overs. Select rows during shift closeout first.</p>';
+    $('carry-list').innerHTML = pending.map(x => choiceHTML(x.entry, true, x.key, 'Source shift: ' + SL.shiftLabel(store.get(x.shiftId)))).join('') || '<p>No pending carry-overs. Select rows using Close shift log first.</p>';
     $('closeout-panel').hidden = true; closingId = null; $('carry-panel').hidden = false; $('carry-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
   $('carry-cancel').onclick = () => { $('carry-panel').hidden = true; };
@@ -260,6 +260,16 @@
       const n = store.importCarryovers(keys, store.current().id); $('carry-panel').hidden = true; renderLog(); toast('Imported ' + n + ' carry-over(s). Verify current status.');
     } catch (err) { toast(err.message); }
   };
+  function copyPlainQuery(text, preview) {
+    preview.focus(); preview.select(); preview.setSelectionRange(0, text.length);
+    // Synchronous copy is the iPhone-compatible path; async clipboard is a fallback.
+    let copied = false; try { copied = document.execCommand('copy'); } catch (_) {}
+    if (copied) return Promise.resolve(true);
+    if (navigator.clipboard && window.isSecureContext) {
+      try { return navigator.clipboard.writeText(text).then(() => true, () => false); } catch (_) {}
+    }
+    return Promise.resolve(false);
+  }
   const rowStatus = (card, message) => { const el = card.querySelector('[data-row-status]'); el.textContent = message; el.hidden = !message; };
   $('row-actions').addEventListener('input', ev => {
     const card = ev.target.closest('[data-row]'); if (!card) return;
@@ -280,25 +290,28 @@
       } catch (err) { rowStatus(card, err.message); } return;
     }
     if (ev.target.closest('[data-lookup-review]')) {
-      try { const query = SL.lookupQuery(row, card.querySelector('[data-lookup-question]').value);
+      try { const question = card.querySelector('[data-lookup-question]');
+        const query = SL.lookupPayload(row, question.value).text;
+        question.value = SL.readableLookupText(question.value);
+        const draft = rowDrafts.get(rowKey(id, n)) || {}; draft.question = question.value; rowDrafts.set(rowKey(id, n), draft);
         card.querySelector('[data-lookup-preview]').value = query; card.querySelector('[data-lookup-confirm]').checked = false;
         card.querySelector('[data-lookup-panel]').hidden = false; rowStatus(card, '');
       } catch (err) { card.querySelector('[data-lookup-panel]').hidden = true; rowStatus(card, err.message); } return;
     }
-    const link = ev.target.closest('[data-lookup-open]'); if (!link) return;
+    const link = ev.target.closest('[data-lookup-open], [data-lookup-copy]'); if (!link) return;
     try {
       // Recompute against the latest row; stale previews can never leak new text.
-      const query = SL.lookupQuery(row, card.querySelector('[data-lookup-question]').value);
+      const payload = SL.lookupPayload(row, card.querySelector('[data-lookup-question]').value), query = payload.text;
       if (!card.querySelector('[data-lookup-confirm]').checked || card.querySelector('[data-lookup-panel]').hidden || card.querySelector('[data-lookup-preview]').value !== query)
         throw new Error('Preview the query and confirm it has no identifiers first.');
       const site = link.dataset.lookupOpen;
-      if (site === 'grok') { window.open('https://grok.com/?q=' + encodeURIComponent(query), '_blank', 'noopener,noreferrer'); rowStatus(card, 'Opening Grok with the reviewed clinical query.'); return; }
-      // Open synchronously to preserve the user gesture; clipboard errors never send extra data.
-      window.open('https://www.openevidence.com/', '_blank', 'noopener,noreferrer');
-      const fallback = () => { const ta = card.querySelector('[data-lookup-preview]'); ta.focus(); ta.select(); ta.setSelectionRange(0, query.length);
-        let copied = false; try { copied = document.execCommand('copy'); } catch (_) {}
-        rowStatus(card, copied ? 'Query copied. Paste it into OpenEvidence.' : 'Clipboard unavailable. Select and copy the exact query above, then paste into OpenEvidence.'); };
-      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(query).then(() => rowStatus(card, 'Query copied. Paste it into OpenEvidence.'), fallback); else fallback();
+      if (site === 'grok') { window.open(payload.grokURL, '_blank', 'noopener,noreferrer'); rowStatus(card, 'Opening Grok with the reviewed clinical query.'); return; }
+      // Copy RAW text before opening a tab: Safari may lose clipboard activation/focus
+      // after window.open. Never pass the URL-encoded Grok URL to a copy routine.
+      const preview = card.querySelector('[data-lookup-preview]'); preview.value = payload.text;
+      const copying = copyPlainQuery(payload.text, preview);
+      if (site === 'oe') window.open(payload.openEvidenceURL, '_blank', 'noopener,noreferrer');
+      copying.then(copied => rowStatus(card, copied ? 'Plain query copied. Paste it into OpenEvidence.' : 'Clipboard unavailable. Select and copy the exact query above, then paste into OpenEvidence.'));
     } catch (err) { rowStatus(card, err.message); }
   });
   window.addEventListener('pagehide', () => { rowDrafts.clear(); $('row-actions').innerHTML = ''; });
@@ -349,7 +362,7 @@
   $('pv-close').onclick = () => { viewing = null; renderLog(); };
   $('lg-new').onclick = () => {
     const cur = store.current();
-    if (confirm('Close the current shift (' + cur.entries.length + ' entries, stays saved under Past shifts) and start a new shift now?')) { store.startNew(); renderLog(); }
+    if (confirm('Close the current shift log (' + cur.entries.length + ' entries, stays saved under Past shifts) and start a new shift log now?')) { store.startNew(); renderLog(); }
   };
   $('pf-save').onclick = () => {
     const name = $('pf-name').value.trim(); if (!name) { $('pf-name').focus(); return; }
@@ -398,6 +411,10 @@
     $('lg-warn').hidden = !w.length; $('lg-warn').innerHTML = w.length ? '<b>Check for identifiers:</b> ' + w.map(esc).join(' ') : '';
     if (w.length) return;
     if (carry && text) { const ps = SL.parseSummary(text, E); setIf('initials', ps.initials); setIf('age', ps.age); setIf('gp', ps.gp); setIf('ga', ps.ga); setIf('hpi2', ps.hpi); setIf('disposition', ps.disposition); }
+    // The structured HPI is another supported entry point for leading initials.
+    // Never overwrite a manually edited Initials value.
+    const hpiParsed = SL.parseSummary($('lg-hpi2').value, E);
+    setIf('initials', hpiParsed.initials);
     const fl = fieldsNow(); const q = SL.composeText(fl);
     if (!q) { $('lg-sugg').hidden = true; $('lg-triage').hidden = true; lastR = null; return; }
     const r = E.triage(q, C, T, V), sg = SL.suggest(r); lastR = r;
@@ -411,8 +428,8 @@
     const rt = SL.routineMatch(RC, [fl.hpi, text].join(' '), svc()) || SL.routineMatch(RC, [fl.hpi, text].join(' ')); showSvc();
     if (!r.top && rt) { const rf = applyRoutine(rt, false); $('lg-sugg').innerHTML = '<p><b>No card match. Routine encounter suggested: ' + esc(rf.set.label) + '</b> (codes filled where empty; pending Doc review). Tap a routine button to change.</p>'; }
     else if (r.top && rt) $('lg-sugg').innerHTML += '<p class="alt-tag">Routine encounter? <button type="button" class="small" data-rt="' + esc(rt) + '">' + esc(RC.sets.find(x => x.id === rt).label) + '</button></p>';
-    lastAP = SL.assessPlan(r, fl, rt && !r.top ? RC.sets.find(x => x.id === rt) : null);
-    $('lg-triage').hidden = false; $('lg-ap').value = lastAP.text;
+    lastAP = SL.assessPlan(r, fl, rt && !r.top ? RC.sets.find(x => x.id === rt) : null, C);
+    $('lg-triage').hidden = false; $('lg-ap').value = lastAP.text; $('lg-flow-reference').hidden = !lastAP.text.includes('FLOW BRANCH REFERENCE:');
     $('lg-using').textContent = 'Using HPI: ' + (fl.hpi || '(none)') + ' · ' + [fl.age && fl.age + ' yo', fl.gp, fl.ga].filter(Boolean).join(' ');
     $('lg-tri-cards').innerHTML = !r.top ? '' : (r.flags.length ? '<div class="chips">' + r.flags.map(fl2 => '<span class="chip ' + (fl2.level === 'amber' ? 'amber' : '') + '">' + esc(fl2.text) + '</span>').join('') + '</div>' : '') +
       '<details class="companion"><summary>Top match: ' + esc(label(r.top.card || r.top.diagram)) + ' · ' + esc((r.top.card || r.top.diagram).title) + '</summary>' + itemHTML(r.top.diagram || r.top.card, r.top.diagram ? r.top.card : null) + '</details>' +
@@ -426,7 +443,7 @@
     if (lastR && !lastR.top && lgCard.startsWith('RT-')) { applyRoutine(lgCard.slice(3), true); $('lg-apentry').value = $('lg-ap').value; $('lg-plan').value = SL.summarizePlan($('lg-apentry').value); flash(['lg-apentry', 'lg-plan']); toast('Inserted'); return; }
     if (!lastR || !lastR.top) { toast('Nothing to insert yet'); return; } const sg = SL.suggest(lastR);
     for (const k of ['diagnosis', 'icd', 'cpt']) if (sg[k]) { $('lg-' + k).value = sg[k]; auto.add('lg-' + k); }
-    lgCard = sg.card; $('lg-apentry').value = SL.assessPlan(lastR, fieldsNow()).text;
+    lgCard = sg.card; $('lg-apentry').value = SL.assessPlan(lastR, fieldsNow(), null, C).text;
     $('lg-plan').value = SL.summarizePlan($('lg-apentry').value);
     flash(['lg-diagnosis', 'lg-icd', 'lg-cpt', 'lg-apentry', 'lg-plan']); $('lg-diagnosis').scrollIntoView({ behavior: 'smooth', block: 'center' }); toast('Inserted');
   }
