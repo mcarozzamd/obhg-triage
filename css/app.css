@@ -104,3 +104,7 @@ tr.amended td{background:#FFFBEA}
 .lookup-preview{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--line);padding:8px;font-size:13px}
 #view-log .carry-choice{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
 #view-log .carry-choice input{width:22px;min-width:22px;height:22px;margin-top:2px}
+/* 11 Nov 2026: plain-name lists, card links to algorithms, diabetes-in-labor table */
+#list .lid{font-size:11px;letter-spacing:.06em;opacity:.75}
+.linkbtn{display:inline-block;margin:6px 0;padding:8px 12px;border:1.5px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy);font-weight:700;font-size:15px;text-align:left}
+.dm-table{border-collapse:collapse;width:100%;font-size:14px;margin:6px 0}.dm-table th,.dm-table td{border:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}.dm-table th{background:#eef2f7}

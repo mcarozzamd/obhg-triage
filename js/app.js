@@ -1,11 +1,13 @@
 /* OBHG Clinical Triage UI (with Shift Patient Log; log stored on device only, keys prefixed 'shiftlog_'). No automatic transmission of clinical text; reviewed external lookups are opt-in. No storage of the HPI. */
 (function () {
   'use strict';
-  const C = self.CONTENT, T = self.CODE_TABLES, V = self.CODE_VALIDATION, E = self.TriageEngine;
+  const C = self.CONTENT, T = self.CODE_TABLES, V = self.CODE_VALIDATION, E = self.TriageEngine, D = self.DisplayNames;
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const byId = id => C.items.find(i => i.id === id);
-  const label = it => it.display_id || (it.kind === 'diagram' ? (it.card || 'FLOW') : it.id);
+  // Plain-condition names (11 Nov 2026): codes stay internal for links/search only.
+  const label = it => D.title(it);
+  const kindLabel = it => it.kind === 'diagram' ? 'ALGORITHM' : 'CARD';
 
   const EXAMPLES = [
     '20 yo G2P1 at 37 weeks with blood pressure 150/100 and headache',
@@ -42,19 +44,19 @@
     return d ? '<div class="reviewed">Last reviewed: ' + esc(d) + '</div>' : '';
   }
   function itemHTML(item, companionCard) {
-    let h = '<div class="th"><div class="id">' + esc(label(item)) + (item.kind === 'diagram' ? ' · FLOW DIAGRAM' : ' · CARD') +
+    let h = '<div class="th"><div class="id">' + kindLabel(item) +
       (item.superseded ? '<span class="badge warn">SUPERSEDED</span>' : '') +
-      '</div><div class="t">' + esc(item.title) + '</div></div>';
+      '</div><div class="t">' + esc(label(item)) + '</div></div>';
     if (item.kind === 'diagram') {
       h += '<div class="hint">Tap the diagram to open full screen; pinch or +/− to zoom.</div>';
-      h += '<img class="diag" src="' + esc(item.img) + '" alt="' + esc(item.title) + '" data-zoom="' + esc(item.id) + '">';
+      h += '<img class="diag" src="' + esc(D.image(item)) + '" alt="' + esc(label(item)) + '" data-zoom="' + esc(item.id) + '">';
       h += verifyBox(item.flags);
       if (item.html) h += '<details class="companion" open><summary>Tree logic (text)</summary><div class="cardtext">' + item.html + '</div></details>';
-      if (companionCard) h += '<details class="companion"' + (companionCard.flags.length ? '' : '') + '><summary>Companion card: ' + esc(label(companionCard)) + ' · ' + esc(companionCard.title) + '</summary>' + verifyBox(companionCard.flags) + cardHTML(companionCard) + reviewedHTML(companionCard) + '</details>';
+      if (companionCard) h += '<details class="companion"' + (companionCard.flags.length ? '' : '') + '><summary>Companion card: ' + esc(label(companionCard)) + '</summary>' + verifyBox(companionCard.flags) + cardHTML(companionCard) + reviewedHTML(companionCard) + '</details>';
     } else {
       h += verifyBox(item.flags) + cardHTML(item);
     }
-    h += '<div class="hint">Source: ' + esc(item.source.split('/').slice(-2).join('/')) + '</div>';
+    h += '<div class="hint">Source: ' + esc(item.source.split('/').slice(-2).join('/')) + ' · original title: ' + esc(item.title) + '</div>';
     h += reviewedHTML(item);
     return h;
   }
@@ -107,7 +109,7 @@
     showTop(r.top);
     $('alts').innerHTML = r.alternates.map(a => {
       const it = a.diagram || a.card; if (!it) return '';
-      return '<button type="button" data-open="' + esc(it.id) + '"><span><b>' + esc(label(it)) + '</b> ' + esc(it.title) + (a.diagram ? ' <span class="badge">FLOW</span>' : '') + '</span><span class="sc">' + (a.score ? 'score ' + a.score : 'related') + '</span></button>';
+      return '<button type="button" data-open="' + esc(it.id) + '"><span><b>' + esc(label(it)) + '</b>' + (a.diagram ? ' <span class="badge">ALGORITHM</span>' : '') + '</span><span class="sc">' + (a.score ? 'score ' + a.score : 'related') + '</span></button>';
     }).join('') || '<p class="alt-tag">None.</p>';
     $('why').innerHTML = factsHTML(r.facts) + '<div class="subh">Rules fired for ' + esc(r.top.id) + ' (score ' + r.top.score + ')</div><ul class="rules">' + r.top.why.map(w => '<li>' + esc(w) + '</li>').join('') + '</ul>' +
       '<div class="subh">All candidates</div><ul class="rules">' + r.ranked.slice(0, 8).map(x => '<li>' + esc(x.id) + ' — ' + x.score + '</li>').join('') + '</ul>';
@@ -123,7 +125,7 @@
   let zoom = 1;
   function openViewer(item) {
     if (item.kind !== 'diagram') { openItem(item); return; }
-    $('viewer-title').textContent = label(item) + ' · ' + item.title; $('viewer-img').src = item.img; $('viewer-img').alt = item.title;
+    $('viewer-title').textContent = label(item); $('viewer-img').src = D.image(item); $('viewer-img').alt = label(item);
     zoom = 1; $('viewer-img').style.width = '100%'; $('viewer').hidden = false;
   }
   $('viewer-close').onclick = () => { $('viewer').hidden = true; };
@@ -150,7 +152,7 @@
   function renderList() {
     const q = $('q').value.trim().toLowerCase();
     const terms = q.split(/\s+/).filter(Boolean);
-    const match = it => !terms.length || terms.every(t => (label(it) + ' ' + it.id + ' ' + it.title + ' ' + it.text).toLowerCase().includes(t));
+    const match = it => !terms.length || terms.every(t => D.searchText(it).includes(t));
     const groups = [['Flow diagrams', i => i.kind === 'diagram'], ['OB cards', i => i.kind === 'card' && i.book === 'OB'], ['GYN companion cards', i => i.kind === 'card' && i.book === 'GYN']];
     let h = '';
     for (const [g, fn] of groups) {
@@ -163,7 +165,7 @@
           const txt = it.text.replace(/\s+/g, ' '); const ix = txt.toLowerCase().indexOf(terms[0]);
           if (ix >= 0) snip = esc(txt.slice(Math.max(0, ix - 40), ix + 80)).replace(new RegExp(terms[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => '<mark>' + m + '</mark>');
         }
-        h += '<button type="button" data-open="' + esc(it.id) + '"><span class="lid">' + esc(label(it)) + '</span>' + esc(it.title) +
+        h += '<button type="button" data-open="' + esc(it.id) + '"><span class="lid">' + kindLabel(it) + '</span>' + esc(label(it)) +
           (it.superseded ? ' <span class="badge warn">SUPERSEDED</span>' : '') + (it.flags && it.flags.length ? ' <span class="badge">⚑ ' + it.flags.length + '</span>' : '') +
           (snip ? '<span class="snip">…' + snip + '…</span>' : '') + '</button>';
       }
@@ -423,7 +425,7 @@
     $('lg-sugg').hidden = false;
     $('lg-sugg').innerHTML = !r.top ? '<p class="alt-tag">No confident match; enter fields manually.</p>' :
       '<details class="companion"><summary>DDx: ' + esc(label(r.top.card || r.top.diagram)) + ' + ' + r.alternates.length + ' alternates</summary><ul class="rules">' +
-      [r.top].concat(r.alternates).map(a => { const it = a.diagram || a.card; return it ? '<li><b>' + esc(label(it)) + '</b> ' + esc(it.title) + '</li>' : ''; }).join('') + '</ul></details>' +
+      [r.top].concat(r.alternates).map(a => { const it = a.diagram || a.card; return it ? '<li><b>' + esc(label(it)) + '</b></li>' : ''; }).join('') + '</ul></details>' +
       '<details class="companion"><summary>Suggested codes (verify)</summary>' + codingHTML(r.coding, r.top.id) + '</details>';
     const rt = SL.routineMatch(RC, [fl.hpi, text].join(' '), svc()) || SL.routineMatch(RC, [fl.hpi, text].join(' ')); showSvc();
     if (!r.top && rt) { const rf = applyRoutine(rt, false); $('lg-sugg').innerHTML = '<p><b>No card match. Routine encounter suggested: ' + esc(rf.set.label) + '</b> (codes filled where empty; pending Doc review). Tap a routine button to change.</p>'; }
@@ -432,8 +434,8 @@
     $('lg-triage').hidden = false; $('lg-ap').value = lastAP.text; $('lg-flow-reference').hidden = !lastAP.text.includes('FLOW BRANCH REFERENCE:');
     $('lg-using').textContent = 'Using HPI: ' + (fl.hpi || '(none)') + ' · ' + [fl.age && fl.age + ' yo', fl.gp, fl.ga].filter(Boolean).join(' ');
     $('lg-tri-cards').innerHTML = !r.top ? '' : (r.flags.length ? '<div class="chips">' + r.flags.map(fl2 => '<span class="chip ' + (fl2.level === 'amber' ? 'amber' : '') + '">' + esc(fl2.text) + '</span>').join('') + '</div>' : '') +
-      '<details class="companion"><summary>Top match: ' + esc(label(r.top.card || r.top.diagram)) + ' · ' + esc((r.top.card || r.top.diagram).title) + '</summary>' + itemHTML(r.top.diagram || r.top.card, r.top.diagram ? r.top.card : null) + '</details>' +
-      r.alternates.map(a => { const it = a.diagram || a.card; return it ? '<details class="companion"><summary>Also consider: ' + esc(label(it)) + ' · ' + esc(it.title) + '</summary>' + itemHTML(it, a.diagram ? a.card : null) + '</details>' : ''; }).join('');
+      '<details class="companion"><summary>Top match: ' + esc(label(r.top.card || r.top.diagram)) + '</summary>' + itemHTML(r.top.diagram || r.top.card, r.top.diagram ? r.top.card : null) + '</details>' +
+      r.alternates.map(a => { const it = a.diagram || a.card; return it ? '<details class="companion"><summary>Also consider: ' + esc(label(it)) + '</summary>' + itemHTML(it, a.diagram ? a.card : null) + '</details>' : ''; }).join('');
   }
   let deb = null; const schedule = carry => { clearTimeout(deb); deb = setTimeout(() => { try { runTriage(carry); } catch (err) { console.error(err); } }, 600); };
   $('lg-hpi').addEventListener('input', () => schedule(true));

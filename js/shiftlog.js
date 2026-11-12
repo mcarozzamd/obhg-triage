@@ -334,7 +334,7 @@
       age: f.age != null ? String(f.age) : '',
       ga: f.gaWeeks != null ? f.gaWeeks + 'w' + (f.gaDays || 0) + 'd' : '',
       gp: f.G != null ? 'G' + f.G + 'P' + (f.P == null ? 0 : f.P) : '',
-      diagnosis: item ? item.title : '',
+      diagnosis: item ? ((typeof self !== 'undefined' && self.DisplayNames && self.DisplayNames.title(item)) || item.title) : '',
       card: top ? top.id : '',
       icd: cd ? cd.icd.filter(c => !c.alt && c.verified).map(c => c.code).join(', ') : '',
       cpt: cd ? cd.cpt.slice(0, 2).map(c => c.code).join(', ') : '',
@@ -452,8 +452,9 @@
     L.push((demo || 'Patient') + (fl.hpi ? ' with ' + fl.hpi.replace(/^with\s+/i, '') : '') + '.');
     if (vit.length) L.push('Pertinent: ' + vit.join('; ') + '.');
     if (r.flags && r.flags.length) L.push('Red flags: ' + r.flags.map(x => x.text).join('; ') + '.');
-    L.push('Most consistent with: ' + card.title + ' (' + top.id + ').');
-    const alts = (r.alternates || []).map(a => { const it = a.card || a.diagram; return it ? it.title + ' (' + a.id + ')' : ''; }).filter(Boolean);
+    const DN = typeof self !== 'undefined' ? self.DisplayNames : null, nm = it => (DN && DN.title(it)) || it.title;
+    L.push('Most consistent with: ' + nm(card) + '.');
+    const alts = (r.alternates || []).map(a => { const it = a.card || a.diagram; return it ? nm(it) : ''; }).filter(Boolean);
     if (alts.length) L.push('Also consider: ' + alts.join('; ') + '.');
     const extracted = planSource(top, content), src = extracted.source, blocks = extracted.blocks;
     L.push('', 'PLAN (from ' + (src.kind === 'diagram' ? 'flow ' : 'card ') + src.id + ')');
