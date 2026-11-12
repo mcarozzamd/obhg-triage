@@ -1,0 +1,94 @@
+/* Nurse complaint-tree flow (nurse section) */
+.nf-lang{display:flex;flex-direction:column;gap:14px;padding:24px 12px}
+.nf-big{display:block;width:100%;min-height:64px;font-size:20px;font-weight:800;border:2px solid var(--navy);border-radius:12px;background:#fff;color:var(--navy);margin:6px 0}
+.nf-big[aria-pressed="true"]{background:var(--navy);color:#fff}
+.nf-row{border:1px solid var(--line);border-radius:8px;margin:6px 0;padding:6px 8px}
+.nf-q{font-size:15px;font-weight:700;margin-bottom:4px}
+.nf-ans{display:flex;flex-wrap:wrap;gap:6px}
+.nf-btn{min-height:48px;min-width:72px;font-size:16px;border:2px solid var(--line);border-radius:8px;background:#fff;color:var(--navy);padding:6px 12px;margin:2px}
+.nf-btn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:800}
+.nf-btn[disabled]{opacity:.45}
+.nf-none{display:block;width:100%;min-height:56px;font-size:18px;font-weight:800;border:2px solid var(--teal);border-radius:10px;background:#eef8f7;color:var(--navy);margin:10px 0}
+.nf-ro{font-size:14px;color:#456;font-style:italic}
+.nf-hint,.nf-note{font-size:13px;color:#456;margin:4px 0}
+.nf-warn{color:var(--red);font-weight:700}
+.nf-emergent{background:#c00000;color:#fff;border-radius:10px;padding:10px;margin:10px 0}
+.nf-banner{position:sticky;top:0;z-index:5;background:#0B3D5C;color:#fff;border-radius:8px;padding:8px 10px;margin:8px 0}
+.nf-banner[data-urgency="immediate"]{background:#c00000}.nf-banner[data-urgency="urgent"]{background:#b35c00}
+.nf-vitals{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nf-num{display:flex;flex-direction:column;font-weight:700;font-size:14px}.nf-num input{font-size:20px;padding:8px;border:1.5px solid var(--line);border-radius:8px}
+.nf-nav{display:flex;justify-content:space-between;gap:8px;margin:10px 0}
+.nf-red{color:var(--red);font-weight:700}.nf-amber{color:#8a5a00}
+.nf-prov{background:#FFF3CD;border:1px solid #E0B44C;border-radius:8px;padding:6px 8px;font-size:13px}
+.nf-test{background:#c00000;color:#fff;text-align:center;font-weight:700;padding:8px;border:3px solid #ffeb3b}
+#nf-sbar{width:100%;font-size:13px}
+.nf-compact h2{font-size:17px;margin:4px 0}
+.nf-compact .nf-row{display:flex;align-items:center;gap:6px;padding:3px 6px;margin:3px 0}
+.nf-compact .nf-q{flex:1;font-size:13px;line-height:1.2;margin:0;font-weight:600}
+.nf-compact .nf-ans{flex:none;flex-wrap:nowrap;gap:4px}
+.nf-compact .nf-btn{min-height:44px;min-width:50px;padding:2px 6px;font-size:14px;margin:0}
+.nf-compact .nf-warn{font-size:13px;margin:2px 0}
+.nf-compact .nf-note{flex-basis:100%}
+.nf-bypass{display:flex;flex-direction:column;gap:6px;margin:6px 0}
+.nf-proto{min-height:44px;font-size:15px;font-weight:800;border:3px solid #ffeb3b;border-radius:10px;background:#fff;color:#c00000;text-align:left;padding:6px 10px}
+.nf-gap{display:block;background:#fff3cd;color:#6b4e00;border-radius:8px;padding:6px 8px;font-size:14px;font-weight:700}
+.nf-remind{background:#fff;color:var(--ink);border-radius:8px;padding:6px 8px;margin:6px 0;font-size:14px}
+.nf-chip{min-height:40px;margin:3px;padding:4px 10px;border:2px solid var(--navy);border-radius:20px;background:#eef4f8;color:var(--navy);font-weight:700}
+.nf-remind .nf-warn{color:#c00000;margin:4px 0 0}
+.nf-secbtn{float:right;min-height:36px;margin-top:-4px;border:2px solid #fff;border-radius:8px;background:transparent;color:#fff;font-weight:700}
+.nf-qnav{clear:both;display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.nf-qnav .nf-btn{min-height:40px;font-size:14px;min-width:0}
+.nf-protohdr{position:sticky;top:0;background:#0B3D5C;color:#fff;padding:6px 8px;border-radius:8px}
+.nf-protobody img.diag{width:100%}
+.nf-bypass{gap:4px;margin:4px 0}
+.nf-chips{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding-bottom:2px}.nf-chip{white-space:nowrap;min-height:38px;font-size:13px;margin:0}
+.nf-remind{padding:4px 6px;margin:4px 0}.nf-remind p{font-size:12.5px}
+.nf-banner p{margin:2px 0}
+.nf-chips{align-items:center}.nf-chip{flex:none;height:auto;line-height:1.2}
+.nf-bypass .nf-chip{align-self:flex-start}
+/* NB12 compact pinned bar (≤160 px at 390×844 during an emergency) */
+.nf-pinrow{display:flex;align-items:center;gap:6px;justify-content:space-between}
+.nf-pinrow .nf-acu{flex:1;min-width:0;font-size:14px;line-height:1.25}
+.nf-pinrow .nf-hit{font-weight:800}
+.nf-pinrow .nf-secbtn{float:none;margin:0;flex:none;min-height:34px;padding:2px 8px}
+.nf-bypass .nf-proto{min-height:38px;padding:4px 8px;font-size:14px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nf-bypass .nf-gap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;padding:2px 6px;border-radius:6px}
+.nf-bypass-all .nf-proto,.nf-bypass-all .nf-gap{white-space:normal}
+.nf-bypass-all .nf-trig{display:flex;flex-direction:column;gap:4px;margin:0 0 10px}
+.nf-proto.nf-ea{border-color:#fff;background:#fff3cd}
+.nf-badge{font-size:11px;background:#6b4e00;color:#fff;border-radius:4px;padding:0 4px;margin-left:4px;vertical-align:middle}
+.nf-remind{display:block}
+.nf-finish{min-height:34px}
+.nf-remind .nf-chips{flex-direction:column;align-items:stretch;flex-wrap:nowrap;overflow:visible}
+.nf-secrow{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.nf-defer{display:flex;flex-wrap:wrap;gap:4px;width:100%}
+.nf-defer .nf-btn,.nf-secrow .nf-btn{min-height:34px;font-size:13px;padding:2px 8px}
+.nf-eacard li{margin:4px 0}
+.nf-pinfoot{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.nf-pinfoot .nf-chip{min-height:32px;font-size:12.5px;padding:2px 8px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.nf-pinfoot .nf-proto2{max-width:48%;background:#fff;color:#c00000;border-color:#ffeb3b;font-weight:800}
+.nf-pinfoot .nf-proto2.nf-ea{background:#fff3cd}
+.nf-pinfoot .nf-remind{background:transparent;color:inherit;padding:0;margin:0}
+.nf-pinrow .nf-acu{font-size:13.5px}
+.nf-bypass{margin:4px 0 0}
+.nf-remind-open{background:#fff;color:var(--ink);border-radius:8px;padding:6px;margin:6px 0 0}
+.nf-pinfoot .nf-chip{min-height:30px;padding:1px 8px}
+.nf-bypass .nf-proto{min-height:36px}
+.nf-protohdr{position:static}
+.nf-protohdr .nf-warn{color:#ffeb3b;font-size:13px;margin:4px 0 0}
+.nf-provtag{display:inline-block;background:#6b4e00;color:#fff;border-radius:4px;padding:0 4px;font-weight:700}
+/* ND1: red confirm chips lead the pinned footer row (rescue text never replaced) */
+.nf-pinfoot .nf-cfbtn{border:2px solid #fff;background:#fff;color:#c00000;font-weight:800;max-width:100%}
+.nf-acu .nf-cfpulse{display:inline-block;min-height:24px;font-size:12px;padding:0 6px;margin:0;border:2px solid #fff;background:#fff;color:#c00000;font-weight:800;vertical-align:baseline}
+/* ND5: jump chip inside the rescue line (no new row) */
+.nf-jump{display:inline-block;min-height:24px!important;font-size:12px!important;padding:0 7px!important;vertical-align:baseline;margin:0}
+.nf-relproto{scroll-margin-top:170px}
+.nf-byrow{display:flex;gap:4px;align-items:stretch}.nf-byrow .nf-proto{flex:1;min-width:0}
+.nf-setstatus{flex:none;border-color:#6b4e00;background:#fff3cd;color:#6b4e00;font-size:12px;padding:1px 6px;white-space:normal;max-width:112px;line-height:1.1;min-height:0}
+.nf-pinfoot .nf-proto2{max-width:40%}.nf-pinfoot .nf-chip{font-size:12px}.nf-pinfoot .nf-more{padding:1px 7px}
+/* Michael t1993u: Relevant protocols on the Act-now screen */
+.nf-relproto{border:2px solid var(--navy);border-radius:10px;padding:8px;margin:12px 0}
+.nf-relproto h3{margin:0 0 4px}.nf-relproto .nf-trig{margin:6px 0}
+/* NE1 full pulse-confirm block; NE2 URGENT link (amber, not a bypass) */
+.nf-pulsecf{border:2px solid #c00000;border-radius:8px;padding:6px;margin:6px 0;background:#fff5f5}
+.nf-urgentlinks{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.nf-urgentlink{min-height:30px;font-size:12.5px;padding:1px 8px;border:2px solid #fff;background:#fff3cd;color:#6b4e00;max-width:100%;overflow:hidden;text-overflow:ellipsis}

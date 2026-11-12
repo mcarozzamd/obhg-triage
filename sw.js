@@ -1,7 +1,8 @@
-// OBHG CLINICAL TRIAGE service worker. v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
+// OBHG CLINICAL TRIAGE service worker. v25 (12 Nov 2026): adds the English-only nurse section (nurse.html) and keeps its navigation cache separate from index.html.
+// v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v24-2026-11-11-dm-titles';
+const CACHE = PREFIX + 'v25-2026-11-12-nurse-en';
 const ASSETS = [
   './',
   './index.html',
@@ -15,6 +16,15 @@ const ASSETS = [
   './js/flowplans.js',
   './js/shiftlog.js',
   './js/app.js',
+  './nurse.html',
+  './css/nurse.css',
+  './js/nurse-safety-vocabulary.js',
+  './js/nurse-red-flags.js',
+  './js/nurse-engine.js',
+  './js/nurse-flow.js',
+  './js/nurse-cards.js',
+  './js/nurse-protocols.js',
+  './js/nurse-ui.js',
   './codes/code_tables.js',
   './codes/validation.js',
   './assets/display-diagrams/FD-ANT-01.png',
@@ -50,8 +60,10 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET' || new URL(e.request.url).origin !== location.origin) return;
   // HTML navigations: network-first so a new deploy is seen; falls back to cache offline.
   if (e.request.mode === 'navigate') {
-    e.respondWith(fetch(e.request).then(resp => { const copy = resp.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); return resp; })
-      .catch(() => caches.open(CACHE).then(c => c.match('./index.html'))));
+    // The nurse page is cached under its own key so it never replaces the cached physician index.html.
+    const page = new URL(e.request.url).pathname.endsWith('/nurse.html') ? './nurse.html' : './index.html';
+    e.respondWith(fetch(e.request).then(resp => { const copy = resp.clone(); caches.open(CACHE).then(c => c.put(page, copy)); return resp; })
+      .catch(() => caches.open(CACHE).then(c => c.match(page))));
     return;
   }
   e.respondWith(caches.open(CACHE).then(c => c.match(e.request, { ignoreSearch: true })).then(r => r || fetch(e.request).then(resp => {

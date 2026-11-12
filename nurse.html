@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B3D5C">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'">
+<meta name="robots" content="noindex, nofollow">
+<title>Nurse triage</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/nurse.css">
+</head>
+<body>
+<div id="nurse-app">
+<div id="nurse-test" class="nf-test" role="note"></div>
+<header class="hdr"><div class="hdr-org">CHRISTUS ST. MICHAEL · OBHG · TEXARKANA</div><h1 id="nurse-title">Nurse triage</h1></header>
+<main id="nurse-main">
+  <p id="nurse-prov" class="nf-prov" hidden></p>
+  <div id="nurse-banner" class="nf-banner" role="alert" aria-live="assertive"></div>
+  <div id="nurse-flowview">
+  <label id="nurse-hpi-label" for="nurse-hpi" class="lbl"></label>
+  <textarea id="nurse-hpi" rows="2" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  <section id="nurse-screen" class="box"></section>
+  <nav id="nurse-nav" class="nf-nav"></nav>
+  </div>
+  <section id="nurse-protocol" class="box nf-protocol" hidden></section>
+  <p id="nurse-footer" class="foot"></p>
+</main>
+</div>
+<script src="js/content.js"></script>
+<script src="js/display-names.js"></script>
+<script src="js/nurse-safety-vocabulary.js"></script>
+<script src="js/nurse-red-flags.js"></script>
+<script src="js/nurse-engine.js"></script>
+<script src="js/nurse-flow.js"></script>
+<script src="js/nurse-cards.js"></script>
+<script src="js/nurse-protocols.js"></script>
+<script src="js/nurse-ui.js"></script>
+</body>
+</html>
