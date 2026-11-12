@@ -2,28 +2,64 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs'),path=require('node:path');
 global.self=global;const root=path.resolve(__dirname,'..');
 const M=require('../js/dm-intrapartum.js'),C=require('../js/content.js'),E=require('../js/engine.js'),D=require('../js/display-names.js');
-// Independent expectation table (CSM chart as transcribed in the spec + the Type 1 floor clinician override).
-const EXP=[[[-1,0,1,40,59,60],'le60',0,/^D5LR 125/],[[61,62,69,70,75,89,90],'61-90',0,/^D5LR 125/],[[91,100,119,120],'91-120',0.5,/^D5LR 125/],
+// Independent expectation table (CSM chart rows; Type 1 floor override; F1 = A, F3 arms ON, F4 = Michael decision). Synthetic values only.
+const EXP=[[[0,1,40,53,54,59,60],'le60',0,/^D5LR 125/],[[61,62,65,69],'61-69',0,/^D5LR 125/],[[70,75,89,90],'70-90',0,/^D5LR 125/],[[91,100,119,120],'91-120',0.5,/^D5LR 125/],
  [[121,135,150],'121-150',1,/^LR 125/],[[151,170,180],'151-180',2,/^LR 125/],[[181,200,220],'181-220',3,/^LR 125/],[[221,240,250],'221-250',4,/^LR 125/],[[251,300,400,600],'gt250',5,/^LR 125/]];
+const bandId=k=>k==='61-69'||k==='70-90'?'61-90':k;
 let n=0;
-for(const [vals,band,rate,fluid] of EXP)for(const type of ['A1','A2','T2','T1'])for(const g of vals){if(g<0)continue;
- test(`FSBG ${g} type ${type} -> ${band}`,()=>{const a=M.action(type,g);n++;assert.equal(M.band(g).id,band);assert.equal(a.band,band);assert.match(a.fluid,fluid);
-  const want=(band==='61-90'&&type==='T1')?0.5:rate;assert.equal(a.insulinUnitsPerHour,want);assert.ok(a.insulinUnitsPerHour<=M.MAX_RATE);
-  if(band==='le60'){assert.equal(a.notifyProvider,true);assert.equal(a.hypoglycemiaProtocol,true);assert.equal(a.recheckMinutes,15);if(type==='T1')assert.match(a.insulin,/EMERGENCY PAUSE/);}
-  if(band==='61-90'&&type==='T1'){assert.match(a.override,/Clinician override of the CSM chart/);assert.deepEqual(a.providerRange,[0.5,1]);assert.equal(a.notifyProvider,true);}
-  if(band==='61-90'&&type!=='T1'){assert.equal(a.override,null);assert.equal(a.insulinUnitsPerHour,0);}
-  if(band==='61-90'&&g<=69)assert.ok(a.flags.includes('HYPO_CONTINGENCY_OVERLAP_61_69'));
-  if(band==='gt250')assert.equal(a.notifyProvider,true);
-  if(type==='T1'&&/^LR/.test(a.fluid))assert.ok(a.flags.includes('T1_LR_KETOSIS_WATCH'));});}
-test('type 1 with effective SC basal or pump: no IV floor, no stacking',()=>{const a=M.action('T1',75,{effectiveBasal:true});assert.equal(a.insulinUnitsPerHour,0);assert.match(a.insulin,/Do not stack/);});
-test('non-integer FSBG rejected (decimal rounding rule not set by spec)',()=>{for(const g of [60.5,90.4,120.1,NaN])assert.throws(()=>M.band(g));});
+// Insulin-requiring (drip) types
+for(const [vals,k,rate,fluid] of EXP)for(const type of ['A2','T2','T1'])for(const g of vals)
+ test(`drip: FSBG ${g} type ${type} -> ${k}`,()=>{const a=M.action(type,g);n++;assert.equal(a.band,bandId(k));assert.equal(a.drip,true);assert.match(a.fluid,fluid);
+  const want=type==='T1'&&(k==='61-69'||k==='70-90')?0.5:rate;assert.equal(a.insulinUnitsPerHour,want);assert.ok(a.insulinUnitsPerHour<=M.MAX_RATE);
+  if(k==='le60'||k==='61-69'){assert.equal(a.hypoglycemiaProtocol,true);assert.equal(a.notifyProvider,true);assert.equal(a.recheckMinutes,15);}
+  else assert.equal(a.hypoglycemiaProtocol,false);
+  if(k==='le60'&&type==='T1')assert.match(a.insulin,/EMERGENCY PAUSE/);
+  if(k==='61-69')assert.ok(a.flags.includes('F1A_RESCUE_61_69'));
+  if(type==='T1'&&(k==='61-69'||k==='70-90')){assert.match(a.override,/Clinician override of the CSM chart/);assert.deepEqual(a.providerRange,[0.5,1]);}
+  if(type!=='T1')assert.equal(a.override,null);
+  if(g<54)assert.ok(a.flags.includes('LT54_CALL_PROVIDER_NOW'));
+  if(k==='gt250')assert.equal(a.notifyProvider,true);
+  if(type==='T1'&&/^LR/.test(a.fluid)){assert.ok(a.flags.includes('T1_LR_KETOSIS_WATCH'));assert.match(a.ketoneWatch,/every 4 h on LR/);}});
+// F4 (Michael): diet-controlled GDM and oral agents: no drip, sliding scale per provider order, FSBG q4h then q1-2h, call >180/ketones/illness
+for(const type of ['A1','A2O','T2O'])for(const [vals,k] of EXP)for(const g of vals)
+ test(`no-drip: FSBG ${g} type ${type}`,()=>{const a=M.action(type,g);n++;assert.equal(a.drip,false);assert.equal(a.insulinUnitsPerHour,0);assert.equal(a.slidingScale,'per provider order');assert.ok(a.flags.includes('F4_NO_DRIP_SLIDING_SCALE'));assert.ok(!/units\/h/.test(a.insulin.replace(/0\.5 units\/h/,'')),a.insulin);
+  if(g<70){assert.equal(a.hypoglycemiaProtocol,true);assert.equal(a.recheckMinutes,15);}
+  else{assert.equal(a.hypoglycemiaProtocol,false);assert.match(a.insulin,/Sliding scale insulin as needed, per provider order/);assert.equal(a.recheckMinutes,240);assert.equal(a.notifyProvider,g>180);}});
+test('no-drip: active labor q1-2h; ketones and illness call the provider at any value',()=>{for(const t of ['A1','A2O','T2O']){const a=M.action(t,100,{activeLabor:true});assert.equal(a.recheckMinutes,60);assert.equal(a.recheckMaxMinutes,120);
+ assert.equal(M.action(t,100).notifyProvider,false);assert.equal(M.action(t,100,{ketones:true}).notifyProvider,true);assert.equal(M.action(t,100,{ill:true}).notifyProvider,true);assert.equal(M.action(t,181).notifyProvider,true);assert.equal(M.action(t,180).notifyProvider,false);}});
+test('no sliding-scale doses anywhere in the rendered algorithm',()=>{const fd=C.items.find(i=>i.id==='FD-ANT-05');assert.match(fd.text,/Sliding scale insulin as needed, per provider order/);assert.ok(!/sliding scale[^.]*\d+\s*units/i.test(fd.text));});
+test('type 1 effective basal / pump under signed CSM exception: no IV floor, no stacking',()=>{for(const g of [65,75]){const a=M.action('T1',g,{effectiveBasal:true});assert.equal(a.insulinUnitsPerHour,0);assert.match(a.insulin,/signed CSM exception/);assert.match(a.insulin,/Do not stack/);}});
+test('type 1 symptomatic at 61-69: emergency pause; symptoms at >=70 -> repeat POC, lab, call',()=>{assert.equal(M.action('T1',65,{symptomatic:true}).insulinUnitsPerHour,0);const a=M.action('A2',150,{symptomatic:true});assert.ok(a.flags.includes('SYMPTOMS_GE70'));assert.equal(a.notifyProvider,true);assert.equal(a.insulinUnitsPerHour,1);});
+test('F5: decimals round down; LO = <50; HI = >250 row + DKA screen; junk rejected',()=>{assert.equal(M.band(60.9).id,'le60');assert.equal(M.band(90.5).id,'61-90');assert.equal(M.band(120.5).id,'91-120');assert.equal(M.band(250.5).id,'221-250');assert.ok(M.action('A2',69.5).hypoglycemiaProtocol);
+ const lo=M.action('T1','LO');assert.ok(lo.flags.includes('METER_LO_TREAT_AS_LT50'));assert.equal(M.rescue({fsbg:'LO',iv:true}).order,'D50 50 mL IV');const hi=M.action('A2','HI');assert.equal(hi.band,'gt250');assert.equal(hi.dkaScreen,true);assert.equal(hi.notifyProvider,true);
+ for(const bad of [NaN,-1,'12','x',null])assert.throws(()=>M.band(bad));});
 test('unknown diabetes type rejected',()=>assert.throws(()=>M.action('X',100)));
+// F2/F3 rescue matrix
+const R=(o)=>M.rescue(o);let r=0;
+const MATRIX=[
+ [{fsbg:45,alert:true,iv:true},'D50 50 mL IV'],[{fsbg:49,alert:false,iv:true},'D50 50 mL IV'],[{fsbg:50,alert:true,iv:true},'D50 25 mL IV push'],[{fsbg:69,alert:false,iv:true},'D50 25 mL IV push'],[{fsbg:65,alert:true,iv:true},'D50 25 mL IV push'],
+ [{fsbg:45,alert:true,iv:false,canSwallow:true},'Glutose 40% oral gel 30 g buccal'],[{fsbg:55,alert:true,iv:false,canSwallow:true},'Glutose 40% oral gel 15 g buccal'],[{fsbg:65,alert:true,iv:false,canSwallow:true},'Glutose 40% oral gel 15 g buccal'],
+ [{fsbg:65,alert:true,iv:false,canSwallow:false},'Glucagon (GlucaGen) 1 mg IM, ONCE'],[{fsbg:40,alert:true,iv:false,canSwallow:false},'Glucagon (GlucaGen) 1 mg IM, ONCE'],
+ [{fsbg:55,alert:false,iv:false},'Glucagon (GlucaGen) 1 mg IM, ONCE'],[{fsbg:65,alert:false,iv:false},'Glucagon (GlucaGen) 1 mg IM, ONCE'],[{fsbg:70,alert:true,iv:true},null],[{fsbg:90,symptomatic:true},null]];
+for(const [st,want] of MATRIX)test('rescue '+JSON.stringify(st)+' -> '+want,()=>{r++;const o=R(st);assert.equal(o.order,want);if(want){assert.equal(o.recheckMinutes,15);assert.equal(o.notifyProvider,true);assert.equal(o.ivAccessNow,!st.iv);}});
+test('glucagon never in an alert patient who can swallow or has IV; once only; Michael-approved arms labeled',()=>{for(let g=0;g<70;g++){assert.ok(!/Glucagon/.test(R({fsbg:g,alert:true,iv:false,canSwallow:true}).order||''));assert.ok(!/Glucagon/.test(R({fsbg:g,alert:true,iv:true}).order||''));}
+ assert.equal(R({fsbg:65,alert:false,iv:false}).once,true);assert.match(R({fsbg:65,alert:false,iv:false}).source,/Michael-approved addition \(pending CSM pharmacy build\)/);assert.match(R({fsbg:65,alert:true,iv:false,canSwallow:true}).source,/Michael-approved/);assert.match(R({fsbg:55,alert:true,iv:false,canSwallow:true}).source,/^CSM$/);});
+test('symptoms at >=70: repeat POC, lab glucose, call provider',()=>assert.match(R({fsbg:75,symptomatic:true}).note,/repeat POC, send lab glucose, call provider/));
+test('<54 or impaired consciousness -> call now',()=>{assert.equal(R({fsbg:53,iv:true}).callNow,true);assert.equal(R({fsbg:60,alert:false,iv:true}).callNow,true);assert.equal(R({fsbg:60,iv:true}).callNow,false);});
+test('rescue text: glucagon once, IV access, no D10, symptoms >=70 line',()=>{const all=M.RESCUE.map(x=>x.order+' '+x.when).concat(M.RESCUE_AFTER).join(' ');assert.match(all,/Glucagon is ONCE only/);assert.match(all,/Get IV access now/);assert.match(all,/D10 is not in the CSM protocol/);assert.match(all,/Symptoms but FSBG ≥70/);assert.match(all,/Only if ALERT AND no IV AND cannot swallow/);assert.ok(!/repeat the rescue until/.test(all));});
+test('switches: decided values and no pending flags in any rendered text',()=>{assert.equal(M.SWITCHES.F1_LOW_61_69,'A');assert.equal(M.SWITCHES.F3_GEL15_ALERT_NOIV_SWALLOW_60_69,true);assert.equal(M.SWITCHES.F3_GLUCAGON_QC_NOIV_60_69,true);assert.ok(Object.values(M.DECIDED).every(Boolean));assert.ok(!('F4_A1_DRIP' in M.SWITCHES));
+ const txt=C.items.filter(i=>/ANT-05/.test(i.id)).map(i=>i.html).join(' ');assert.ok(!/PENDING/.test(txt));assert.ok(!/PENDING/.test(JSON.stringify(M.TEXT)));});
+test('switch flips change behavior (re-render path works)',()=>{const B=M.create({F1_LOW_61_69:'B',F3_GEL15_ALERT_NOIV_SWALLOW_60_69:false,F3_GLUCAGON_QC_NOIV_60_69:false},{F1_LOW_61_69:false});assert.equal(B.action('A2',65).hypoglycemiaProtocol,false);assert.equal(B.rescue({fsbg:65,iv:true}).order,null);assert.match(B.rescue({fsbg:65,alert:true,iv:false,canSwallow:true,symptomatic:true}).order,/Glucagon/);assert.equal(B.rescue({fsbg:65,alert:false,iv:false}).order,null);assert.match(B.TEXT.f1,/PENDING/);});
 test('D50 questionable consciousness split (CSM pharmacy): <50 -> 50 mL, 50-69 -> 25 mL, >=70 none',()=>{assert.match(M.d50QuestionableConsciousness(49),/50 mL/);assert.match(M.d50QuestionableConsciousness(50),/25 mL/);assert.match(M.d50QuestionableConsciousness(69),/25 mL/);assert.equal(M.d50QuestionableConsciousness(70),null);});
-test('dose table rows and rendered text companion agree with the module',()=>{const fd=C.items.find(i=>i.id==='FD-ANT-05');assert.ok(fd);assert.equal(fd.card,'ANT-05');assert.equal(fd.algorithm_id,'ALG-DM-INTRAPARTUM');const rows=M.table();assert.equal(rows.length,8);
- for(const r of rows){assert.ok(fd.html.includes(String(r.byType.T2.insulinUnitsPerHour))||r.byType.T2.insulinUnitsPerHour===0);}assert.match(fd.html,/dm-table/);assert.match(fd.text,/Doses to be checked against CSM pharmacy build/);assert.match(fd.html,/Clinician override of the CSM chart/);});
-test('ANT-05 card is the entry point and the engine attaches the new algorithm',()=>{const c=C.items.find(i=>i.id==='ANT-05');assert.match(c.html,/data-open="FD-ANT-05"/);const r=E.triage('G2P1 at 38 weeks type 1 diabetes in labor on insulin drip',C,require('../codes/code_tables.js'),require('../codes/validation.js'));assert.equal(r.top.id,'ANT-05');assert.equal(r.top.diagram&&r.top.diagram.id,'FD-ANT-05');});
+test('embedded content.js copy equals a fresh render of the module (F12)',()=>{const cp=require('node:child_process');const fd=C.items.find(i=>i.id==='FD-ANT-05'),a=C.items.find(i=>i.id==='ANT-05');assert.equal(fd.html,cp.execFileSync('node',[path.join(root,'build/dm_html.js'),'fd'],{encoding:'utf8'}));assert.equal(a.html,cp.execFileSync('node',[path.join(root,'build/dm_html.js'),'ant05'],{encoding:'utf8'}));
+ const sha=require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,'build/DM_INTRAPARTUM_FLOW_2026-11-11.pdf'))).digest('hex').slice(0,12);assert.equal(fd.sha,sha);assert.ok(fs.readFileSync(path.join(root,fd.img)).equals(fs.readFileSync(path.join(root,'build/DM_INTRAPARTUM_FLOW_2026-11-11.png'))));});
+test('dose table rows and rendered text agree with the module; Doc wording present',()=>{const fd=C.items.find(i=>i.id==='FD-ANT-05');assert.equal(fd.card,'ANT-05');assert.equal(fd.algorithm_id,'ALG-DM-INTRAPARTUM');const rows=M.table();assert.equal(rows.length,8);for(const x of rows)assert.ok(fd.html.includes(x.band.label.replace(/</g,'&lt;').replace(/>/g,'&gt;')),x.band.label);
+ for(const re of [/round DOWN/,/Meter "LO"/,/signed CSM exception/,/on home insulin, insulin pump, or prior DKA/,/any FSBG &lt;70 or any rescue/,/Doc proposal, not CSM/,/Clinician override of the CSM chart/,/Doses to be checked against CSM pharmacy build/,/no insulin increase/])assert.match(fd.html,re);});
+test('ANT-05 card: Doc target + steroid wording, button matches the algorithm name',()=>{const c=C.items.find(i=>i.id==='ANT-05');assert.match(c.html,/data-open="FD-ANT-05">Open: Diabetes in labor: insulin and IV fluids</);assert.match(c.html,/National reference: ACOG PB 201 labor target 70–110/);assert.match(c.html,/34\+0–36\+6/);assert.match(c.html,/up to 5 days/);assert.equal(D.title('FD-ANT-05'),'Diabetes in labor: insulin and IV fluids');});
+test('ANT-05 card is the entry point and the engine attaches the new algorithm',()=>{const r=E.triage('G2P1 at 38 weeks type 1 diabetes in labor on insulin drip',C,require('../codes/code_tables.js'),require('../codes/validation.js'));assert.equal(r.top.id,'ANT-05');assert.equal(r.top.diagram&&r.top.diagram.id,'FD-ANT-05');});
 test('algorithm image present, display copy present and precached; cache bumped',()=>{const fd=C.items.find(i=>i.id==='FD-ANT-05');assert.ok(fs.existsSync(path.join(root,fd.img)));assert.ok(fs.existsSync(path.join(root,'assets/display-diagrams/FD-ANT-05.png')));const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');assert.ok(sw.includes('v24-2026-11-11-dm-titles'));assert.ok(sw.includes('./js/display-names.js'));
  for(const i of C.items.filter(i=>i.kind==='diagram')){assert.ok(sw.includes('./assets/display-diagrams/'+i.id+'.png'),i.id);assert.ok(fs.existsSync(path.join(root,'assets/display-diagrams/'+i.id+'.png')),i.id);}});
+test('Doc Q8 names applied exactly',()=>{for(const [id,nm] of [['FD-ANT-08','Nausea and vomiting of pregnancy: treatment steps'],['FD-SYS-04','Maternal cardiac arrest response'],['FD-LND-09','Umbilical cord prolapse emergency'],['FD-LND-10','Suspected uterine rupture'],['FD-ANT-05','Diabetes in labor: insulin and IV fluids']])assert.equal(D.title(id),nm);});
 // Display names
 const code=/\b(?:FD|ANT|LND|SYS|GYN|GYNB|PP|ED|ALG)-[A-Z0-9]/;
 test('every item has one unique plain-condition name with no visible code',()=>{assert.equal(D.rows.length,C.items.length);const names=new Set();for(const i of C.items){const t=D.title(i);assert.ok(D.byId[i.id],i.id);assert.ok(!code.test(t),t);assert.ok(!/\bflow\b|\bv\d/i.test(t),t);assert.ok(!names.has(t.toLowerCase()),t);names.add(t.toLowerCase());}});
@@ -31,4 +67,4 @@ test('example rename: Sys-03 Maternal Sepsis Flow -> Maternal sepsis',()=>assert
 let searches=0;const match=(q)=>{const terms=q.toLowerCase().split(/\s+/).filter(Boolean);return C.items.filter(it=>terms.every(t=>D.searchText(it).includes(t))).map(i=>i.id);};
 for(const r of D.rows){const it=C.items.find(i=>i.id===r.id);for(const q of [...r.codes,r.old,r.name,...(r.aliases||[])])test(`search "${q}" finds ${r.id}`,()=>{searches++;assert.ok(match(q).includes(r.id));});}
 test('internal ids, card links and source titles unchanged',()=>{for(const i of C.items){assert.ok(i.title&&i.id);}const refs=[...C.items.map(i=>i.html).join(' ').matchAll(/data-open="([^"]+)"/g)].map(m=>m[1]);for(const id of refs)assert.ok(C.items.some(i=>i.id===id),id);});
-process.on('exit',()=>console.log(`DM band x type checks: ${n}; display-name search checks: ${searches}`));
+process.on('exit',()=>console.log(`DM glucose x type checks: ${n}; rescue-matrix checks: ${r}; display-name search checks: ${searches}`));

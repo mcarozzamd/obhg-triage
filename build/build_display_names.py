@@ -4,9 +4,11 @@ R=json.load(open('/workspace/obhg-triage-stage-redflag-2026-11-11/DISPLAY_TITLE_
 items=json.loads(subprocess.check_output(['node',os.path.join(ROOT,'build/items.js')],text=True))
 by={i['id']:i for i in items}
 new={'LND-09':'Umbilical cord prolapse','LND-10':'Uterine rupture','ANT-11':'Eclampsia','SYS-04':'Maternal cardiac arrest','SYS-05':'Amniotic fluid embolism',
-'FD-ANT-02':'Preterm labor assessment and treatment','FD-LND-05':'Group B strep: who gets antibiotics and which drug','FD-LND-02':'Suspected labor arrest','FD-ANT-08':'Hyperemesis treatment steps',
-'FD-SYS-04':'Cardiac arrest in pregnancy response','FD-ANT-11':'Eclamptic seizure response','FD-SYS-05':'Amniotic fluid embolism response','FD-LND-09':'Cord prolapse emergency','FD-LND-10':'Uterine rupture emergency',
-'FD-ANT-05':'Diabetes in labor: insulin and dextrose'}
+'FD-ANT-02':'Preterm labor assessment and treatment','FD-LND-05':'Group B strep: who gets antibiotics and which drug','FD-LND-02':'Suspected labor arrest','FD-ANT-08':'Nausea and vomiting of pregnancy: treatment steps',
+'FD-SYS-04':'Maternal cardiac arrest response','FD-ANT-11':'Eclamptic seizure response','FD-SYS-05':'Amniotic fluid embolism response','FD-LND-09':'Umbilical cord prolapse emergency','FD-LND-10':'Suspected uterine rupture',
+'FD-ANT-05':'Diabetes in labor: insulin and IV fluids'}
+# Doc verdict 11 Nov 2026 (Q8): 10 approved as proposed, 5 changed (above). Earlier proposed names stay searchable as aliases.
+PREV={'FD-ANT-08':['Hyperemesis treatment steps','hyperemesis'],'FD-SYS-04':['Cardiac arrest in pregnancy response'],'FD-LND-09':['Cord prolapse emergency'],'FD-LND-10':['Uterine rupture emergency'],'FD-ANT-05':['Diabetes in labor: insulin and dextrose','insulin drip','insulin infusion','ALG-DM-INTRAPARTUM']}
 rows=[]
 for r in R:
     if r['id'] not in by: continue
@@ -15,7 +17,7 @@ for r in R:
     rows.append(x)
 for k,v in new.items():
     assert k in by,k
-    rows.append({'id':k,'old':by[k]['title'],'name':v,'review':'New name 11 Nov 2026; Doc naming review pending'})
+    rows.append(dict({'id':k,'old':by[k]['title'],'name':v,'review':'Doc naming review 11 Nov 2026 (Q8)'},**({'aliases':PREV[k]} if k in PREV else {})))
 assert len(rows)==len(items),(len(rows),len(items))
 assert len({r['name'].casefold() for r in rows})==len(rows)
 for r in rows:

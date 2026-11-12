@@ -533,7 +533,7 @@
   "id": "LND-09",
   "old": "Umbilical cord prolapse (RCOG GTG 50, international)",
   "name": "Umbilical cord prolapse",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "LND-09"
   ]
@@ -542,7 +542,7 @@
   "id": "LND-10",
   "old": "Uterine rupture / TOLAC emergency (ACOG PB 205)",
   "name": "Uterine rupture",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "LND-10"
   ]
@@ -551,7 +551,7 @@
   "id": "ANT-11",
   "old": "Eclamptic seizure (PB 222 + CO 767)",
   "name": "Eclampsia",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "ANT-11"
   ]
@@ -560,7 +560,7 @@
   "id": "SYS-04",
   "old": "Maternal cardiac arrest / resuscitative hysterotomy (AHA 2025 + PB 211)",
   "name": "Maternal cardiac arrest",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "SYS-04"
   ]
@@ -569,7 +569,7 @@
   "id": "SYS-05",
   "old": "Amniotic fluid embolism (SMFM CG 9 + 2026 checklist)",
   "name": "Amniotic fluid embolism",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "SYS-05"
   ]
@@ -578,7 +578,7 @@
   "id": "FD-ANT-02",
   "old": "Preterm labor: confirm change, steroids, 48 hours, stop (flow)",
   "name": "Preterm labor assessment and treatment",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "ANT-02",
    "FD-ANT-02"
@@ -588,7 +588,7 @@
   "id": "FD-LND-05",
   "old": "GBS prophylaxis: who gets it, which drug (flow)",
   "name": "Group B strep: who gets antibiotics and which drug",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "FD-LND-05",
    "LND-05"
@@ -598,7 +598,7 @@
   "id": "FD-LND-02",
   "old": "Labor progress: is this really arrest? (flow)",
   "name": "Suspected labor arrest",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "FD-LND-02",
    "LND-02"
@@ -607,8 +607,12 @@
  {
   "id": "FD-ANT-08",
   "old": "NVP and hyperemesis: rule out, climb the ladder (flow)",
-  "name": "Hyperemesis treatment steps",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "name": "Nausea and vomiting of pregnancy: treatment steps",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
+  "aliases": [
+   "Hyperemesis treatment steps",
+   "hyperemesis"
+  ],
   "codes": [
    "ANT-08",
    "FD-ANT-08"
@@ -617,8 +621,11 @@
  {
   "id": "FD-SYS-04",
   "old": "Maternal cardiac arrest: the 4-minute clock",
-  "name": "Cardiac arrest in pregnancy response",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "name": "Maternal cardiac arrest response",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
+  "aliases": [
+   "Cardiac arrest in pregnancy response"
+  ],
   "codes": [
    "FD-SYS-04",
    "SYS-04"
@@ -628,7 +635,7 @@
   "id": "FD-ANT-11",
   "old": "Eclamptic seizure: protect, magnesium, stabilize, then deliver",
   "name": "Eclamptic seizure response",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "ANT-11",
    "FD-ANT-11"
@@ -638,7 +645,7 @@
   "id": "FD-SYS-05",
   "old": "Amniotic fluid embolism: resuscitate, support the RV, treat the DIC",
   "name": "Amniotic fluid embolism response",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
   "codes": [
    "FD-SYS-05",
    "SYS-05"
@@ -647,8 +654,11 @@
  {
   "id": "FD-LND-09",
   "old": "Umbilical cord prolapse: hand up, hold it, deliver fast",
-  "name": "Cord prolapse emergency",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "name": "Umbilical cord prolapse emergency",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
+  "aliases": [
+   "Cord prolapse emergency"
+  ],
   "codes": [
    "FD-LND-09",
    "LND-09"
@@ -657,8 +667,11 @@
  {
   "id": "FD-LND-10",
   "old": "Uterine rupture and TOLAC emergency: read the tracing, cut now",
-  "name": "Uterine rupture emergency",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "name": "Suspected uterine rupture",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
+  "aliases": [
+   "Uterine rupture emergency"
+  ],
   "codes": [
    "FD-LND-10",
    "LND-10"
@@ -666,9 +679,15 @@
  },
  {
   "id": "FD-ANT-05",
-  "old": "Diabetes in labor: insulin and dextrose",
-  "name": "Diabetes in labor: insulin and dextrose",
-  "review": "New name 11 Nov 2026; Doc naming review pending",
+  "old": "Diabetes in labor: insulin and IV fluids",
+  "name": "Diabetes in labor: insulin and IV fluids",
+  "review": "Doc naming review 11 Nov 2026 (Q8)",
+  "aliases": [
+   "Diabetes in labor: insulin and dextrose",
+   "insulin drip",
+   "insulin infusion",
+   "ALG-DM-INTRAPARTUM"
+  ],
   "codes": [
    "ALG-DM-INTRAPARTUM",
    "ANT-05",

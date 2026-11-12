@@ -1,26 +1,36 @@
-// Generates the text companion ("Tree logic (text)") for FD-ANT-05 from js/dm-intrapartum.js.
-const D = require('../js/dm-intrapartum.js');
+// Generates the FD-ANT-05 text companion and the ANT-05 card HTML from js/dm-intrapartum.js (all wording lives in the module).
+// Usage: node build/dm_html.js [fd|ant05]. Optional env DM_SWITCHES='{"F1_LOW_61_69":"B"}' renders an alternative for review only.
+const base = require('../js/dm-intrapartum.js');
+const D = process.env.DM_SWITCHES ? base.create(JSON.parse(process.env.DM_SWITCHES)) : base;
+const T = D.TEXT;
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const rows = D.table().map(r => {
-  const g = r.byType.A2, t = r.byType.T1;
-  const gtxt = r.band.id === 'le60' ? 'No insulin. Contact provider. Hypoglycemia protocol.' : r.band.id === '61-90' ? 'Hold infusion (A1: no insulin; monitor).' : g.insulinUnitsPerHour + ' units/h' + (g.insulinUnitsPerHour === D.MAX_RATE ? ' (maximum; notify provider)' : '');
-  const ttxt = r.band.id === 'le60' ? 'Emergency pause; dextrose continues; resume 0.5 units/h once >70 and rising.' : r.band.id === '61-90' ? '0.5 units/h floor (provider may set 0.5–1) + notify provider. Clinician override of the CSM chart (CSM: hold).' : t.insulinUnitsPerHour + ' units/h' + (r.band.fluid.startsWith('LR') ? '; watch for ketones on plain LR' : '');
-  return '<tr><td>' + esc(r.band.label) + '</td><td>' + esc(gtxt) + '</td><td>' + esc(ttxt) + '</td><td>' + esc(r.band.fluid) + '</td></tr>';
-}).join('');
-const html = [
-  '<p><strong>STEP 0.</strong> Diabetes (GDM A1/A2, type 2, type 1) admitted for labor, induction or scheduled cesarean. Unsure of type or insulin-deficient: treat as type 1 for basal and get senior/endocrine review.</p>',
-  '<p><strong>STEP 1: ON ADMISSION (CSM).</strong> Stop all insulin, including SC insulin pumps, and oral agents. NPO except 8 oz ice chips every 4 hours. POC glucose; BMP and urine ketones if FSBG &gt;160. <strong>Type 1: start the IV floor before stopping SC/pump, or keep the glargine/detemir already given; never a gap.</strong> Night-before/morning home doses and steroid adjustment: per the CSM provider/pharmacy order set (this app gives no home doses).</p>',
-  '<p><strong>DRIP SET-UP.</strong> Regular insulin (Myxredlin) 100 units/100 mL, so units/h = mL/h; range 0.5–5 units/h. PE-lined tubing: fill with insulin, wait 20 minutes, then flush. Smart pump, dedicated line, independent double-check. High-alert medication.</p>',
-  '<p><strong>MONITORING.</strong></p><ul>' + D.MONITORING.map(m => '<li>' + esc(m) + '</li>').join('') + '</ul>',
-  '<p><strong>STEP 2: FSBG NOW — WHICH ROW?</strong> CSM nomogram; maintenance fluid 125 mL/h. FSBG is read as a whole number: 60 is the ≤60 row; 90 holds; 91 starts 0.5 units/h; 120 stays on D5LR; 121 switches to LR. No bolus. Maximum 5 units/h. Never use this chart to treat DKA.</p>',
-  '<table class="dm-table"><thead><tr><th>FSBG (mg/dL)</th><th>GDM (A1/A2) and type 2: insulin</th><th>Type 1: insulin</th><th>Fluid</th></tr></thead><tbody>' + rows + '</tbody></table>',
-  '<p><strong>TYPE 1: NEVER ZERO BASAL.</strong> At 61–90 the floor is 0.5 units/h with D5LR 125 mL/h and provider notification; the provider may set 0.5–1 units/h by trend (prevents ketosis; not glucose correction). <em>Clinician override of the CSM chart</em> (CSM chart: hold infusion at 61–90). The floor is not needed if effective long-acting SC basal (within its duration) or a functioning pump is running; do not stack. Type 1 insulin stops only for FSBG ≤60 or symptomatic hypoglycemia, as an emergency pause: dextrose continues, recheck in 15 minutes, resume 0.5 units/h once &gt;70 and rising; a pause longer than about 1 hour needs provider review.</p>',
-  '<p><strong>HYPOGLYCEMIA &lt;70 OR SYMPTOMS: RESCUE NOW (CSM Adult Hypoglycemic Protocol).</strong></p><ul>' + D.RESCUE.map(o => '<li><strong>' + esc(o.order) + ':</strong> ' + esc(o.when) + '</li>').join('') + '<li>Recheck FSBG in 15 minutes; repeat the rescue until &gt;70; then resume (type 1: 0.5 units/h once &gt;70 and rising). GDM/type 2: hold IV insulin during rescue and restart per the nomogram row. Do not delay symptomatic rescue for a lab value.</li></ul>',
-  '<p><strong>SICK, KETONES, VOMITING? → DKA.</strong> Pregnancy DKA can occur below 200 mg/dL; there is no glucose gate for ketone testing when ill. Check beta-hydroxybutyrate, VBG, electrolytes/K+, creatinine and anion gap; maternal assessment and fetal monitoring. <strong>Use the CSM DKA order set, not this chart.</strong> Reference only, per CSM DKA order set: insulin 0.1 units/kg/h once K+ is safe. Type 1 on plain LR at ≥121 who develops ketones comes here; no ad hoc dextrose. Delivery is not DKA treatment.</p>',
-  '<p><strong>A · AFTER DELIVERY (CSM).</strong> Notify the provider when delivery is complete to start the CSM Postpartum Diabetes Management Order Set (doses there). GDM: stop insulin at placenta; 75-g 2-hour OGTT at 4–12 weeks postpartum. Type 1: basal always covered. Continue IV insulin 1–2 hours after the first SC basal dose; then stop D5LR and insulin together.</p>',
-  '<p><strong>B · NEWBORN.</strong> Tell the nursery the diabetes type, treatment, last maternal glucose and steroids. Stable baby: feed within 1 hour of birth; the nursery team owns the neonatal glucose protocol.</p>',
-  '<p><strong>C · STEROIDS / TIMING.</strong> Do not withhold indicated steroids solely for hyperglycemia; SMFM Consult #58 recommends against late-preterm steroids in pregestational diabetes. Delivery timing and EFW ≥4,500 g counseling stay on the Diabetes in pregnancy card.</p>',
-  '<p><strong>D · NOTIFY.</strong> RN to OBHG hospitalist: FSBG ≤60; 61–90 on a type 1 floor; 5 units/h with rising values; ketones; or any gap in type 1 basal.</p>',
-  '<p class="verify">Doses to be checked against CSM pharmacy build. Decision support only, not orders or unit policy.</p>'
+const mark = s => esc(s).replace(/(♦ PENDING MICHAEL \([^)]*\)\.?)/g, '<strong class="pending">$1</strong>');
+const rows = D.table().map(r => '<tr><td>' + esc(r.band.label) + '</td><td>' + mark(r.cells.gdm) + '</td><td>' + mark(r.cells.t1) + '</td><td>' + esc(r.cells.fluid) + '</td></tr>').join('');
+const fd = [
+  '<p><strong>STEP 0.</strong> ' + mark(T.step0) + '</p>',
+  '<p><strong>STEP 1: ON ADMISSION (CSM).</strong> ' + mark(T.step1) + '</p>',
+  '<p><strong>DRIP SET-UP.</strong> ' + mark(T.setup) + '</p>',
+  '<p><strong>MONITORING.</strong></p><ul>' + D.MONITORING.map(m => '<li>' + mark(m) + '</li>').join('') + '</ul>',
+  '<p><strong>STEP 2: FSBG NOW — WHICH ROW?</strong> ' + mark(T.step2) + '</p>',
+  '<p><strong>BELOW 70.</strong> ' + mark(T.f1) + '</p>',
+  '<table class="dm-table"><thead><tr><th>FSBG (mg/dL)</th><th>GDM A2 / type 2 on insulin</th><th>Type 1: insulin</th><th>Fluid</th></tr></thead><tbody>' + rows + '</tbody></table>',
+  '<p><strong>DIET-CONTROLLED GDM OR ORAL AGENTS: NO DRIP.</strong> ' + mark(T.f4) + '</p>',
+  '<p><strong>TYPE 1: NEVER ZERO BASAL.</strong> ' + mark(T.t1) + '</p>',
+  '<p><strong>TYPE 1 ON PLAIN LR (≥121): KETONES.</strong> ' + mark(T.ketones) + '</p>',
+  '<p><strong>HYPOGLYCEMIA &lt;70 OR SYMPTOMS: RESCUE NOW (CSM Adult Hypoglycemic Protocol).</strong></p><ul>' + D.RESCUE.map(o => '<li><strong>' + esc(o.order) + ':</strong> ' + mark(o.when) + '</li>').join('') + D.RESCUE_AFTER.map(x => '<li>' + mark(x) + '</li>').join('') + '</ul>',
+  '<p><strong>SICK, KETONES, VOMITING? → DKA.</strong> ' + mark(T.dka) + '</p>',
+  '<p><strong>A · AFTER DELIVERY (CSM).</strong> ' + mark(T.after) + '</p>',
+  '<p><strong>B · NEWBORN.</strong> ' + mark(T.newborn) + '</p>',
+  '<p><strong>C · STEROIDS / TIMING.</strong> ' + mark(T.steroidsShort) + '</p>',
+  '<p><strong>D · NOTIFY.</strong> ' + mark(T.notify) + '</p>',
+  '<p class="verify">' + esc(T.verify) + '</p>'
 ].join('\n');
-process.stdout.write(html);
+const ant05 = '<ul><li>GDM A1 = diet-controlled. GDM A2 = medication. Pregestational = type 1 or type 2 diagnosed before pregnancy (or overt diabetes in early pregnancy).</li>' +
+  '<li>Delivery timing (CO 831): GDM A1 39+0–40+6. GDM A2 well controlled 39+0–39+6. Poorly controlled GDM individualize. Pregestational, well controlled, no vascular disease 39+0–39+6. Vascular disease, poor control, or prior stillbirth 36+0–38+6.</li>' +
+  '<li><strong>' + esc(T.ant05Target.split(': ')[0]) + ':</strong> ' + mark(T.ant05Target.split(': ').slice(1).join(': ')) + ' <button type="button" class="linkbtn" data-open="FD-ANT-05">' + esc(T.ant05Button) + '</button></li>' +
+  '<li>Diet-controlled GDM (A1) or oral agents: no insulin drip; sliding scale insulin as needed per provider order; FSBG every 4 h until active labor, then every 1–2 h; call provider for >180, ketones or illness.</li>' +
+  '<li>Shoulder counseling: consider scheduled cesarean at EFW ≥4500 g with diabetes, ≥5000 g without (LND-06). Counseling threshold, not an absolute safety cutoff.</li>' +
+  '<li>' + mark(T.ant05Steroids) + '</li>' +
+  '<li>Postpartum: notify the provider at delivery to start the CSM Postpartum Diabetes Management Order Set (doses there). Screen A1/A2 with a 75-g 2-hour OGTT at 4–12 weeks postpartum.</li></ul>\n' +
+  '<p class="bottomline">BOTTOM LINE. A1 can wait to 40+6. A2 and well-controlled pregestational diabetes: 39 weeks. In labor: CSM nomogram, below 70 = low, hourly FSBG on the drip, type 1 never zero basal. EFW ≥4500 g with diabetes: consider cesarean (counseling, not a limit).</p>';
+process.stdout.write(process.argv[2] === 'ant05' ? ant05 : fd);

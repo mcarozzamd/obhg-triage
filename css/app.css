@@ -108,3 +108,4 @@ tr.amended td{background:#FFFBEA}
 #list .lid{font-size:11px;letter-spacing:.06em;opacity:.75}
 .linkbtn{display:inline-block;margin:6px 0;padding:8px 12px;border:1.5px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy);font-weight:700;font-size:15px;text-align:left}
 .dm-table{border-collapse:collapse;width:100%;font-size:14px;margin:6px 0}.dm-table th,.dm-table td{border:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}.dm-table th{background:#eef2f7}
+.pending{color:#8a5a00;background:#fff3cd;padding:0 2px}
