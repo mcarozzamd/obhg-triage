@@ -4,7 +4,7 @@
 (function(root){
  'use strict';
  const N=root.NurseFlow,PR=root.NurseProtocols,NC=root.NurseCards,D=root.DisplayNames,C=root.CONTENT;
- const dhtml=it=>D&&typeof D.html==='function'?dhtml(it):String(it&&it.html||''); // live display-names.js has no html(); use the card html as the physician app does
+ const dhtml=it=>D&&typeof D.html==='function'?D.html(it):String(it&&it.html||''); // live display-names.js has no html(); use the card html as the physician app does
  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const STR={
   en:{title:'Nurse triage',test:'Decision support only: not unit policy. Emergency? Activate rescue now. Do not enter names, MRNs or dates of birth.',back:'Back',next:'Next',yes:'Yes',no:'No',unsure:'Unsure',none:'None of these',noRest:'All others No',

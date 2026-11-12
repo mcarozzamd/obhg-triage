@@ -39,6 +39,20 @@ for(const lang of ['en'])for(const lock of [false,true]){const p=await b.newPage
  const h2=await p.$eval('#nurse-banner',e=>Math.round(e.getBoundingClientRect().height));ok(h2<=160,`${lang} NE1 bar after opening ${h2}px ≤160`);
  await p.screenshot({path:`/tmp/pw/cand-ne-${lang}-${lock?'locked':'urgent'}.png`});await p.click('[data-act=confirm][data-id=pulse]');ok(!(await p.$('#nurse-banner [data-act=pulseopen]')),`${lang} NE1 explicit Confirm clears the chip`);
  ok(!errs.length,`${lang} NE no console errors ${errs.join('|')}`);await p.close();}
+const LANGS_W=['en'],PICK_W=false;
+// Doc C1: no horizontal overflow on any nurse screen at 375, 390 and 430 px
+for(const lang of LANGS_W)for(const vw of [375,390,430]){const p=await b.newPage({viewport:{width:vw,height:844},isMobile:true,hasTouch:true});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+ await p.goto(BASE);if(PICK_W)await p.click(`[data-act=lang][data-val=${lang}]`);
+ await p.click('#nurse-screen [data-act=ans][data-id=hemorrhage][data-val=yes]');
+ const go=v=>p.evaluate(v=>{self.NurseUI.click({target:{closest:()=>({dataset:{act:'go',val:v},textContent:''})}});},v);
+ await go('vitals');await p.fill('#nf-sbp','150');await p.fill('#nf-hr','45');await p.waitForTimeout(80);
+ const inView=(sel)=>p.$eval(sel,(e,vw)=>{const r=e.getBoundingClientRect();return r.right<=vw+0.5&&r.left>=0;},vw);const dbp=await inView('#nf-dbp');const spo=await inView('#nf-spo2');ok(dbp&&spo,`${lang} ${vw}px vitals: DBP and SpO2 inputs fully on screen`);
+ const scr=await p.evaluate(()=>self.NurseUI.screens(self.NurseUI.last.s,self.NurseUI.last.r));const bad=[];
+ for(const sc of [...scr,'protocols']){await go(sc);await p.waitForTimeout(60);const w=await p.evaluate(()=>({sw:document.documentElement.scrollWidth,bw:document.body.scrollWidth,iw:innerWidth}));if(Math.max(w.sw,w.bw,w.iw)>vw)bad.push(sc+':'+Math.max(w.sw,w.bw,w.iw));}
+ await p.evaluate(()=>self.NurseUI.click({target:{closest:()=>({dataset:{act:'proto',val:'FD-PP-01'},textContent:''})}}));await p.waitForTimeout(80);{const w=await p.evaluate(()=>Math.max(document.documentElement.scrollWidth,document.body.scrollWidth,innerWidth))-vw;if(w>0)bad.push('protocol FD-PP-01:+'+w);}
+ ok(!bad.length,`${lang} ${vw}px: no horizontal overflow on ${scr.length+2} views (scrollWidth and layout viewport ≤ ${vw}px, mobile emulation) ${bad.join(' ')}`);
+ const h=await p.$eval('#nurse-banner',e=>Math.round(e.getBoundingClientRect().height));ok(h<=160,`${lang} ${vw}px: pinned bar ${h}px ≤160`);
+ ok(!errs.length,`${lang} ${vw}px width check: no page errors ${errs.join('|')}`);await p.close();}
 {const ROOT=BASE.replace(/nurse\.html.*$/,'');const ctx=await b.newContext({viewport:{width:390,height:844}});const p=await ctx.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
  const ES=/\b(Sí|Español|Triaje|Siguiente|Atrás|Urgencia|Secciones|Confirmar|Protocolos|Terminar|enfermería|PRUEBA)\b/;
  await p.goto(ROOT);await p.waitForFunction(()=>navigator.serviceWorker&&navigator.serviceWorker.controller,null,{timeout:15000}).catch(()=>{});

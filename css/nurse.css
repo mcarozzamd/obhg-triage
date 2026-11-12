@@ -15,8 +15,8 @@
 .nf-emergent{background:#c00000;color:#fff;border-radius:10px;padding:10px;margin:10px 0}
 .nf-banner{position:sticky;top:0;z-index:5;background:#0B3D5C;color:#fff;border-radius:8px;padding:8px 10px;margin:8px 0}
 .nf-banner[data-urgency="immediate"]{background:#c00000}.nf-banner[data-urgency="urgent"]{background:#b35c00}
-.nf-vitals{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.nf-num{display:flex;flex-direction:column;font-weight:700;font-size:14px}.nf-num input{font-size:20px;padding:8px;border:1.5px solid var(--line);border-radius:8px}
+.nf-vitals{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px} /* Doc C1: no horizontal overflow on 375–430 px phones */
+.nf-num{display:flex;flex-direction:column;font-weight:700;font-size:14px}.nf-num input{width:100%;min-width:0;box-sizing:border-box;font-size:20px;padding:8px;border:1.5px solid var(--line);border-radius:8px}
 .nf-nav{display:flex;justify-content:space-between;gap:8px;margin:10px 0}
 .nf-red{color:var(--red);font-weight:700}.nf-amber{color:#8a5a00}
 .nf-prov{background:#FFF3CD;border:1px solid #E0B44C;border-radius:8px;padding:6px 8px;font-size:13px}

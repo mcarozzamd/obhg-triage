@@ -3,13 +3,13 @@
 const assert=require('node:assert/strict'),fs=require('fs'),path=require('path'),vm=require('vm');
 const root=path.resolve(__dirname,'../..');let pass=0,total=0;
 function test(name,fn){total++;try{fn();pass++;console.log('PASS '+name);}catch(e){console.log('FAIL '+name+': '+e.message);process.exitCode=1;}}
-function load(){
+function load(opt={}){
  const els=new Map();
  function element(id){if(!els.has(id))els.set(id,{id,value:'',innerHTML:'',textContent:'',hidden:false,dataset:{},attributes:{},handlers:{},setAttribute(k,v){this.attributes[k]=v;},addEventListener(k,fn){this.handlers[k]=fn;},scrollIntoView(){},focus(){}});return els.get(id);}
  const box={document:{getElementById:element,addEventListener:()=>{},documentElement:element('html'),title:''},navigator:{},location:{protocol:'file:'},confirm:()=>true};
  box.self=box;vm.createContext(box);
  const html=fs.readFileSync(path.join(root,'nurse.html'),'utf8');
- for(const m of html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/g))vm.runInContext(fs.readFileSync(path.join(root,m[1]),'utf8'),box,{filename:m[1]});
+ for(const m of html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/g)){vm.runInContext(fs.readFileSync(path.join(root,m[1]),'utf8'),box,{filename:m[1]});if(opt.dnHtml&&m[1]==='js/display-names.js')box.DisplayNames=Object.assign({},box.DisplayNames,{html:it=>'<!--dn-html-->'+String(it.html||'')});}
  const click=(act,o={})=>element('nurse-app').handlers.click({target:{closest:()=>({dataset:{act,...o},textContent:''})}});
  const type=(k,v)=>element('nurse-app').handlers.input({target:{id:'nf-'+k,value:String(v),dataset:{num:k}}});
  return {$:element,click,type,UI:box.NurseUI,html,box};
@@ -26,4 +26,7 @@ test('PROVISIONAL dose tag kept on the anaphylaxis card (English)',()=>{const {U
 test('opening a house protocol card works with the live display-names.js (no D.html) and shows the card body',()=>{const {$,click}=load();click('ans',{id:'hemorrhage',val:'yes'});click('proto',{val:'FD-PP-01'});assert.equal($('nurse-protocol').hidden,false);assert.ok($('nurse-protocol').innerHTML.length>500);assert.match($('nurse-protocol').innerHTML,/cardtext/);});
 test('nurse section uses its own engine copy; physician index.html does not load any nurse file',()=>{assert.match(html,/js\/nurse-engine\.js/);assert.doesNotMatch(html,/src="js\/engine\.js"/);const idx=fs.readFileSync(path.join(root,'index.html'),'utf8');assert.doesNotMatch(idx,/nurse-[a-z-]+\.js|nurse\.css/);assert.match(idx,/<a href="nurse\.html">Nurse triage section →<\/a>/);assert.doesNotMatch(idx,/English \/ Español\) →/);});
 test('service worker precaches every nurse file and caches the nurse page under its own key',()=>{const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');for(const m of html.matchAll(/(?:src|href)="((?:js|css)\/[^"]+)"/g))assert.ok(sw.includes("'./"+m[1]+"'"),m[1]);assert.ok(sw.includes("'./nurse.html'"));assert.match(sw,/endsWith\('\/nurse\.html'\) \? '\.\/nurse\.html' : '\.\/index\.html'/);assert.match(sw,/v25-2026-11-12-nurse-en/);});
+test('C2: when display-names.js provides html() the shim calls D.html once (no self-recursion) and the card renders',()=>{const {$,click}=load({dnHtml:true});click('ans',{id:'hemorrhage',val:'yes'});click('proto',{val:'FD-PP-01'});assert.equal($('nurse-protocol').hidden,false);assert.match($('nurse-protocol').innerHTML,/<!--dn-html-->/);});
+test('C2: shim source calls D.html, never itself',()=>{const src=fs.readFileSync(path.join(root,'js/nurse-ui.js'),'utf8');assert.match(src,/typeof D\.html==='function'\?D\.html\(it\):/);assert.doesNotMatch(src,/\?dhtml\(it\)/);});
+test('C1: vitals grid columns can shrink and inputs fill their column',()=>{const css=fs.readFileSync(path.join(root,'css/nurse.css'),'utf8');assert.match(css,/\.nf-vitals\{display:grid;grid-template-columns:minmax\(0,1fr\) minmax\(0,1fr\)/);assert.match(css,/\.nf-num input\{width:100%;min-width:0;box-sizing:border-box/);});
 console.log(`${pass}/${total} English-only live-candidate contracts`);
