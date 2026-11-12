@@ -429,12 +429,13 @@
  {
   "id": "FD-SYS-02",
   "old": "Postpartum VTE prophylaxis decision tree (CMQCC)",
-  "name": "VTE prophylaxis",
+  "name": "Postpartum VTE prophylaxis",
   "review": "Michael title decision 11 Nov 2026",
   "aliases": [
    "Postpartum thrombosis prevention",
    "postpartum thrombosis prevention",
-   "VTE prevention"
+   "VTE prevention",
+   "VTE prophylaxis"
   ],
   "codes": [
    "FD-SYS-02",
