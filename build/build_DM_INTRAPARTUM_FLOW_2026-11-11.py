@@ -1,11 +1,11 @@
 # Build: Diabetes in labor (ALG-DM-INTRAPARTUM) one-page flow diagram, 11 Nov 2026 (rev. after Doc fixes). fd_common house visual model.
 # ALL wording, doses and bands come from js/dm-intrapartum.js (single source; switches applied there), so the image, the text companion
-# and the tests cannot drift. Page is landscape-letter width, taller (792 x 846 pt) to carry Doc's full rescue matrix legibly.
+# and the tests cannot drift. Page is landscape-letter width, taller (792 x 852 pt) to carry Doc's full rescue matrix legibly.
 import os, sys, subprocess, json
 sys.dont_write_bytecode = True
 sys.path.insert(0, "/workspace/grok-obgyn/cards/flow-diagrams/")
 import fd_common
-fd_common.PH = 846
+fd_common.PH = 852
 from fd_common import *
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 JS = ("const b=require('./js/dm-intrapartum.js');const D=process.env.DM_SWITCHES?b.create(JSON.parse(process.env.DM_SWITCHES)):b;"
@@ -51,9 +51,9 @@ for r in X["rows"]:
     for w, t in zip(cw, cl):
         rect(c, x, y, w, rh, fill=fill, stroke=NAVY, lw=0.6); draw_para(c, t, x + 3, y + 1.5, w - 6, rh - 3, 7.2, 5.6, fg, valign="middle", tag="cell:" + r["id"]); x += w
     y += rh
-action(c, 182, y + 4, 590, 34, "DIET-CONTROLLED GDM (A1) OR ORAL AGENTS: NO DRIP \u00b7 LIGHT GRAY", m(T["f4"]), fill=LIGHT, tsize=7.0, bsize=6.5, tag="a1")
-action(c, 182, y + 42, 590, 38, "TYPE 1 ON PLAIN LR (\u2265121): KETONES \u00b7 MID GRAY", m(T["ketones"]), fill=MID, tsize=7.0, bsize=6.4, tag="ket")
-ytop = max(y + 42 + 38, 300 + 244) + 8
+action(c, 182, y + 4, 590, 40, "DIET-CONTROLLED GDM (A1) OR ORAL AGENTS: NO DRIP \u00b7 LIGHT GRAY", m(T["f4"]), fill=LIGHT, tsize=7.0, bsize=6.5, tag="a1")
+action(c, 182, y + 48, 590, 38, "TYPE 1 ON PLAIN LR (\u2265121): KETONES \u00b7 MID GRAY", m(T["ketones"]), fill=MID, tsize=7.0, bsize=6.4, tag="ket")
+ytop = max(y + 48 + 38, 300 + 244) + 8
 assert ytop <= 610, ytop
 resc = "".join("<b>%s:</b> %s<br/>" % (e(o["order"]), m(o["when"], True)) for o in X["rescue"]) + "<br/>".join(m(a, True) for a in X["after"])
 action(c, 20, ytop, 500, 150, "HYPOGLYCEMIA <70 OR SYMPTOMS: RESCUE NOW (CSM ADULT HYPOGLYCEMIC PROTOCOL) \u00b7 DARK GRAY", resc, fill=DARK, fg=WHITE, tsize=7.2, bsize=6.6, tag="rescue")

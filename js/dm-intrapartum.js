@@ -15,7 +15,7 @@ const DEFAULT_SWITCHES = {
 };
 // F4 is DECIDED (Michael, 11 Nov 2026, 8:43 PM CT; supersedes both Doc options): diet-controlled GDM (A1) and anyone on oral agents are NOT
 // managed with the drip: sliding scale insulin as needed per provider order (no CSM scale in hand; no doses shown); FSBG q4h until active
-// labor, then q1–2h; call provider for >180, ketones or illness. The drip is for insulin-requiring patients (A2 on insulin, type 2 on insulin, type 1).
+// labor, then q2h in active labor, and 1 h after any sliding-scale dose (Michael 11 Nov 2026, 8:51 PM CT); call provider for >180, ketones or illness. The drip is for insulin-requiring patients (A2 on insulin, type 2 on insulin, type 1).
 // F1 = A and both F3 arms = ON: DECIDED by Michael 11 Nov 2026, 8:44 PM CT. F3 arms are Michael-approved additions pending the CSM pharmacy build.
 const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F3_GLUCAGON_QC_NOIV_60_69: true };
 
@@ -55,7 +55,7 @@ const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F
     const T1_PAUSE = 'No insulin now: type 1 EMERGENCY PAUSE (dextrose continues). Rescue; recheck in 15 min; ' + RESUME + '. A pause of about 1 h or longer needs provider review.';
     const FLOOR_NOT_NEEDED = 'IV floor not needed only if effective long-acting SC basal (glargine/detemir given within its duration) is on board, or a pump is continued under a signed CSM exception. Do not stack.';
     // type: A1 | A2O | T2O (diet / oral agents: no drip) | A2 | T2 (on insulin) | T1. opts: effectiveBasal (T1: qualifying SC basal or pump under
-    //       signed CSM exception), symptomatic, activeLabor, ketones, ill (diet/oral group call triggers).
+    //       signed CSM exception), symptomatic, activeLabor, slidingScaleGiven, ketones, ill (diet/oral group call triggers).
     function action(type, fsbg, opts = {}) {
       if (!TYPES[type]) throw new RangeError('type must be A1, A2O, T2O, A2, T2 or T1');
       const rd = reading(fsbg), v = rd.value, b = band(fsbg), sym = !!opts.symptomatic;
@@ -103,8 +103,8 @@ const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F
       if (noDrip) {
         out.fluid = NDFLUID; out.flags.push('F4_NO_DRIP_SLIDING_SCALE'); out.slidingScale = 'per provider order';
         if (!out.hypoglycemiaProtocol && v >= 70) {
-          out.insulinUnitsPerHour = 0; out.recheckMinutes = opts.activeLabor ? 60 : 240; out.recheckMaxMinutes = opts.activeLabor ? 120 : 240;
-          out.insulin = 'No insulin drip (' + TYPES[type] + '). Sliding scale insulin as needed, per provider order (no CSM scale in this app; no doses shown). FSBG ' + (opts.activeLabor ? 'every 1–2 h in active labor.' : 'every 4 h until active labor, then every 1–2 h.');
+          out.insulinUnitsPerHour = 0; out.recheckMinutes = opts.slidingScaleGiven ? 60 : opts.activeLabor ? 120 : 240;
+          out.insulin = 'No insulin drip (' + TYPES[type] + '). Sliding scale insulin as needed, per provider order (no CSM scale in this app; no doses shown). ' + (opts.slidingScaleGiven ? 'Sliding-scale insulin given: recheck FSBG in 1 h.' : 'FSBG ' + (opts.activeLabor ? 'every 2 h in active labor' : 'every 4 h until active labor, then every 2 h') + '; recheck in 1 h after any sliding-scale dose.');
           const why = [v > 180 && 'FSBG >180', opts.ketones && 'ketones', opts.ill && 'vomiting/illness'].filter(Boolean);
           if (why.length) { out.notifyProvider = true; out.insulin += ' Call provider now: ' + why.join(', ') + '.'; }
           if (sym) out.insulin += ' Symptoms but FSBG ≥70: repeat POC, send lab glucose, call provider.';
@@ -155,13 +155,13 @@ const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F
       'FSBG before starting IV fluids.',
       'Insulin drip running: FSBG every 1 hour, regardless of dilation (Michael override of CSM q2h latent; ACOG PB 201).',
       'Insulin-requiring, drip not yet running: every 2 hours in latent labor or NPO before delivery; every 1 hour at 4–6 cm or with regular contractions (CSM).',
-      'Diet-controlled GDM or oral agents (no drip): every 4 hours until active labor, then every 1–2 hours (Michael decision 11 Nov 2026).',
+      'Diet-controlled GDM or oral agents (no drip): every 4 hours until active labor, then every 2 hours; recheck 1 hour after any sliding-scale dose (Michael decision 11 Nov 2026).',
       'After any hypoglycemia rescue: recheck in 15 minutes (go-live resolution 2).',
       'Hospital point-of-care glucose for insulin decisions; CGM for trends/alarms only.'
     ]);
     const F1_TEXT = F1A ? 'Any FSBG below 70, or symptoms at any value: hypoglycemia rescue now (rescue box). 61–90 means "no insulin increase," not "no action."'
       : 'FSBG ≤60, or symptoms at any value: hypoglycemia rescue now. 61–69 without symptoms on D5LR: no D50 (option B); recheck in 15 min; rescue if ≤60, symptomatic or lower. 61–90 means "no insulin increase," not "no action."';
-    const F4_TEXT = 'Diet-controlled GDM (A1) and anyone on oral agents (metformin, glyburide): NO insulin drip. Sliding scale insulin as needed, per provider order (no CSM scale in this app; no doses shown). FSBG every 4 h until active labor, then every 1–2 h. Call provider now for FSBG >180, ketones, or vomiting/illness. Low (<70): rescue box. The drip is for insulin-requiring patients: A2 on insulin, type 2 on insulin, type 1 (Michael decision 11 Nov 2026).';
+    const F4_TEXT = 'Diet-controlled GDM (A1) and anyone on oral agents (metformin, glyburide): NO insulin drip. Sliding scale insulin as needed, per provider order (no CSM scale in this app; no doses shown). FSBG every 4 h until active labor, then every 2 h; recheck 1 h after any sliding-scale dose. Call provider now for FSBG >180, ketones, or vomiting/illness. Low (<70): rescue box. The drip is for insulin-requiring patients: A2 on insulin, type 2 on insulin, type 1 (Michael decision 11 Nov 2026).';
     const TEXT = Object.freeze({
       title: 'Diabetes in labor: insulin and IV fluids',
       step0: 'Diabetes (GDM A1/A2, type 2, type 1) admitted for labor, induction or scheduled cesarean. Unsure of type AND on home insulin, insulin pump, or prior DKA: treat as type 1 for basal (never a basal gap) and get senior/endocrine review now. Not on any insulin and no DKA history: diet/oral rule (no drip).',

@@ -20,12 +20,12 @@ for(const [vals,k,rate,fluid] of EXP)for(const type of ['A2','T2','T1'])for(cons
   if(g<54)assert.ok(a.flags.includes('LT54_CALL_PROVIDER_NOW'));
   if(k==='gt250')assert.equal(a.notifyProvider,true);
   if(type==='T1'&&/^LR/.test(a.fluid)){assert.ok(a.flags.includes('T1_LR_KETOSIS_WATCH'));assert.match(a.ketoneWatch,/every 4 h on LR/);}});
-// F4 (Michael): diet-controlled GDM and oral agents: no drip, sliding scale per provider order, FSBG q4h then q1-2h, call >180/ketones/illness
+// F4 (Michael): diet-controlled GDM and oral agents: no drip, sliding scale per provider order, FSBG q4h, q2h in active labor, 1 h after a sliding-scale dose, call >180/ketones/illness
 for(const type of ['A1','A2O','T2O'])for(const [vals,k] of EXP)for(const g of vals)
  test(`no-drip: FSBG ${g} type ${type}`,()=>{const a=M.action(type,g);n++;assert.equal(a.drip,false);assert.equal(a.insulinUnitsPerHour,0);assert.equal(a.slidingScale,'per provider order');assert.ok(a.flags.includes('F4_NO_DRIP_SLIDING_SCALE'));assert.ok(!/units\/h/.test(a.insulin.replace(/0\.5 units\/h/,'')),a.insulin);
   if(g<70){assert.equal(a.hypoglycemiaProtocol,true);assert.equal(a.recheckMinutes,15);}
   else{assert.equal(a.hypoglycemiaProtocol,false);assert.match(a.insulin,/Sliding scale insulin as needed, per provider order/);assert.equal(a.recheckMinutes,240);assert.equal(a.notifyProvider,g>180);}});
-test('no-drip: active labor q1-2h; ketones and illness call the provider at any value',()=>{for(const t of ['A1','A2O','T2O']){const a=M.action(t,100,{activeLabor:true});assert.equal(a.recheckMinutes,60);assert.equal(a.recheckMaxMinutes,120);
+test('no-drip: ketones and illness call the provider at any value',()=>{for(const t of ['A1','A2O','T2O']){
  assert.equal(M.action(t,100).notifyProvider,false);assert.equal(M.action(t,100,{ketones:true}).notifyProvider,true);assert.equal(M.action(t,100,{ill:true}).notifyProvider,true);assert.equal(M.action(t,181).notifyProvider,true);assert.equal(M.action(t,180).notifyProvider,false);}});
 test('no sliding-scale doses anywhere in the rendered algorithm',()=>{const fd=C.items.find(i=>i.id==='FD-ANT-05');assert.match(fd.text,/Sliding scale insulin as needed, per provider order/);assert.ok(!/sliding scale[^.]*\d+\s*units/i.test(fd.text));});
 test('type 1 effective basal / pump under signed CSM exception: no IV floor, no stacking',()=>{for(const g of [65,75]){const a=M.action('T1',g,{effectiveBasal:true});assert.equal(a.insulinUnitsPerHour,0);assert.match(a.insulin,/signed CSM exception/);assert.match(a.insulin,/Do not stack/);}});
@@ -34,6 +34,10 @@ test('F5: decimals round down; LO = <50; HI = >250 row + DKA screen; junk reject
  const lo=M.action('T1','LO');assert.ok(lo.flags.includes('METER_LO_TREAT_AS_LT50'));assert.equal(M.rescue({fsbg:'LO',iv:true}).order,'D50 50 mL IV');const hi=M.action('A2','HI');assert.equal(hi.band,'gt250');assert.equal(hi.dkaScreen,true);assert.equal(hi.notifyProvider,true);
  for(const bad of [NaN,-1,'12','x',null])assert.throws(()=>M.band(bad));});
 test('unknown diabetes type rejected',()=>assert.throws(()=>M.action('X',100)));
+for(const t of ['A1','A2O','T2O'])for(const g of [70,100,150,181,250,400])for(const [o,mins,re] of [[{},240,/every 4 h until active labor, then every 2 h/],[{activeLabor:true},120,/every 2 h in active labor/],[{slidingScaleGiven:true},60,/recheck FSBG in 1 h/],[{activeLabor:true,slidingScaleGiven:true},60,/recheck FSBG in 1 h/]])
+ test(`no-drip timing ${t} ${g} ${JSON.stringify(o)} -> ${mins} min`,()=>{n++;const a=M.action(t,g,o);assert.equal(a.recheckMinutes,mins);assert.match(a.insulin,re);assert.equal(a.insulinUnitsPerHour,0);assert.ok(!('recheckMaxMinutes' in a));});
+test('no-drip timing never shortens a low-glucose recheck (15 min stays)',()=>{for(const t of ['A1','A2O','T2O'])for(const o of [{activeLabor:true},{slidingScaleGiven:true}])assert.equal(M.action(t,65,o).recheckMinutes,15);});
+test('rendered text carries the q2h / 1 h rule and no 1-2 h range',()=>{const txt=C.items.filter(i=>/ANT-05/.test(i.id)).map(i=>i.text).join(' ');assert.match(txt,/then every 2 h/);assert.match(txt,/1 h after any sliding-scale dose/);assert.ok(!/1–2 h(?!ours after)/.test(txt.replace(/IV insulin 1–2 hours after the first SC basal dose/g,'')));});
 // F2/F3 rescue matrix
 const R=(o)=>M.rescue(o);let r=0;
 const MATRIX=[
