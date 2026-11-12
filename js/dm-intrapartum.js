@@ -11,13 +11,19 @@ const DEFAULT_SWITCHES = {
   F1_LOW_61_69: 'A',
   // F3 unprinted rescue arms (Michael-approved additions, pending CSM pharmacy build). true = ON.
   F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true,   // OFF: the printed glucagon arm stands for this patient.
-  F3_GLUCAGON_QC_NOIV_60_69: true             // OFF: no printed order; call provider / rapid response, get IV access.
+  F3_GLUCAGON_QC_NOIV_60_69: true,            // OFF: no printed order; call provider / rapid response, get IV access.
+  // N4 (Doc addendum; Michael picks). Definition of active labor used by the no-drip schedule. '4cm' (Doc recommended, = CSM hourly trigger) | '6cm' (ACOG).
+  N4_ACTIVE_LABOR: '6cm',          // Michael decided 11 Nov 2026, 8:57 PM CT: 6 cm or more
+  // Optional no-drip extras (Doc proposals, not CSM; decided by Michael 11 Nov 2026, 8:57 PM CT). OFF = not shown and not applied.
+  N5_STEROIDS_NODRIP: false,     // betamethasone in last 5 days: q2h until active labor, then q1h; provider decides sliding scale vs drip
+  N6_GLYBURIDE_Q2H: true,        // glyburide in last 24 h: q2h until 24 h after the last dose
+  N9_AFTER_SSI_Q2H: true         // after a sliding-scale dose: 1 h, then q2h until 2 values in a row 70–180, then routine
 };
 // F4 is DECIDED (Michael, 11 Nov 2026, 8:43 PM CT; supersedes both Doc options): diet-controlled GDM (A1) and anyone on oral agents are NOT
 // managed with the drip: sliding scale insulin as needed per provider order (no CSM scale in hand; no doses shown); FSBG q4h until active
 // labor, then q2h in active labor, and 1 h after any sliding-scale dose (Michael 11 Nov 2026, 8:51 PM CT); call provider for >180, ketones or illness. The drip is for insulin-requiring patients (A2 on insulin, type 2 on insulin, type 1).
 // F1 = A and both F3 arms = ON: DECIDED by Michael 11 Nov 2026, 8:44 PM CT. F3 arms are Michael-approved additions pending the CSM pharmacy build.
-const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F3_GLUCAGON_QC_NOIV_60_69: true };
+const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F3_GLUCAGON_QC_NOIV_60_69: true, N4_ACTIVE_LABOR: true, N5_STEROIDS_NODRIP: true, N6_GLYBURIDE_Q2H: true, N9_AFTER_SSI_Q2H: true };
 
 (function (root) {
   'use strict';
@@ -25,10 +31,19 @@ const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F
     const SW = Object.freeze(Object.assign({}, DEFAULT_SWITCHES, overrides));
     const DEC = Object.freeze(Object.assign({}, DECIDED, decidedOverrides));
     if (!['A', 'B'].includes(SW.F1_LOW_61_69)) throw new RangeError('F1 switch must be A or B');
-    const PEND = k => DEC[k] ? '' : ' ♦ PENDING MICHAEL (' + k.split('_')[0] + ': option ' + (typeof SW[k] === 'boolean' ? (SW[k] ? 'ON' : 'OFF') : SW[k]) + ' shown).';
+    if (!['4cm', '6cm'].includes(SW.N4_ACTIVE_LABOR)) throw new RangeError('N4 switch must be 4cm or 6cm');
+    const PEND = k => DEC[k] ? '' : ' ♦ PENDING MICHAEL (' + k.split('_')[0] + ': option ' + (typeof SW[k] === 'boolean' ? (SW[k] ? 'ON' : 'OFF') : SW[k] === '4cm' ? '≥4 cm or regular contractions' : SW[k] === '6cm' ? '≥6 cm' : SW[k]) + ' shown).';
     const F1A = SW.F1_LOW_61_69 === 'A';
-    const TYPES = Object.freeze({ A1: 'GDM A1 (diet)', A2O: 'GDM A2 on oral agents', T2O: 'Type 2 on oral agents only', A2: 'GDM A2 on insulin', T2: 'Type 2 on insulin', T1: 'Type 1' });
-    const NO_DRIP = Object.freeze(['A1', 'A2O', 'T2O']);   // F4 (Michael): not managed with the drip
+    const TYPES = Object.freeze({ A1: 'GDM A1 (diet)', A2O: 'GDM A2 on oral agents only (no insulin)', T2O: 'Type 2 on oral agents only (no insulin)', A2: 'GDM A2 on insulin', T2: 'Type 2 on insulin', T1: 'Type 1' });
+    const NO_DRIP = Object.freeze(['A1', 'A2O', 'T2O']);   // F4 (Michael): not managed with the drip. N1: oral agents ONLY; any home insulin = drip group.
+    const ACTIVE_DEF = SW.N4_ACTIVE_LABOR === '4cm' ? 'Active labor = 4 cm or more, or regular contractions (the CSM hourly-check trigger).' : 'Active labor = 6 cm or more (ACOG).';
+    // N4: opts.activeLabor may be given directly, or derived from opts.cervixCm / opts.regularContractions using the switch.
+    function isActiveLabor(o = {}) { if (typeof o.activeLabor === 'boolean') return o.activeLabor; const cm = Number(o.cervixCm);
+      return SW.N4_ACTIVE_LABOR === '4cm' ? (cm >= 4 || !!o.regularContractions) : cm >= 6; }
+    const N2_TEXT = 'Call provider now for any single FSBG >180, any ketones, or vomiting/illness. The provider decides next steps: DKA screen (beta-hydroxybutyrate, VBG, BMP) and the CSM insulin drip only by provider order. If the drip is ordered, move to the drip group (hourly FSBG, CSM nomogram). Do not start the drip from this chart without an order.';
+    const N5_TEXT = 'Betamethasone in the last 5 days: FSBG every 2 h until active labor, then every 1 h; provider decides sliding scale vs drip.';
+    const N6_TEXT = 'Glyburide within the last 24 h: FSBG every 2 h until 24 h after the last dose.';
+    const N9_TEXT = 'After any sliding-scale dose: recheck FSBG in 1 h, then every 2 h until 2 values in a row are 70–180 (or per provider), then back to the routine schedule.';
     const D5 = 'D5LR 125 mL/h', LR = 'LR 125 mL/h', NDFLUID = 'Routine labor fluids (no insulin drip)';
     // CSM chart rows (unchanged; Doc verified 8/8). Exactly 60 is the <60 row (go-live resolution 1).
     const BANDS = Object.freeze([
@@ -103,17 +118,23 @@ const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F
       if (noDrip) {
         out.fluid = NDFLUID; out.flags.push('F4_NO_DRIP_SLIDING_SCALE'); out.slidingScale = 'per provider order';
         if (!out.hypoglycemiaProtocol && v >= 70) {
-          out.insulinUnitsPerHour = 0; out.recheckMinutes = opts.slidingScaleGiven ? 60 : opts.activeLabor ? 120 : 240;
-          out.insulin = 'No insulin drip (' + TYPES[type] + '). Sliding scale insulin as needed, per provider order (no CSM scale in this app; no doses shown). ' + (opts.slidingScaleGiven ? 'Sliding-scale insulin given: recheck FSBG in 1 h.' : 'FSBG ' + (opts.activeLabor ? 'every 2 h in active labor' : 'every 4 h until active labor, then every 2 h') + '; recheck in 1 h after any sliding-scale dose.');
+          const act = isActiveLabor(opts); out.activeLabor = act;
+          const iv = [act ? 120 : 240], why2 = [];
+          if (SW.N5_STEROIDS_NODRIP && opts.steroidsWithin5d) { iv.push(act ? 60 : 120); why2.push(N5_TEXT); out.flags.push('N5_STEROIDS'); }
+          if (SW.N6_GLYBURIDE_Q2H && opts.glyburideWithin24h) { iv.push(120); why2.push(N6_TEXT); out.flags.push('N6_GLYBURIDE'); }
+          if (opts.slidingScaleGiven) iv.push(60);
+          else if (SW.N9_AFTER_SSI_Q2H && opts.afterSlidingScale && (opts.consecutiveInRange || 0) < 2) { iv.push(120); why2.push(N9_TEXT); out.flags.push('N9_AFTER_SSI'); }
+          out.insulinUnitsPerHour = 0; out.recheckMinutes = Math.min(...iv);
+          out.insulin = 'No insulin drip (' + TYPES[type] + '). Sliding scale insulin as needed, per provider order (no CSM scale in this app; no doses shown). ' + (opts.slidingScaleGiven ? 'Sliding-scale insulin given: recheck FSBG in 1 h.' : 'FSBG ' + (act ? 'every 2 h in active labor' : 'every 4 h until active labor, then every 2 h') + '; recheck in 1 h after any sliding-scale dose.') + (why2.length ? ' ' + why2.join(' ') : '');
           const why = [v > 180 && 'FSBG >180', opts.ketones && 'ketones', opts.ill && 'vomiting/illness'].filter(Boolean);
-          if (why.length) { out.notifyProvider = true; out.insulin += ' Call provider now: ' + why.join(', ') + '.'; }
+          if (why.length) { out.notifyProvider = true; out.providerDecides = true; out.insulin += ' ' + N2_TEXT; }
           if (sym) out.insulin += ' Symptoms but FSBG ≥70: repeat POC, send lab glucose, call provider.';
         } else if (out.hypoglycemiaProtocol) { out.insulinUnitsPerHour = 0; out.recheckMinutes = 15; }
         else { out.insulinUnitsPerHour = 0; }
       }
       if (rd.meter === 'HI' && noDrip) out.insulinUnitsPerHour = 0;
       if (rd.meter === 'LO') out.insulin = 'Meter LO: treat as <50. ' + out.insulin + ' Send a lab glucose without delaying rescue.';
-      if (rd.meter === 'HI') out.insulin = 'Meter HI: >250 row, call provider now, DKA screen, lab glucose. ' + out.insulin;
+      if (rd.meter === 'HI') out.insulin = 'Meter "HI": call provider now, DKA screen, lab glucose (' + (noDrip ? 'no-drip group: no drip unless ordered' : 'drip group: >250 row') + '). ' + out.insulin;
       return Object.freeze(out);
     }
     // F2 + F3: CSM rescue matrix (printed arms, CSM pharmacy D50 resolution, ♦ Doc switches). state: { fsbg, alert (false = questionable consciousness), iv, canSwallow, symptomatic }
@@ -155,19 +176,21 @@ const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F
       'FSBG before starting IV fluids.',
       'Insulin drip running: FSBG every 1 hour, regardless of dilation (Michael override of CSM q2h latent; ACOG PB 201).',
       'Insulin-requiring, drip not yet running: every 2 hours in latent labor or NPO before delivery; every 1 hour at 4–6 cm or with regular contractions (CSM).',
-      'Diet-controlled GDM or oral agents (no drip): every 4 hours until active labor, then every 2 hours; recheck 1 hour after any sliding-scale dose (Michael decision 11 Nov 2026).',
+      'Diet-controlled GDM or oral agents only (no drip): every 4 hours until active labor, then every 2 hours; recheck 1 hour after any sliding-scale dose (Michael decision 11 Nov 2026). ' + ACTIVE_DEF + PEND('N4_ACTIVE_LABOR'),
       'After any hypoglycemia rescue: recheck in 15 minutes (go-live resolution 2).',
       'Hospital point-of-care glucose for insulin decisions; CGM for trends/alarms only.'
     ]);
     const F1_TEXT = F1A ? 'Any FSBG below 70, or symptoms at any value: hypoglycemia rescue now (rescue box). 61–90 means "no insulin increase," not "no action."'
       : 'FSBG ≤60, or symptoms at any value: hypoglycemia rescue now. 61–69 without symptoms on D5LR: no D50 (option B); recheck in 15 min; rescue if ≤60, symptomatic or lower. 61–90 means "no insulin increase," not "no action."';
-    const F4_TEXT = 'Diet-controlled GDM (A1) and anyone on oral agents (metformin, glyburide): NO insulin drip. Sliding scale insulin as needed, per provider order (no CSM scale in this app; no doses shown). FSBG every 4 h until active labor, then every 2 h; recheck 1 h after any sliding-scale dose. Call provider now for FSBG >180, ketones, or vomiting/illness. Low (<70): rescue box. The drip is for insulin-requiring patients: A2 on insulin, type 2 on insulin, type 1 (Michael decision 11 Nov 2026).';
+    const F4_TEXT = 'Diet-controlled GDM (A1) and anyone on oral agents ONLY (no home insulin): NO insulin drip. Any home insulin (with or without metformin/glyburide): drip group. Sliding scale insulin as needed, per provider order (no CSM scale in this app; no doses shown). FSBG every 4 h until active labor, then every 2 h; recheck 1 h after any sliding-scale dose. ' + ACTIVE_DEF + PEND('N4_ACTIVE_LABOR') + ' ' + N2_TEXT + ' Low (<70): rescue box.'
+      + (SW.N5_STEROIDS_NODRIP ? ' ' + N5_TEXT + PEND('N5_STEROIDS_NODRIP') : '') + (SW.N6_GLYBURIDE_Q2H ? ' ' + N6_TEXT + PEND('N6_GLYBURIDE_Q2H') : '') + (SW.N9_AFTER_SSI_Q2H ? ' ' + N9_TEXT + PEND('N9_AFTER_SSI_Q2H') : '')
+      + ' The drip is for insulin-requiring patients: A2 on insulin, type 2 on insulin, type 1 (Michael decision 11 Nov 2026).';
     const TEXT = Object.freeze({
       title: 'Diabetes in labor: insulin and IV fluids',
       step0: 'Diabetes (GDM A1/A2, type 2, type 1) admitted for labor, induction or scheduled cesarean. Unsure of type AND on home insulin, insulin pump, or prior DKA: treat as type 1 for basal (never a basal gap) and get senior/endocrine review now. Not on any insulin and no DKA history: diet/oral rule (no drip).',
       step1: 'Stop all insulin, including SC insulin pumps (unless a signed CSM exception), and oral agents. NPO except 8 oz ice chips every 4 hours. POC glucose; BMP and urine ketones if FSBG >160. Type 1: start the IV floor before stopping SC/pump, or keep the glargine/detemir already given; never a gap. Night-before/morning home doses and steroid adjustment: per the CSM provider/pharmacy order set (this app gives no home doses).',
       setup: 'Regular insulin (Myxredlin) 100 units/100 mL, so units/h = mL/h; range 0.5–5 units/h. PE-lined tubing: fill with insulin, wait 20 minutes, then flush. Smart pump, dedicated line, independent double-check. High-alert medication. The CSM protocol runs on a provider order.',
-      step2: 'CSM nomogram; maintenance fluid 125 mL/h. FSBG is read as a whole number in mg/dL. If a value has a decimal, round DOWN (60.5 → 60). 60 is the ≤60 row; 90 holds; 91 starts 0.5 units/h; 120 stays on D5LR; 121 switches to LR. Meter "LO": rescue now. Meter "HI": >250 row, call provider, DKA screen, lab glucose. No bolus. Maximum 5 units/h. Never use this chart to treat DKA.',
+      step2: 'CSM nomogram; maintenance fluid 125 mL/h. FSBG is read as a whole number in mg/dL. If a value has a decimal, round DOWN (60.5 → 60). 60 is the ≤60 row; 90 holds; 91 starts 0.5 units/h; 120 stays on D5LR; 121 switches to LR. Meter "LO": rescue now. Meter "HI": call provider now, DKA screen, lab glucose (drip group: >250 row; no-drip group: no drip unless ordered). No bolus. Maximum 5 units/h. Never use this chart to treat DKA.',
       f1: F1_TEXT + PEND('F1_LOW_61_69'),
       f4: F4_TEXT,
       t1: 'At 70–90 the floor is 0.5 units/h with D5LR 125 mL/h and provider notification; the provider may set 0.5–1 units/h by trend (prevents ketosis; not glucose correction). Clinician override of the CSM chart (CSM: hold), approved by Dr. Carozza 11 Nov 2026. ' +
@@ -183,6 +206,7 @@ const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F
       verify: 'Doses to be checked against CSM pharmacy build. Decision support only, not orders or unit policy.',
       ant05Target: 'Labor, induction or scheduled cesarean: use the intrapartum algorithm. CSM chart: no insulin at 61–90 mg/dL (type 1 keeps a 0.5 units/h floor); below 70 = low, rescue per the CSM hypoglycemia protocol' + (F1A ? '' : ' (61–69 without symptoms on D5LR: recheck in 15 min, option B)') + '. The CSM nomogram sets the insulin rate and D5LR or LR by each FSBG; hourly FSBG while the drip runs; type 1 never goes without basal. (National reference: ACOG PB 201 labor target 70–110.)' + PEND('F1_LOW_61_69'),
       ant05Steroids: 'Steroids: do not withhold indicated steroids solely for hyperglycemia. After betamethasone, glucose rises within about 12 h and can stay high up to 5 days: increase FSBG checks (at least 72 h, longer if still high), insulin changes per the CSM provider/pharmacy order set, and in labor follow the nomogram (higher rates expected; no bolus). Patients without diabetes: check FSBG if symptomatic or per provider. SMFM Consult #58: no late-preterm (34+0–36+6) steroids in pregestational diabetes (ANT-06).',
+      ant05NoDrip: 'Diet-controlled GDM (A1) or oral agents ONLY (no home insulin): no insulin drip; sliding scale insulin as needed per provider order; FSBG every 4 h until active labor, then every 2 h; recheck 1 h after any sliding-scale dose. ' + ACTIVE_DEF + ' Any home insulin (with or without metformin/glyburide): drip group. ' + N2_TEXT,
       ant05Button: 'Open: Diabetes in labor: insulin and IV fluids'
     });
     // Table cells shown on the diagram and text companion.
@@ -194,7 +218,7 @@ const DECIDED = { F1_LOW_61_69: true, F3_GEL15_ALERT_NOIV_SWALLOW_60_69: true, F
       return { gdm: g.insulinUnitsPerHour + ' units/h' + (b.rate === MAX_RATE ? ' (maximum; notify provider)' : ''), t1: t.insulinUnitsPerHour + ' units/h' + (b.fluid === LR ? '; ketones at LR start, then q4h (Doc proposal)' : ''), fluid: b.fluid.split(' ')[0] };
     }
     function table() { return BANDS.map(b => ({ band: b, cells: cells(b), byType: Object.fromEntries(Object.keys(TYPES).map(t => [t, action(t, b.lo === -Infinity ? 60 : b.lo, {})])) })); }
-    return Object.freeze({ ID: 'ALG-DM-INTRAPARTUM', VERSION: '2026-11-11-docfix', SWITCHES: SW, DECIDED: DEC, TYPES, BANDS, MAX_RATE, reading, band, action, rescue, RESCUE, RESCUE_AFTER,
+    return Object.freeze({ ID: 'ALG-DM-INTRAPARTUM', VERSION: '2026-11-11-docfix', SWITCHES: SW, DECIDED: DEC, TYPES, BANDS, MAX_RATE, reading, band, action, rescue, isActiveLabor, RESCUE, RESCUE_AFTER,
       d50QuestionableConsciousness, MONITORING, TEXT, cells, table, create });
   }
   const api = create();

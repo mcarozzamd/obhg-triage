@@ -28,7 +28,7 @@ const fd = [
 const ant05 = '<ul><li>GDM A1 = diet-controlled. GDM A2 = medication. Pregestational = type 1 or type 2 diagnosed before pregnancy (or overt diabetes in early pregnancy).</li>' +
   '<li>Delivery timing (CO 831): GDM A1 39+0–40+6. GDM A2 well controlled 39+0–39+6. Poorly controlled GDM individualize. Pregestational, well controlled, no vascular disease 39+0–39+6. Vascular disease, poor control, or prior stillbirth 36+0–38+6.</li>' +
   '<li><strong>' + esc(T.ant05Target.split(': ')[0]) + ':</strong> ' + mark(T.ant05Target.split(': ').slice(1).join(': ')) + ' <button type="button" class="linkbtn" data-open="FD-ANT-05">' + esc(T.ant05Button) + '</button></li>' +
-  '<li>Diet-controlled GDM (A1) or oral agents: no insulin drip; sliding scale insulin as needed per provider order; FSBG every 4 h until active labor, then every 2 h; recheck 1 h after any sliding-scale dose; call provider for >180, ketones or illness.</li>' +
+  '<li>' + mark(T.ant05NoDrip) + '</li>' +
   '<li>Shoulder counseling: consider scheduled cesarean at EFW ≥4500 g with diabetes, ≥5000 g without (LND-06). Counseling threshold, not an absolute safety cutoff.</li>' +
   '<li>' + mark(T.ant05Steroids) + '</li>' +
   '<li>Postpartum: notify the provider at delivery to start the CSM Postpartum Diabetes Management Order Set (doses there). Screen A1/A2 with a 75-g 2-hour OGTT at 4–12 weeks postpartum.</li></ul>\n' +

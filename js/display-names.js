@@ -59,10 +59,13 @@
  {
   "id": "LND-05",
   "old": "GBS prophylaxis (ACOG CO 797)",
-  "name": "Group B strep prophylaxis during labor",
-  "review": "Doc naming review (11 Nov 2026)",
+  "name": "Group B streptococcus",
+  "review": "Michael title decision 11 Nov 2026",
   "aliases": [
-   "Group B streptococcal prevention"
+   "Group B streptococcal prevention",
+   "Group B strep prophylaxis during labor",
+   "GBS",
+   "group B strep"
   ],
   "codes": [
    "LND-05"
@@ -426,8 +429,13 @@
  {
   "id": "FD-SYS-02",
   "old": "Postpartum VTE prophylaxis decision tree (CMQCC)",
-  "name": "Postpartum thrombosis prevention",
-  "review": "Doc naming review (11 Nov 2026)",
+  "name": "VTE prophylaxis",
+  "review": "Michael title decision 11 Nov 2026",
+  "aliases": [
+   "Postpartum thrombosis prevention",
+   "postpartum thrombosis prevention",
+   "VTE prevention"
+  ],
   "codes": [
    "FD-SYS-02",
    "SYS-02"
@@ -471,10 +479,13 @@
  {
   "id": "FD-GYNB-04",
   "old": "Adnexal torsion and mass: call it, untwist, keep the ovary",
-  "name": "Adnexal torsion and mass assessment",
-  "review": "Doc naming review (11 Nov 2026)",
+  "name": "Adnexal torsion and ovarian mass",
+  "review": "Michael title decision 11 Nov 2026",
   "aliases": [
-   "Acute adnexal pain"
+   "Acute adnexal pain",
+   "Adnexal torsion and mass assessment",
+   "adnexal mass",
+   "ovarian torsion"
   ],
   "codes": [
    "FD-GYNB-04",
@@ -587,8 +598,13 @@
  {
   "id": "FD-LND-05",
   "old": "GBS prophylaxis: who gets it, which drug (flow)",
-  "name": "Group B strep: who gets antibiotics and which drug",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
+  "name": "Group B streptococcus",
+  "review": "Michael title decision 11 Nov 2026",
+  "aliases": [
+   "Group B strep: who gets antibiotics and which drug",
+   "GBS",
+   "group B strep"
+  ],
   "codes": [
    "FD-LND-05",
    "LND-05"
