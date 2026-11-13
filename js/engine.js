@@ -70,6 +70,10 @@
     molar: R('molar|hydatidiform|\\bGTD\\b|\\bGTN\\b|snowstorm|theca lutein'),
     ed: R('\\bED\\b|emergency (department|room)|\\bER\\b|main ED'),
     trauma: R('\\bMVA\\b|\\bMVC\\b|motor vehicle|trauma|\\bfall\\b|fell|assault|chest pain|overdose|stroke|syncope'),
+    // Pregnancy blunt trauma (fall/MVC/assault/abdominal injury). Intentionally narrower than `trauma`, which also matches chest pain, overdose, stroke, and syncope for the ED-OB pathway.
+    pregTrauma: R('\\bMVA\\b|\\bMVC\\b|motor vehicle|\\btrauma\\b|\\bfall\\b|fell|assault|blunt abdominal|abdominal (?:trauma|injury|blow)|direct abdominal blow|pedestrian struck'),
+    // L&D STI card (ANT-STI): syphilis/RPR/HSV/herpes/lesions/GC/CT/trich/BV/yeast/STI, plus unknown HIV or hep B status. Bare HIV or viral load still go to the timing card unless status is unknown.
+    stiLD: R('syphilis|\\bRPR\\b|\\bVDRL\\b|treponem|\\bTP-?PA\\b|\\bHSV\\b|herpes|\\blesions?\\b|gonorrho?ea|gonococcal|\\bGC\\b|chlamydi|trichomonas|trichomoniasis|\\btrich\\b|bacterial vaginosis|\\bBV\\b|\\byeast\\b|candidiasis|\\bcandida\\b|\\bVVC\\b|\\bSTIs?\\b|\\bSTD\\b|sexually transmitted|(?:HIV|human immunodeficiency).{0,40}unknown|unknown.{0,40}(?:HIV|human immunodeficiency)|no (?:3rd|third)[- ]trimester.{0,30}HIV|expedited HIV|(?:hep(?:atitis)?\\s*B|HBsAg|HBV).{0,40}unknown|unknown.{0,40}(?:hep(?:atitis)?\\s*B|HBsAg|HBV)|HBsAg (?:not (?:done|on file|available)|missing|pending)'),
     imminent: R('crowning|delivery imminent|imminent delivery|precipitous|urge to push'),
     cordProlapse: R('cord prolapse|prolapsed cord'),
     abruption: R('abruption|abruptio'),
@@ -352,6 +356,9 @@
     ['GYNB-07', 86, f => f.kw.iud, () => 'IUD / implant keyword'],
     ['GYNB-08', 84, f => f.kw.cpp, () => 'Chronic pelvic pain keyword'],
     ['GYNB-09', 87, f => f.kw.posthyst, () => 'Post-hysterectomy / cuff keyword'],
+    // ANT-TRAUMA (provisional 13 Nov 2026): blunt trauma / fall / MVC / abdominal injury in a pregnant patient. Not postpartum-only; not the broader ED `trauma` terms (chest pain, overdose, stroke, syncope).
+    ['ANT-TRAUMA', 94, f => f.kw.pregTrauma && f.pregnant, () => 'Trauma / fall / MVC / blunt abdominal injury in pregnancy'],
+    ['ANT-STI', 93, f => f.kw.stiLD && ob(f), () => 'STI / syphilis / HSV / GC-CT / BV / yeast, or unknown HIV or hepatitis B status, in pregnancy or postpartum'],
     // ED-to-OB
     ['ED-OB', 45, f => f.kw.ed && ob(f), () => 'Pregnant or ≤6 wk postpartum patient in the main ED (ED-to-OB pathway)'],
     ['ED-OB', 25, f => f.kw.ed && f.kw.trauma && ob(f), () => 'Non-OB signs/symptoms in the ED'],

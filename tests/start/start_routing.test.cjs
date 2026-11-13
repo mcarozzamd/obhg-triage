@@ -80,12 +80,12 @@ test('browser history: Back from a section returns to the start page', async () 
   const t = await open(); t.click('start-browse'); assert.equal(t.w.location.hash, '#browse');
   t.w.history.back(); await new Promise(r => setTimeout(r, 50)); only(t, 'view-start'); t.close();
 });
-test('nothing clinical changed: only the start-page shell files differ from live 3ae4907', () => {
+test('start-page shell plus ANT-TRAUMA card files are the only app-path diffs from live 3ae4907', () => {
+  const allowed = ['css/app.css', 'index.html', 'js/app.js', 'js/content.js', 'js/display-names.js', 'js/engine.js', 'js/review.js', 'nurse.html', 'sw.js'];
   const changed = execFileSync('git', ['diff', '--name-only', '3ae4907', '--', 'js', 'css', 'codes', 'assets', 'index.html', 'nurse.html', 'sw.js', 'manifest.webmanifest'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean)
     .concat(execFileSync('git', ['ls-files', '--others', '--exclude-standard', 'js', 'css', 'codes', 'assets'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean));
-  assert.deepEqual(changed.sort(), ['css/app.css', 'index.html', 'js/app.js', 'nurse.html', 'sw.js'].filter(f => changed.includes(f)).sort());
-  for (const f of changed) assert.ok(['css/app.css', 'index.html', 'js/app.js', 'nurse.html', 'sw.js'].includes(f), 'unexpected change ' + f);
-  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v26-2026-11-13-start';/);
+  assert.deepEqual(changed.sort(), allowed.slice().sort());
+  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v27-2026-11-13-trauma';/);
   const nurseDiff = execFileSync('git', ['diff', '3ae4907', '--', 'nurse.html'], {cwd: base, encoding: 'utf8'}); assert.equal((nurseDiff.match(/^[+-](?![+-])/gm) || []).length, 2, 'nurse.html: only the header line gains the Start link');
 });
 test('every clinical view element from 3ae4907 is still in index.html (only the tab bar and small nurse link were replaced)', () => {

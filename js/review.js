@@ -61,6 +61,8 @@ self.REVIEW = {
     'SYS-04': 'Oct 2026',
     'SYS-05': 'Oct 2026',
     'ANT-11': 'Oct 2026',
+    'ANT-TRAUMA': 'Provisional — Nov 2026',
+    'ANT-STI': 'Provisional — Nov 2026',
     'LND-09': 'Oct 2026',
     'LND-10': 'Oct 2026',
     'FD-SYS-04': 'Oct 2026',

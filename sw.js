@@ -1,9 +1,10 @@
-// OBHG CLINICAL TRIAGE service worker. v26 (13 Nov 2026): start page with four sections (Clinician, Nurse, Browse Guidelines, Patient log).
+// OBHG CLINICAL TRIAGE service worker. v27 (13 Nov 2026): adds provisional ANT-TRAUMA (trauma in pregnancy) clinician card.
+// v26 (13 Nov 2026): start page with four sections (Clinician, Nurse, Browse Guidelines, Patient log).
 // v25 (12 Nov 2026): adds the English-only nurse section (nurse.html) and keeps its navigation cache separate from index.html.
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v26-2026-11-13-start';
+const CACHE = PREFIX + 'v27-2026-11-13-trauma';
 const ASSETS = [
   './',
   './index.html',
