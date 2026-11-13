@@ -22,7 +22,7 @@ test('ANT-STI card is present, tagged PROVISIONAL, with every pharmacy and codin
   assert.ok(card.flags.some(f => /PROVISIONAL/i.test(f)));
   assert.ok(card.flags.some(f => /Bicillin/i.test(f) && /ZDV/i.test(f)));
   assert.ok(card.flags.some(f => /Coding/i.test(f) && /hep B/i.test(f)));
-  assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 8);
+  assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 9);
   assert.match(card.html, /CODING \(draft — verify with OBHG coding\)/);
   assert.match(card.html, /Only TWO things on this card change the WAY she delivers/);
   assert.match(card.html, /Benzathine penicillin G 2\.4 million units IM x1/);
@@ -46,6 +46,13 @@ const routes = [
   ['20 yo G1P0 at 35 weeks, no prenatal care, possible STI exposure', 'STI'],
   ['34 yo G2P1 at 39 weeks in labor, HIV unknown, no third-trimester result', 'HIV unknown'],
   ['29 yo G1P0 at 38 weeks, hep B unknown, no HBsAg on the chart', 'hep B unknown'],
+  ['22 yo G1 at 16 weeks with vaginal discharge and itching', 'OBED vaginal discharge'],
+  ['30 yo G2P1 at 22 weeks with genital ulcers', 'OBED genital ulcers'],
+  ['25 yo G1 at 8 weeks with pelvic pain and fever, concern for PID', 'OBED PID'],
+  ['28 yo G3P2 at 30 weeks with dysuria and frequency', 'OBED dysuria'],
+  ['31 yo G2P1 at 34 weeks, pyelonephritis, fever and CVA tenderness', 'OBED pyelonephritis'],
+  ['27 yo P1 day 3 postpartum with fever and uterine tenderness, endometritis', 'OBED endometritis'],
+  ['24 yo G1 at 20 weeks, partner treated for gonorrhea, exposure 1 week ago', 'OBED partner exposure'],
 ];
 
 for (const [hpi, label] of routes) {
@@ -125,4 +132,22 @@ test('HPI triage of syphilis in labor shows the ANT-STI card', async () => {
   assert.match(t.$('top').textContent, /benzathine penicillin/i);
   assert.deepEqual(t.errors, []);
   t.close();
+});
+
+test('house decisions applied on ANT-STI: SMFM #69, always-treat trich, inpatient pyelo, J-H house practice; LactMed-not-CDC removed', () => {
+  const h = card.html;
+  assert.match(h, /SMFM Consult #69, vaccine plus HBIG within 12 h|infant HepB vaccine \+ HBIG within 12 h \(SMFM Consult #69/);
+  assert.match(h, /always treat, including an incidental finding in an asymptomatic patient/i);
+  assert.match(h, /ADMIT as an inpatient for IV antibiotics/);
+  assert.doesNotMatch(h, /Outpatient pyelo only in highly selected/);
+  assert.match(h, /House practice \(not a cited rule\)/);
+  assert.match(h, /From 24 wk on, with primary, secondary or early latent syphilis/);
+  assert.doesNotMatch(h, /LactMed — not a CDC statement/);
+  assert.doesNotMatch(h, /supported by LactMed, not by the CDC STI guideline text/);
+  assert.match(h, /Doxycycline is compatible with breastfeeding \(CDC 2021\)/);
+  // remaining pending tags only
+  const pend = [...h.matchAll(/Pending house decision/g)];
+  assert.equal(pend.length, 4);
+  assert.match(h, /regimen per ID\/pharmacy[\s\S]{0,80}Pending house decision/);
+  assert.match(h, /Darkfield\/T\. pallidum PCR[\s\S]{0,80}Pending house decision/);
 });

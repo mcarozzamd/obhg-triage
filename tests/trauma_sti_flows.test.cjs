@@ -98,17 +98,22 @@ test('trauma flow includes every Doc node, viability per local policy, and a cue
   assert.match(t, /data-cue="trauma-timer"/);
 });
 
-test('STI flow starts with an entry choice: In labor / admitted vs OB ED triage placeholder', () => {
+test('STI flow starts with an entry choice and a filled OB ED triage branch', () => {
   const t = flowText(sti);
   assert.match(t, /In labor \/ admitted/);
   assert.match(t, /OB ED triage/);
   assert.match(sti.html, /data-sti-entry="labor"/);
   assert.match(sti.html, /data-sti-entry="triage"/);
   const triage = (sti.html.match(/data-sti-path="triage">([\s\S]*?)<\/div>/) || [])[1] || '';
-  assert.match(triage, /placeholder/i);
-  assert.match(triage, /pending Doc's draft/i);
-  assert.match(triage, /No triage steps on this chart yet/i);
-  assert.doesNotMatch(triage, /PID|pelvic pain|vaginal discharge|partner exposure|cervicitis|chancre/i);
+  assert.doesNotMatch(triage, /No triage steps on this chart yet/i);
+  assert.match(triage, /ectopic and septic abortion outrank/i);
+  assert.match(triage, /Vaginal discharge \/ itching/i);
+  assert.match(triage, /always treat, including an incidental finding/i);
+  assert.match(triage, /ADMIT as an inpatient/i);
+  assert.match(triage, /SMFM Consult #69, vaccine plus HBIG within 12 h/);
+  assert.match(triage, /House practice \(not a cited rule\)/);
+  assert.match(triage, /Pending house decision/);
+  assert.match(triage, /regimen per ID\/pharmacy/);
 });
 
 test('STI flow is a router with the stated hard stops and peds handoff', () => {
@@ -199,6 +204,18 @@ test('trauma timer is a cue only and does not write storage', () => {
   assert.doesNotMatch(src, /sessionStorage/);
 });
 
+test('trauma flow has an OBED walk-in node; remaining house decisions stay pending', () => {
+  const t = flowText(trauma);
+  assert.match(t, /OBED walk-in \/ delayed presentation/);
+  assert.match(t, /strangulation/);
+  assert.match(t, /1-800-799-7233/);
+  assert.match(t, /Pending house decision/);
+  assert.doesNotMatch(t, /300 mcg/);
+  const card = traumaCard.html;
+  assert.match(card, /OBED TRIAGE NOTE/);
+  assert.match(card, /still evaluate fully/i);
+});
+
 test('algorithm images exist, display copies are precached, and index loads the cue module', () => {
   const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
@@ -207,7 +224,7 @@ test('algorithm images exist, display copies are precached, and index loads the 
     assert.ok(fs.existsSync(path.join(root, 'assets/display-diagrams/' + it.id + '.png')), it.id);
     assert.ok(sw.includes('./assets/display-diagrams/' + it.id + '.png'), it.id);
   }
-  assert.ok(sw.includes('v28-2026-11-13-trauma-algo'));
+  assert.ok(sw.includes('v29-2026-11-13-trauma-obed'));
   assert.ok(sw.includes('./js/flow-cues.js'));
   assert.match(html, /js\/flow-cues\.js/);
 });

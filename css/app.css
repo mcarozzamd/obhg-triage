@@ -138,3 +138,5 @@ tr.amended td{background:#FFFBEA}
 .flow-cue .hard-stop{margin:8px 0;padding:8px 10px;background:#454545;color:#fff;border-radius:6px;font-weight:700}
 .flow-cue button{margin:6px 8px 6px 0;padding:8px 12px;border:1.5px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy);font-weight:700;font-size:15px}
 .flow-cue .peds-out{margin:8px 0 0;padding:8px 10px;background:#fff;border:1px solid var(--line);border-radius:6px;font-weight:700}
+
+.house-pending{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:#F3C969;color:#1B2F4E;font-weight:800;font-size:12px;letter-spacing:.02em;vertical-align:middle;white-space:nowrap}

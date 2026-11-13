@@ -5,7 +5,7 @@
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v28-2026-11-13-trauma-algo';
+const CACHE = PREFIX + 'v29-2026-11-13-trauma-obed';
 const ASSETS = [
   './',
   './index.html',

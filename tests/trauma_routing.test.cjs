@@ -139,3 +139,13 @@ test('HPI triage of a fall in pregnancy shows the ANT-TRAUMA card', async () => 
   assert.deepEqual(t.errors, []);
   t.close();
 });
+
+test('routes to ANT-TRAUMA: OBED walk-in after strangulation', () => {
+  const r = triage('25 yo G1 at 24 weeks, strangulation by partner, walked into OBED');
+  assert.ok(r.top);
+  assert.equal(r.top.id, 'ANT-TRAUMA');
+  assert.equal(r.top.diagram && r.top.diagram.id, 'FD-ANT-TRAUMA');
+  assert.match(r.top.card.html, /1-800-799-7233/);
+  assert.match(r.top.card.html, /Pending house decision/);
+  assert.match(r.top.diagram.html, /OBED walk-in/);
+});

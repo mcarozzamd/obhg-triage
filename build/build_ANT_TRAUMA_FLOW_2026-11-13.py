@@ -4,7 +4,7 @@ import os, sys, subprocess
 sys.dont_write_bytecode = True
 sys.path.insert(0, "/workspace/grok-obgyn/cards/flow-diagrams/")
 import fd_common
-fd_common.PH = 700
+fd_common.PH = 820
 from fd_common import *
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -92,6 +92,14 @@ y = strips(c, 598, [
     ("6 \u00b7 REQUIRED, ANY BRANCH",
      "Private IPV screen. Ultrasound for previa before any digital exam. "
      "A normal ultrasound does not rule out abruption.", 28),
+    ("OBED WALK-IN",
+     "Walk-in after minor trauma (not via ED/trauma): send to ED / activate trauma for any red flag, head strike with LOC, suspected fracture, injury beyond the uterus, or care OBED cannot provide. "
+     "Delayed (&gt;24 h): still evaluate fully. Any contractions, bleeding, pain, leaking or decreased FM → extended monitoring. "
+     "RhIG within 72 h; beyond 72 h still give and send KB (dose on the card). <b>Pending house decision</b> on RhIG &gt;72 h and on observation time after late trauma.", 42),
+    ("MECHANISM / IPV / FOLLOW-UP",
+     "Document mechanism in her words. Strangulation (any neck compression) is a high-lethality marker → ED/forensic evaluation. "
+     "IPV screen alone; if positive, National Domestic Violence Hotline 1-800-799-7233, text START to 88788, discreetly, not on a printed AVS. "
+     "Prenatal follow-up within 1 week. Seat-belt and fall-prevention counseling; acetaminophen (avoid NSAIDs ≥20 wk unless directed).", 42),
 ], labw=150, gap=2)
 
 draw_para(c, "<b>PROVISIONAL</b> \u2014 pending Michael review and CSM pharmacy check. Not live. "

@@ -1,12 +1,12 @@
 # Build: FD-ANT-STI STIs on L&D router, 13 Nov 2026.
 # Labor-path wording is Doc's recommended nodes only. No dose numbers.
 # Entry choice added per Michael (13 Nov 2026): In labor / admitted vs OB ED triage.
-# The OB ED triage branch is a placeholder only — no triage clinical content until Doc's draft.
+# OB ED triage branch from Doc's 13 Nov 2026 draft; house decisions applied.
 import os, sys, subprocess
 sys.dont_write_bytecode = True
 sys.path.insert(0, "/workspace/grok-obgyn/cards/flow-diagrams/")
 import fd_common
-fd_common.PH = 700
+fd_common.PH = 1010
 from fd_common import *
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -17,9 +17,9 @@ header(c, "STIs ON LABOR AND DELIVERY: WHAT TO DO NOW",
        "FD-ANT-STI \u00b7 Companion to STIs on Labor and Delivery \u00b7 CDC STI Treatment Guidelines 2021 \u00b7 ACOG PB 220 \u00b7 Labor and delivery / OBED \u00b7 Decision support only, not unit policy",
        "Last reviewed: Provisional, Nov 2026", "PROVISIONAL")
 howto(c, "<b>HOW TO READ THIS CHART:</b> start by choosing <b>In labor / admitted</b> or <b>OB ED triage</b>. "
-         "The labor path is the router below (hard stops first). The OB ED triage branch is a placeholder until Doc's draft. "
+         "The labor path is the router below (hard stops first). The OB ED triage branch is for patients not in labor or postpartum ≤12 wk. "
          "Doses and regimens live on the companion card; this chart lists none.", h=22)
-key(c, [(WHITE, "WHITE = can wait / placeholder"), (LIGHT, "LIGHT GRAY = admission check"), (MID, "MID GRAY = treat before discharge"), (DARK, "DARK GRAY = hard stop \u2014 changes delivery")], y=76)
+key(c, [(WHITE, "WHITE = can wait / no delivery-mode change"), (LIGHT, "LIGHT GRAY = admission check"), (MID, "MID GRAY = treat before discharge"), (DARK, "DARK GRAY = hard stop \u2014 changes delivery")], y=76)
 
 # ENTRY
 hexagon(c, 20, 90, 752, 46, "START: IN LABOR / ADMITTED, OR OB ED TRIAGE?",
@@ -29,8 +29,8 @@ arrow(c, [(582, 136), (582, 148)])
 action(c, 20, 148, 372, 56, "IN LABOR / ADMITTED \u00b7 WHITE",
        "Continue to the labor router (nodes 1\u20135 below).",
        fill=WHITE, tsize=7.2, bsize=6.8, tag="labor")
-action(c, 404, 148, 368, 56, "OB ED TRIAGE \u2014 PLACEHOLDER \u00b7 WHITE",
-       "Pending Doc's draft. No triage steps on this chart yet.",
+action(c, 404, 148, 368, 56, "OB ED TRIAGE \u00b7 WHITE",
+       "Not in labor (any GA) or postpartum ≤12 wk. Continue to the OB ED triage branch below.",
        fill=WHITE, tsize=7.2, bsize=6.8, tag="triage")
 # only the labor box continues
 arrow(c, [(206, 204), (206, 214)])
@@ -84,10 +84,38 @@ action(c, 20, 604, 752, 48, "5. PEDS HANDOFF SUMMARY \u00b7 LIGHT GRAY",
        "Use the peds-handoff cue with this algorithm. Nothing is stored.",
        fill=LIGHT, tsize=7.2, bsize=6.8, tag="n5")
 
-y = 604 + 48 + 8
+# OB ED TRIAGE BRANCH (Doc draft + Michael house decisions, 13 Nov 2026)
+action(c, 20, 662, 752, 36, "OB ED TRIAGE BRANCH · LIGHT GRAY",
+       "Not in labor (any GA) or postpartum ≤12 wk. Early pregnancy, location unknown, or pain/bleeding <20 wk: confirm pregnancy and location first; ectopic and septic abortion outrank every STI diagnosis.",
+       fill=LIGHT, tsize=7.0, bsize=6.4, tag="obed-h")
+action(c, 20, 700, 752, 36, "UNIVERSAL FIRST STEP · LIGHT GRAY",
+       "GA/viability and FHT or EFM. Vitals and sepsis screen. Last prenatal labs (syphilis, HIV, HBsAg, GC/CT, urine culture) — draw any that are missing. Ask about partners, prior STI, and social risk. Contractions, bleeding, ROM or abnormal FHR → L&D, not this pathway.",
+       fill=LIGHT, tsize=6.8, bsize=6.3, tag="obed-u")
+action(c, 20, 738, 372, 48, "a) DISCHARGE / ITCHING · WHITE",
+       "Workup and treatment per the card. Trich: always treat, including an incidental asymptomatic finding. BV symptomatic only. VVC: no oral fluconazole in pregnancy.",
+       fill=WHITE, tsize=6.6, bsize=6.2, tag="oa")
+action(c, 404, 738, 368, 48, "b) LESIONS / ULCERS · WHITE",
+       "HSV PCR, syphilis serology, HIV. Darkfield/PCR if available (do not wait). Pending house decision on darkfield/PCR availability. Treatment per the card.",
+       fill=WHITE, tsize=6.6, bsize=6.2, tag="ob")
+action(c, 20, 788, 372, 48, "c) PELVIC PAIN / FEVER · WHITE",
+       "Rule out ectopic, septic abortion, IAI, pyelo first. PID in pregnancy: hospitalize, IV, ID consult. Regimen per ID/pharmacy. Pending house decision.",
+       fill=WHITE, tsize=6.6, bsize=6.2, tag="oc")
+action(c, 404, 788, 368, 48, "d) DYSURIA · WHITE",
+       "UA, culture, and GC/CT/trich NAAT. Pyelonephritis: admit as an inpatient for IV antibiotics. Cystitis/ASB: treatment per the card.",
+       fill=WHITE, tsize=6.6, bsize=6.2, tag="od")
+action(c, 20, 838, 372, 52, "e) SYPHILIS SCREEN · WHITE",
+       "Treat in OBED; do not send her home for the shot. House practice (not a cited rule): J-H — before ~24 wk, discharge with return precautions; from 24 wk, first early-syphilis dose on L&D with fetal monitoring for several hours.",
+       fill=WHITE, tsize=6.5, bsize=6.1, tag="oe")
+action(c, 404, 838, 368, 52, "f) PARTNER / EPT  g) HIV OR HEP B UNKNOWN · WHITE",
+       "Test and treat exposures per the card. EPT permitted in Texas for GC/CT, not syphilis. Unknown HIV: opt-out test, link to care. Unknown hep B: SMFM #69 — newborn vaccine plus HBIG within 12 h.",
+       fill=WHITE, tsize=6.5, bsize=6.1, tag="ofg")
+action(c, 20, 892, 752, 32, "BEFORE DISCHARGE · LIGHT GRAY",
+       "Single-dose treatments given in OBED, not just prescribed. Doses live only on the companion card. TOC/retest, Texas reporting, partner treatment or DIS, prenatal follow-up within 1 wk. Return precautions.",
+       fill=LIGHT, tsize=6.6, bsize=6.2, tag="odc")
+y = 892 + 32 + 8
 draw_para(c, "<b>PROVISIONAL</b> \u2014 pending Michael review and CSM pharmacy check. Not live. "
            "Doses and regimens live only on the companion card (STIs on Labor and Delivery). "
-           "The OB ED triage branch is a placeholder until Doc's draft. "
+           "The OB ED triage branch is for patients not in labor or postpartum ≤12 wk. "
            "Decision support only, not orders or unit policy. Nothing typed into the cues is saved.",
            20, y, PW - 40, 28, 6.4, 5.4, SLATE, tag="footer")
 assert y + 32 <= PH, (y, PH)

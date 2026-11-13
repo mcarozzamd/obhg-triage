@@ -142,7 +142,7 @@
       const setPath = function (path) {
         if (status) {
           status.textContent = path === 'triage'
-            ? 'OB ED triage: placeholder pending Doc\'s draft. No triage steps on this chart yet.'
+            ? 'OB ED triage: not in labor (any GA) or postpartum ≤12 wk. Use the triage branch below.'
             : 'In labor / admitted: use the labor router (nodes 1–5) below.';
         }
         container.querySelectorAll('[data-sti-path]').forEach(function (el) {
