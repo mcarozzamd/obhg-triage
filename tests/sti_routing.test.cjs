@@ -145,9 +145,39 @@ test('house decisions applied on ANT-STI: SMFM #69, always-treat trich, inpatien
   assert.doesNotMatch(h, /LactMed — not a CDC statement/);
   assert.doesNotMatch(h, /supported by LactMed, not by the CDC STI guideline text/);
   assert.match(h, /Doxycycline is compatible with breastfeeding \(CDC 2021\)/);
+  assert.match(h, /Hepatitis B vaccine plus HBIG 0\.5 mL IM within 12 h for HBsAg-positive or unknown maternal status \(SMFM Consult #69; no weight split\)/);
+  assert.doesNotMatch(h, /per maternal HBsAg\/weight rules above/);
+
   // remaining pending tags only
   const pend = [...h.matchAll(/Pending house decision/g)];
   assert.equal(pend.length, 4);
   assert.match(h, /regimen per ID\/pharmacy[\s\S]{0,80}Pending house decision/);
   assert.match(h, /Darkfield\/T\. pallidum PCR[\s\S]{0,80}Pending house decision/);
+});
+
+function offered(r, id) {
+  return [r.top, ...(r.alternates || [])].some(x => x && x.id === id);
+}
+
+test('GYNB-06 is never offered in pregnancy or postpartum; ANT-STI is primary for pregnancy pyelo', () => {
+  const pregnant = [
+    '24 yo G1P0 at 26 weeks with flank pain, CVA tenderness, dysuria',
+    '31 yo G2P1 at 34 weeks, pyelonephritis, fever and CVA tenderness',
+    '28 yo G3P2 at 30 weeks with dysuria and frequency',
+    '30 yo G1P0 postpartum day 5, pyelonephritis',
+    '28 yo G2P1 day 3 postpartum with flank pain and fever 38.2',
+  ];
+  for (const hpi of pregnant) {
+    const r = triage(hpi);
+    assert.equal(offered(r, 'GYNB-06'), false, 'GYNB-06 offered on ' + hpi + ' → ' + JSON.stringify((r.ranked || []).slice(0, 4)));
+    assert.ok(r.top && (r.top.id === 'ANT-STI' || r.top.id === 'SYS-03'), hpi + ' → ' + (r.top && r.top.id));
+  }
+  const r26 = triage('24 yo G1P0 at 26 weeks with flank pain, CVA tenderness, dysuria');
+  assert.equal(r26.top.id, 'ANT-STI');
+  const rSeptic = triage('26 yo G1P0 at 30 weeks with temp 38.6, HR 120, RR 26, flank pain');
+  assert.equal(rSeptic.top.id, 'SYS-03', 'septic 30-wk flank pain stays on SYS-03');
+  assert.ok(offered(rSeptic, 'ANT-STI'), 'ANT-STI is the source-card alternate');
+  assert.equal(offered(rSeptic, 'GYNB-06'), false);
+  const rNP = triage('32 yo nonpregnant woman with flank pain, CVA tenderness, dysuria');
+  assert.equal(rNP.top && rNP.top.id, 'GYNB-06', 'non-pregnant pyelo still opens GYNB-06');
 });

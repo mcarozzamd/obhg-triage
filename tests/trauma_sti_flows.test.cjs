@@ -114,6 +114,14 @@ test('STI flow starts with an entry choice and a filled OB ED triage branch', ()
   assert.match(triage, /House practice \(not a cited rule\)/);
   assert.match(triage, /Pending house decision/);
   assert.match(triage, /regimen per ID\/pharmacy/);
+  assert.doesNotMatch(triage, /Pending house decision\s+HIV test/);
+  assert.doesNotMatch(triage, /Pending house decision\s+Postpartum endometritis/);
+  assert.doesNotMatch(triage, /oral therapy 7–10 days/);
+  assert.doesNotMatch(triage, /treat 5–7 days \(fosfomycin single-dose/);
+  assert.doesNotMatch(triage, /14 days total/);
+  assert.match(triage, /first-episode HSV — see ANT-STI card/);
+  assert.match(triage, /ASB → see ANT-STI card/);
+  assert.match(triage, /Pyelonephritis → ADMIT as an inpatient for IV antibiotics and hydration; see ANT-STI card/);
 });
 
 test('STI flow is a router with the stated hard stops and peds handoff', () => {
@@ -224,7 +232,7 @@ test('algorithm images exist, display copies are precached, and index loads the 
     assert.ok(fs.existsSync(path.join(root, 'assets/display-diagrams/' + it.id + '.png')), it.id);
     assert.ok(sw.includes('./assets/display-diagrams/' + it.id + '.png'), it.id);
   }
-  assert.ok(sw.includes('v29-2026-11-13-trauma-obed'));
+  assert.ok(sw.includes('v30-2026-11-13-trauma-obed-fix'));
   assert.ok(sw.includes('./js/flow-cues.js'));
   assert.match(html, /js\/flow-cues\.js/);
 });

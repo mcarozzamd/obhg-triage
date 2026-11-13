@@ -73,7 +73,7 @@
     // Pregnancy blunt trauma (fall/MVC/assault/abdominal injury). Intentionally narrower than `trauma`, which also matches chest pain, overdose, stroke, and syncope for the ED-OB pathway.
     pregTrauma: R('\\bMVA\\b|\\bMVC\\b|motor vehicle|\\btrauma\\b|\\bfall\\b|fell|assault|blunt abdominal|abdominal (?:trauma|injury|blow)|direct abdominal blow|pedestrian struck|strangulation|strangled|neck compression'),
     // L&D STI card (ANT-STI): syphilis/RPR/HSV/herpes/lesions/GC/CT/trich/BV/yeast/STI, plus unknown HIV or hep B status. Bare HIV or viral load still go to the timing card unless status is unknown.
-    stiLD: R('syphilis|\\bRPR\\b|\\bVDRL\\b|treponem|\\bTP-?PA\\b|\\bHSV\\b|herpes|\\blesions?\\b|gonorrho?ea|gonococcal|\\bGC\\b|chlamydi|trichomonas|trichomoniasis|\\btrich\\b|bacterial vaginosis|\\bBV\\b|\\byeast\\b|candidiasis|\\bcandida\\b|\\bVVC\\b|\\bSTIs?\\b|\\bSTD\\b|sexually transmitted|(?:HIV|human immunodeficiency).{0,40}unknown|unknown.{0,40}(?:HIV|human immunodeficiency)|no (?:3rd|third)[- ]trimester.{0,30}HIV|expedited HIV|(?:hep(?:atitis)?\\s*B|HBsAg|HBV).{0,40}unknown|unknown.{0,40}(?:hep(?:atitis)?\\s*B|HBsAg|HBV)|HBsAg (?:not (?:done|on file|available)|missing|pending)|vaginal discharge|vaginal itching|vulvar itching|genital ulcers?|\\bPID\\b|pelvic inflammatory|dysuria|\\bcystitis\\b|pyelonephritis|\\bpyelo\\b|endometritis|partner exposure|expedited partner|\\bEPT\\b|chancroid|\\bLGV\\b|lymphogranuloma'),
+    stiLD: R('syphilis|\\bRPR\\b|\\bVDRL\\b|treponem|\\bTP-?PA\\b|\\bHSV\\b|herpes|\\blesions?\\b|gonorrho?ea|gonococcal|\\bGC\\b|chlamydi|trichomonas|trichomoniasis|\\btrich\\b|bacterial vaginosis|\\bBV\\b|\\byeast\\b|candidiasis|\\bcandida\\b|\\bVVC\\b|\\bSTIs?\\b|\\bSTD\\b|sexually transmitted|(?:HIV|human immunodeficiency).{0,40}unknown|unknown.{0,40}(?:HIV|human immunodeficiency)|no (?:3rd|third)[- ]trimester.{0,30}HIV|expedited HIV|(?:hep(?:atitis)?\\s*B|HBsAg|HBV).{0,40}unknown|unknown.{0,40}(?:hep(?:atitis)?\\s*B|HBsAg|HBV)|HBsAg (?:not (?:done|on file|available)|missing|pending)|vaginal discharge|vaginal itching|vulvar itching|genital ulcers?|\\bPID\\b|pelvic inflammatory|dysuria|\\bcystitis\\b|pyelonephritis|\\bpyelo\\b|flank pain|CVA tenderness|costovertebral|\\bCVAT\\b|endometritis|partner exposure|expedited partner|\\bEPT\\b|chancroid|\\bLGV\\b|lymphogranuloma'),
     imminent: R('crowning|delivery imminent|imminent delivery|precipitous|urge to push'),
     cordProlapse: R('cord prolapse|prolapsed cord'),
     abruption: R('abruption|abruptio'),
@@ -352,7 +352,7 @@
     ['GYNB-04', 86, f => f.kw.hemCyst && !f.pregnant, () => 'Ruptured / hemorrhagic cyst → GYN-04 tree (CSM house pathway: stable = observe, serial Hgb; unstable = OR)'],
     ['GYNB-04', 40, f => f.kw.pelvicPain && f.kw.notPregnant, () => 'Pelvic pain, not pregnant'],
     ['GYNB-05', 70, f => f.kw.mass && !f.hcgPositive, () => 'Adnexal mass / cyst keyword'],
-    ['GYNB-06', 83, f => f.kw.pyelo, () => 'Pyelonephritis / stone / CVA tenderness keyword'],
+    ['GYNB-06', 83, f => f.kw.pyelo && !ob(f), () => 'Pyelonephritis / stone / CVA tenderness keyword (not in pregnancy or postpartum; ANT-STI holds that pathway for now)'],
     ['GYNB-07', 86, f => f.kw.iud, () => 'IUD / implant keyword'],
     ['GYNB-08', 84, f => f.kw.cpp, () => 'Chronic pelvic pain keyword'],
     ['GYNB-09', 87, f => f.kw.posthyst, () => 'Post-hysterectomy / cuff keyword'],
@@ -500,11 +500,12 @@
     'GYNB-06': ['SYS-03', 'GYNB-03'], 'GYNB-07': ['GYNB-01', 'GYNB-03'], 'GYNB-08': ['GYNB-05', 'GYNB-03'], 'GYNB-09': ['SYS-02', 'GYNB-03'],
     'GYNB-10': ['GYN-02', 'GYNB-01'],
   };
-  function padAlternates(ranked) {
+  function padAlternates(ranked, f) {
     if (!ranked.length) return ranked;
     const out = ranked.slice(); const have = new Set(out.map(r => r.id));
     for (const id of RELATED[out[0].id] || []) {
       if (out.length >= 3) break;
+      if (id === 'GYNB-06' && f && ob(f)) continue; // never offer the non-pregnant pyelo card in pregnancy or postpartum
       if (!have.has(id)) { out.push({ id, score: 0, why: ['Related card for ' + out[0].id + ' (no direct rule match)'] }); have.add(id); }
     }
     return out;
@@ -522,7 +523,7 @@
     return {
       facts: f, ranked, flags: redFlags(f), privacy: privacyCheck(text),
       top: top ? Object.assign(resolve(top.id), top) : null,
-      alternates: padAlternates(ranked).slice(1, 4).map(r => Object.assign(resolve(r.id), r)),
+      alternates: padAlternates(ranked, f).slice(1, 4).map(r => Object.assign(resolve(r.id), r)),
       coding: top && tables ? codes(top.id, f, tables, validation) : null,
     };
   }
