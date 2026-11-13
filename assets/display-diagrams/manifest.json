@@ -1,5 +1,21 @@
 [
   {
+    "id": "FD-ANT-TRAUMA",
+    "original": "assets/diagrams/ANT-TRAUMA_FLOW_2026-11-13.png",
+    "output": "assets/display-diagrams/FD-ANT-TRAUMA.png",
+    "titleBandHeight": 129,
+    "bodySha256": "a97a3a5485d8eabb1418189fa14c181c27e8b84782a88be8a4a64c9c15b8fb5c",
+    "originalSha256": "70ce1be07f1cc6aa510f378c119e4881bdf8247d27f401a1588dc383fd4ecbd9"
+  },
+  {
+    "id": "FD-ANT-STI",
+    "original": "assets/diagrams/ANT-STI_FLOW_2026-11-13.png",
+    "output": "assets/display-diagrams/FD-ANT-STI.png",
+    "titleBandHeight": 129,
+    "bodySha256": "9eb075f9ffc9663408f5e6756462f8ee57b6f97302ae00e846abab5c9e9e07de",
+    "originalSha256": "7979a52dc699fb6ebc5be16de36da718ff3fa595f3c196cd7111d27b367312b1"
+  },
+  {
     "id": "FD-ANT-04",
     "original": "assets/diagrams/ANT-04_SEVERE_BP_FLOW_2026-10-25.png",
     "output": "assets/display-diagrams/FD-ANT-04.png",

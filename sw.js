@@ -1,10 +1,11 @@
-// OBHG CLINICAL TRIAGE service worker. v27 (13 Nov 2026): adds provisional ANT-TRAUMA (trauma in pregnancy) clinician card.
+// OBHG CLINICAL TRIAGE service worker. v28 (13 Nov 2026): adds provisional FD-ANT-TRAUMA and FD-ANT-STI algorithms (test build).
+// v27 (13 Nov 2026): adds provisional ANT-TRAUMA (trauma in pregnancy) clinician card.
 // v26 (13 Nov 2026): start page with four sections (Clinician, Nurse, Browse Guidelines, Patient log).
 // v25 (12 Nov 2026): adds the English-only nurse section (nurse.html) and keeps its navigation cache separate from index.html.
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v27-2026-11-13-trauma';
+const CACHE = PREFIX + 'v28-2026-11-13-trauma-algo';
 const ASSETS = [
   './',
   './index.html',
@@ -18,6 +19,7 @@ const ASSETS = [
   './js/flowplans.js',
   './js/shiftlog.js',
   './js/app.js',
+  './js/flow-cues.js',
   './nurse.html',
   './css/nurse.css',
   './js/nurse-safety-vocabulary.js',
@@ -36,6 +38,8 @@ const ASSETS = [
   './assets/display-diagrams/FD-ANT-07.png',
   './assets/display-diagrams/FD-ANT-08.png',
   './assets/display-diagrams/FD-ANT-11.png',
+  './assets/display-diagrams/FD-ANT-STI.png',
+  './assets/display-diagrams/FD-ANT-TRAUMA.png',
   './assets/display-diagrams/FD-ED-OB.png',
   './assets/display-diagrams/FD-GYN-01.png',
   './assets/display-diagrams/FD-GYNB-02.png',

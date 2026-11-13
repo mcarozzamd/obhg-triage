@@ -712,49 +712,81 @@
   ]
  },
  {
- "id": "ANT-TRAUMA",
- "old": "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
- "name": "Trauma in pregnancy",
- "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
- "aliases": [
-  "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
-  "fall in pregnancy",
-  "MVC",
-  "MVA",
-  "motor vehicle collision",
-  "blunt abdominal injury",
-  "blunt trauma",
-  "ANT-TRAUMA"
- ],
- "codes": [
-  "ANT-TRAUMA"
- ]
-},
+  "id": "ANT-TRAUMA",
+  "old": "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
+  "name": "Trauma in pregnancy",
+  "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
+  "aliases": [
+   "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
+   "fall in pregnancy",
+   "MVC",
+   "MVA",
+   "motor vehicle collision",
+   "blunt abdominal injury",
+   "blunt trauma",
+   "ANT-TRAUMA"
+  ],
+  "codes": [
+   "ANT-TRAUMA"
+  ]
+ },
  {
- "id": "ANT-STI",
- "old": "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
- "name": "STIs on Labor and Delivery",
- "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
- "aliases": [
-  "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
-  "syphilis",
-  "RPR",
-  "HSV",
-  "herpes",
-  "gonorrhea",
-  "chlamydia",
-  "trichomonas",
-  "BV",
-  "yeast",
-  "STI",
-  "HIV unknown",
-  "hep B unknown",
-  "ANT-STI"
- ],
- "codes": [
-  "ANT-STI"
- ]
-}
+  "id": "ANT-STI",
+  "old": "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
+  "name": "STIs on Labor and Delivery",
+  "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
+  "aliases": [
+   "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
+   "syphilis",
+   "RPR",
+   "HSV",
+   "herpes",
+   "gonorrhea",
+   "chlamydia",
+   "trichomonas",
+   "BV",
+   "yeast",
+   "STI",
+   "HIV unknown",
+   "hep B unknown",
+   "ANT-STI"
+  ],
+  "codes": [
+   "ANT-STI"
+  ]
+ },
+ {
+  "id": "FD-ANT-TRAUMA",
+  "old": "Trauma in pregnancy: evaluate, monitor, decide",
+  "name": "Trauma in pregnancy: evaluate, monitor, decide",
+  "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+  "aliases": [
+   "ALG-ANT-TRAUMA",
+   "trauma algorithm",
+   "trauma in pregnancy algorithm"
+  ],
+  "codes": [
+   "ALG-ANT-TRAUMA",
+   "ANT-TRAUMA",
+   "FD-ANT-TRAUMA"
+  ]
+ },
+ {
+  "id": "FD-ANT-STI",
+  "old": "STIs on labor and delivery: what to do now",
+  "name": "STIs on labor and delivery: what to do now",
+  "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+  "aliases": [
+   "ALG-ANT-STI",
+   "STI algorithm",
+   "STIs on L&D algorithm"
+  ],
+  "codes": [
+   "ALG-ANT-STI",
+   "ANT-STI",
+   "FD-ANT-STI"
+  ]
+ }
 ];
   const byId = Object.fromEntries(rows.map(r => [r.id, Object.freeze(r)]));
   function title(item) { const id = typeof item === 'string' ? item : item && item.id; return (byId[id] && byId[id].name) || (item && item.title) || 'Clinical reference'; }

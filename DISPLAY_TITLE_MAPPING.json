@@ -751,5 +751,37 @@
     "codes": [
       "ANT-STI"
     ]
+  },
+  {
+    "id": "FD-ANT-TRAUMA",
+    "old": "Trauma in pregnancy: evaluate, monitor, decide",
+    "name": "Trauma in pregnancy: evaluate, monitor, decide",
+    "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+    "aliases": [
+      "ALG-ANT-TRAUMA",
+      "trauma algorithm",
+      "trauma in pregnancy algorithm"
+    ],
+    "codes": [
+      "ALG-ANT-TRAUMA",
+      "ANT-TRAUMA",
+      "FD-ANT-TRAUMA"
+    ]
+  },
+  {
+    "id": "FD-ANT-STI",
+    "old": "STIs on labor and delivery: what to do now",
+    "name": "STIs on labor and delivery: what to do now",
+    "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+    "aliases": [
+      "ALG-ANT-STI",
+      "STI algorithm",
+      "STIs on L&D algorithm"
+    ],
+    "codes": [
+      "ALG-ANT-STI",
+      "ANT-STI",
+      "FD-ANT-STI"
+    ]
   }
 ]

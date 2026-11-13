@@ -151,9 +151,11 @@
     $('coding').innerHTML = codingHTML(r.coding, r.top.id);
     $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+  function mountCues() { if (self.FlowCues) self.FlowCues.mount($('top')); }
   function showTop(t) {
     const item = t.diagram || t.card;
     $('top').innerHTML = itemHTML(item, t.diagram ? t.card : null);
+    mountCues();
   }
 
   // ---------- viewer ----------
@@ -173,6 +175,7 @@
     $('flags').innerHTML = '';
     const comp = item.kind === 'diagram' && item.card ? byId(item.card) : null;
     $('top').innerHTML = itemHTML(item, comp);
+    mountCues();
     if (!current) { $('alts').innerHTML = ''; $('why').innerHTML = '<p class="alt-tag">Opened from Browse all.</p>'; $('coding').innerHTML = codingHTML(E.codes(item.card || item.id.replace(/^FD-/, ''), E.parse(''), T, V), item.id); }
     $('top').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
