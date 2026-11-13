@@ -22,16 +22,37 @@
   <h1>OBHG CLINICAL TRIAGE</h1>
 </header>
 
-<p class="nurse-link"><a href="nurse.html">Nurse triage section →</a></p>
-
-<nav class="tabs" role="tablist">
-  <button role="tab" id="tab-triage" class="on" aria-selected="true">Triage</button>
-  <button role="tab" id="tab-browse" aria-selected="false">Browse all</button>
-  <button role="tab" id="tab-log" aria-selected="false">Shift log</button>
+<nav id="section-bar" class="secbar" aria-label="Section" hidden>
+  <button type="button" id="go-start" class="secbar-home" data-go="start">← Start</button>
+  <span id="section-title" class="secbar-title"></span>
+  <button type="button" id="sec-back" class="secbar-back" hidden></button>
 </nav>
 
 <main>
-<section id="view-triage">
+<section id="view-start" class="start" aria-labelledby="start-h">
+  <h2 id="start-h" class="start-h">Choose a section</h2>
+  <div class="start-grid">
+    <button type="button" class="start-tile" id="start-clinician" data-go="clinician">
+      <svg class="st-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6v12a8 8 0 0 0 16 0V6M22 26v6a10 10 0 0 0 20 0v-4"/><circle cx="42" cy="24" r="4"/></svg>
+      <span class="st-txt"><span class="st-name">Clinician</span><span class="st-sub">One-line HPI triage, algorithms and suggested codes</span></span>
+    </button>
+    <a class="start-tile" id="start-nurse" href="nurse.html" data-last="nurse">
+      <svg class="st-ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="8" width="32" height="34" rx="4"/><path d="M18 8V4h12v4M24 17v14M17 24h14"/></svg>
+      <span class="st-txt"><span class="st-name">Nurse</span><span class="st-sub">Nurse triage: act-now screen, complaint questions, SBAR</span></span>
+    </a>
+    <button type="button" class="start-tile" id="start-browse" data-go="browse">
+      <svg class="st-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 10h14a4 4 0 0 1 4 4v26a3 3 0 0 0-3-3H6zM42 10H28a4 4 0 0 0-4 4v26a3 3 0 0 1 3-3h15z"/></svg>
+      <span class="st-txt"><span class="st-name">Browse Guidelines</span><span class="st-sub">Search every card and algorithm</span></span>
+    </button>
+    <button type="button" class="start-tile" id="start-log" data-go="log">
+      <svg class="st-ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="6" width="30" height="36" rx="3"/><path d="M16 16h16M16 24h16M16 32h10"/></svg>
+      <span class="st-txt"><span class="st-name">Patient log</span><span class="st-sub">Shift patient log on this device (initials only)</span></span>
+    </button>
+  </div>
+  <p class="foot"><b>Decision support only · not unit policy · not the medical record · enter no PHI.</b></p>
+</section>
+
+<section id="view-triage" hidden>
   <form id="hpi-form" autocomplete="off">
     <label for="hpi" class="lbl">One-line HPI</label>
     <div class="hpi-row">

@@ -57,16 +57,16 @@ for(const lang of LANGS_W)for(const vw of [375,390,430]){const p=await b.newPage
  const ES=/\b(Sí|Español|Triaje|Siguiente|Atrás|Urgencia|Secciones|Confirmar|Protocolos|Terminar|enfermería|PRUEBA)\b/;
  await p.goto(ROOT);await p.waitForFunction(()=>navigator.serviceWorker&&navigator.serviceWorker.controller,null,{timeout:15000}).catch(()=>{});
  if(!(await p.evaluate(()=>!!(navigator.serviceWorker&&navigator.serviceWorker.controller)))){await p.reload();await p.waitForTimeout(800);}
- const link=await p.$('a[href="nurse.html"]');ok(!!link&&(await link.innerText()).trim()==='Nurse triage section →','index.html shows the English nurse link');
+ const link=await p.$('#view-start a#start-nurse[href="nurse.html"]');ok(!!link&&await link.isVisible()&&/^Nurse\b/.test((await link.innerText()).trim()),'index.html start page shows the large Nurse tile');
  await link.click();await p.waitForLoadState('load');await p.waitForTimeout(400);
  ok(/nurse\.html$/.test(p.url())&&await p.$eval('#nurse-main',e=>!e.hidden),'link opens the nurse page straight into the English flow');
  let all='';for(const sc of ['gate','vitals','status','universal','pick']){await p.click(`#nurse-banner [data-act=qnav]`).catch(()=>{});const t=await p.$(`[data-act=go][data-val=${sc}]`);if(t){await t.click();await p.waitForTimeout(80);}all+=await p.$eval('body',e=>e.innerText);}
  ok(!ES.test(all),'no Spanish UI text on any visited nurse screen'+(ES.test(all)?' ('+all.match(ES)[0]+')':''));
  ok(!(await p.$('[data-act=lang]')),'no language picker anywhere');
  const cached=await p.evaluate(async()=>{const ks=await caches.keys();const k=ks.find(x=>x.startsWith('obhg-triage-'));if(!k)return null;const c=await caches.open(k);const i=await c.match('./index.html'),n=await c.match('./nurse.html');return {k,i:i?await i.text():'',n:n?await n.text():''};});
- ok(cached&&cached.k==='obhg-triage-v25-2026-11-12-nurse-en','service worker cache v25 installed ('+(cached&&cached.k)+')');
+ ok(cached&&cached.k==='obhg-triage-v26-2026-11-13-start','service worker cache v25 installed ('+(cached&&cached.k)+')');
  ok(cached&&/OBHG CLINICAL TRIAGE/.test(cached.i)&&!/id="nurse-app"/.test(cached.i),'after visiting nurse.html the cached index.html is still the physician app');
  ok(cached&&/id="nurse-app"/.test(cached.n),'nurse.html cached under its own key');
- await ctx.setOffline(true);await p.goto(ROOT+'nurse.html').catch(()=>{});ok(await p.$('#nurse-app').then(Boolean).catch(()=>false),'nurse page loads offline');await p.goto(ROOT).catch(()=>{});ok(await p.$('#tab-triage').then(Boolean).catch(()=>false),'physician app still loads offline');await ctx.setOffline(false);
+ await ctx.setOffline(true);await p.goto(ROOT+'nurse.html').catch(()=>{});ok(await p.$('#nurse-app').then(Boolean).catch(()=>false),'nurse page loads offline');await p.goto(ROOT).catch(()=>{});ok(await p.$('#start-clinician').then(Boolean).catch(()=>false),'physician app still loads offline');await ctx.setOffline(false);
  ok(!errs.length,'index→nurse: no console errors '+errs.join('|'));await ctx.close();}
 console.log(`${n-fail}/${n} English-only live-candidate browser checks`);await b.close();process.exitCode=fail?1:0;})();

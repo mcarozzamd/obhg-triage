@@ -2,7 +2,7 @@
   "name": "obhg-triage-local-staging",
   "private": true,
   "scripts": {
-    "test": "node --test tests/closeout.test.cjs tests/fixes.test.cjs tests/dm_titles.test.cjs && python3 tests/verify_display_images.py && TZ=America/Chicago node tests/regression.cjs",
+    "test": "node --test tests/closeout.test.cjs tests/fixes.test.cjs tests/dm_titles.test.cjs tests/start/start_routing.test.cjs && python3 tests/verify_display_images.py && TZ=America/Chicago node tests/regression.cjs",
     "smoke": "node tests/smoke.cjs",
     "smoke:fixes": "node tests/fixes-smoke.cjs"
   },

@@ -30,9 +30,9 @@ let count=0;const check=(name,f)=>{f();count++;console.log('PASS '+name);};
  try{
  await page.goto(URL);await page.waitForLoadState('networkidle');
  check('phone viewport, production page and triage controls',()=>{assert.equal(page.viewportSize().width,390);});
- await page.locator('#hpi').fill('22 yo G1P0 at 32 weeks with leaking fluid since this morning');await page.locator('#go').click();await page.locator('#coding').waitFor({state:'visible'});
+ assert.ok(await page.locator('#view-start').isVisible());await page.locator('#start-clinician').click();await page.locator('#hpi').fill('22 yo G1P0 at 32 weeks with leaking fluid since this morning');await page.locator('#go').click();await page.locator('#coding').waitFor({state:'visible'});
  check('triage and coding panels preserved',async()=>{});assert.match(await page.locator('#coding').innerText(),/ICD-10-CM/);
- await page.locator('#tab-log').click();
+ await (await page.locator('#start-log').isVisible() ? page.locator('#start-log').click() : page.evaluate(()=>{location.hash='log';}));await page.locator('#view-log').waitFor();
  check('11-column log plus existing action column preserved',()=>{});assert.equal(await page.locator('#log-table th').count(),12);
  assert.equal(await page.locator('#row-actions [data-row]').count(),4);
  check('per-row tools exclude voided row',()=>{});
@@ -87,7 +87,7 @@ let count=0;const check=(name,f)=>{f();count++;console.log('PASS '+name);};
  check('on-demand import seeds new shift, keeps updates and source provenance',()=>{});
  await page.locator('#lg-carry').click();assert.match(await page.locator('#carry-list').innerText(),/No pending carry-overs/);await page.locator('#carry-cancel').click();
  check('consumed carry-overs cannot import twice',()=>{});
- await page.reload();await page.locator('#tab-log').click();assert.equal(await page.locator('#row-actions [data-row]').count(),2);assert.ok((await page.locator('#row-actions [data-row="1"]').innerText()).includes('END-OF-LONG-UPDATE'));
+ await page.reload();await (await page.locator('#start-log').isVisible() ? page.locator('#start-log').click() : page.evaluate(()=>{location.hash='log';}));await page.locator('#view-log').waitFor();assert.equal(await page.locator('#row-actions [data-row]').count(),2);assert.ok((await page.locator('#row-actions [data-row="1"]').innerText()).includes('END-OF-LONG-UPDATE'));
  check('new shift and full update survive page reload',()=>{});
  // Native share uses a mocked OS handoff; sends/shares nothing externally.
  await page.evaluate(()=>{window._shares=[];Object.defineProperty(navigator,'canShare',{configurable:true,value:()=>true});Object.defineProperty(navigator,'share',{configurable:true,writable:true,value:async x=>{_shares.push({name:x.files[0].name,text:await x.files[0].text()});}});});
@@ -97,13 +97,13 @@ let count=0;const check=(name,f)=>{f();count++;console.log('PASS '+name);};
  await page.locator('#lg-closeout').click();await page.locator('#closeout-finalize').click();await page.waitForFunction(()=>document.getElementById('closeout-status').textContent.includes('share cancelled'));
  assert.equal(await page.locator('#past [data-pv]').count(),2);
  check('share cancellation never loses finalized shift; retry is offered',()=>{});
- await page.locator('#tab-log').click();await page.locator('#lg-carry').click();await page.locator('#carry-import').click();
+ await (await page.locator('#start-log').isVisible() ? page.locator('#start-log').click() : page.evaluate(()=>{location.hash='log';}));await page.locator('#view-log').waitFor();await page.locator('#lg-carry').click();await page.locator('#carry-import').click();
  await page.locator('#lg-carry').click();await page.locator('#carry-cancel').click();
  await page.clock.runFor(2000);await page.locator('#row-actions').screenshot({path:path.join(OUT,'05-imported-phone.png')});
  // Service worker must precache all assets and support reload without network.
  await page.waitForFunction(()=>navigator.serviceWorker.controller);
- const cacheNames=await page.evaluate(()=>caches.keys());assert.ok(cacheNames.includes('obhg-triage-v25-2026-11-12-nurse-en'));
- await context.setOffline(true);await page.reload();await page.locator('#tab-log').click();assert.ok(await page.locator('#lg-closeout').isVisible());await context.setOffline(false);
+ const cacheNames=await page.evaluate(()=>caches.keys());assert.ok(cacheNames.includes('obhg-triage-v26-2026-11-13-start'));
+ await context.setOffline(true);await page.reload();await (await page.locator('#start-log').isVisible() ? page.locator('#start-log').click() : page.evaluate(()=>{location.hash='log';}));await page.locator('#view-log').waitFor();assert.ok(await page.locator('#lg-closeout').isVisible());await context.setOffline(false);
  check('bumped service worker installs and staged app works offline',()=>{});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
  check('phone layout contains horizontal log scrolling without body overflow',()=>{});

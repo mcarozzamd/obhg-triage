@@ -15,15 +15,15 @@ let passed=0;const check=(s)=>{passed++;console.log('PASS '+s);};
  try{
   await page.goto(target+'?fixes='+Date.now());await page.waitForLoadState('networkidle');assert.equal(await page.locator('.testbanner').count(),0);assert.ok(!(await page.locator('body').innerText()).includes('STAGED TEST'));check('production banner removed');
   await page.screenshot({path:path.join(out,'00-banner-gone-'+label+'-phone.png')});
-  await page.locator('#tab-log').click();
+  await (await page.locator('#start-log').isVisible() ? page.locator('#start-log').click() : page.evaluate(()=>{location.hash='log';}));await page.locator('#view-log').waitFor();
   await page.locator('#lg-hpi').fill('AB. 22 yo G1P0 at 32 weeks with leaking fluid, admit antepartum');
   await page.waitForFunction(()=>document.querySelector('#lg-initials').value==='AB'&&document.querySelector('#lg-ga').value==='32w0d');
   assert.equal(await page.locator('#lg-age').inputValue(),'22');assert.equal(await page.locator('#lg-gp').inputValue(),'G1P0');check('summary initials, age, G/P and GA auto-fill together, including dictation punctuation');
   await page.locator('#lg-hpi').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(out,'01-initials-'+label+'-phone.png')});
   await page.locator('#lg-initials').fill('XY');await page.locator('#lg-hpi2').fill('CD. leaking fluid');await page.waitForTimeout(850);assert.equal(await page.locator('#lg-initials').inputValue(),'XY');check('manual Initials value is not overwritten by HPI auto-fill');
-  await page.reload();await page.locator('#tab-log').click();await page.locator('#lg-hpi2').fill('CD. leaking fluid');await page.waitForFunction(()=>document.querySelector('#lg-initials').value==='CD');check('leading initials in structured HPI also fill Initials');
+  await page.reload();await (await page.locator('#start-log').isVisible() ? page.locator('#start-log').click() : page.evaluate(()=>{location.hash='log';}));await page.locator('#view-log').waitFor();await page.locator('#lg-hpi2').fill('CD. leaking fluid');await page.waitForFunction(()=>document.querySelector('#lg-initials').value==='CD');check('leading initials in structured HPI also fill Initials');
   await page.locator('#lg-hpi2').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(out,'01b-hpi-initials-'+label+'-phone.png')});
-  await page.reload();await page.locator('#tab-log').click();
+  await page.reload();await (await page.locator('#start-log').isVisible() ? page.locator('#start-log').click() : page.evaluate(()=>{location.hash='log';}));await page.locator('#view-log').waitFor();
   await page.locator('#lg-hpi').fill('EF 29 yo G2P1 at 38 weeks with maternal sepsis, BP 80/40, HR 140, fever 39.5 C, lactate 5');await page.waitForFunction(()=>document.querySelector('#lg-ap').value.includes('A1 · ANTIBIOTICS BY SOURCE'));
   const ap=await page.locator('#lg-ap').inputValue();assert.ok(ap.includes('blood cultures x2'));assert.ok(ap.includes('E · NOTIFY AND ESCALATE'));assert.ok(ap.includes('Doses to be checked against CSM pharmacy build.'));assert.ok(await page.locator('#lg-flow-reference').isVisible());check('SYS-03 actual match contains source bundle, antibiotics, later actions and warning');
   fs.writeFileSync(path.join(out,'sepsis-ap-'+label+'.txt'),ap);
@@ -50,7 +50,7 @@ let passed=0;const check=(s)=>{passed++;console.log('PASS '+s);};
   await card.locator('[data-lookup-open="grok"]').click();const last=await page.evaluate(()=>_opened.at(-1));assert.equal(new URL(last.url).searchParams.get('q'),query);assert.ok(last.url.includes('%20'));assert.equal(last.features,'noopener,noreferrer');check('only the Grok URL is encoded; reviewed de-identified text is unchanged');
   await page.evaluate(()=>{_copyFails=true;});await card.locator('[data-lookup-copy]').click();await page.waitForFunction(()=>document.querySelector('[data-row-status]').textContent.includes('Clipboard unavailable'));check('clipboard denial retains manual-copy recovery');
   await card.locator('[data-lookup-question]').fill('MRN%2012345678');await card.locator('[data-lookup-review]').click();assert.equal(await card.locator('[data-lookup-panel]').isVisible(),false);check('encoded identifiers are blocked AFTER decoding');
-  const sw=await page.request.get(new URL('sw.js?check='+Date.now(),target).href);assert.ok((await sw.text()).includes('v25-2026-11-12-nurse-en'));check('new v23 service-worker version served');
+  const sw=await page.request.get(new URL('sw.js?check='+Date.now(),target).href);assert.ok((await sw.text()).includes('v26-2026-11-13-start'));check('new v23 service-worker version served');
   assert.deepEqual(errors,[]);check('no browser runtime or console errors');
   fs.writeFileSync(path.join(out,'fixes-browser-'+label+'.json'),JSON.stringify({target,passed,errors,viewport:{width:390,height:844},clipboard:'Mocks only; no clinical query sent externally.'},null,2));console.log(passed+' fixes phone checks passed ('+label+').');
  }catch(e){fs.writeFileSync(path.join(out,'failure-'+label+'-details.json'),JSON.stringify({errors},null,2));await page.screenshot({path:path.join(out,'failure-'+label+'-phone.png'),fullPage:true});throw e;}finally{await browser.close();}

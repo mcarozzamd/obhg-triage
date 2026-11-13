@@ -109,3 +109,24 @@ tr.amended td{background:#FFFBEA}
 .linkbtn{display:inline-block;margin:6px 0;padding:8px 12px;border:1.5px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy);font-weight:700;font-size:15px;text-align:left}
 .dm-table{border-collapse:collapse;width:100%;font-size:14px;margin:6px 0}.dm-table th,.dm-table td{border:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}.dm-table th{background:#eef2f7}
 .pending{color:#8a5a00;background:#fff3cd;padding:0 2px}
+
+/* Start page + section bar (13 Nov 2026) */
+.start{padding-top:4px}
+.start-h{font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:#456;margin:6px 2px 10px}
+.start-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:640px){.start-grid{grid-template-columns:1fr 1fr;gap:16px}}
+.start-tile{display:flex;align-items:center;gap:16px;min-height:104px;width:100%;padding:16px 18px;border:2px solid var(--navy);border-radius:14px;background:#fff;color:var(--navy);text-align:left;text-decoration:none;font:inherit;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.start-tile:active{background:#E6EEF2}
+.start-tile:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media (min-width:640px){.start-tile{min-height:150px}}
+.st-ico{flex:none;width:56px;height:56px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.st-txt{display:flex;flex-direction:column;min-width:0}
+.st-name{font-size:24px;font-weight:800;line-height:1.15}
+.st-sub{font-size:14px;color:#456;margin-top:4px}
+.st-last{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#1b2830;border-radius:6px;padding:1px 6px;margin-top:4px}
+.start-tile.last{border-color:var(--gold)}
+.secbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--line);padding:6px 12px}
+.secbar-home,.secbar-back{min-height:44px;padding:8px 14px;border:1.5px solid var(--navy);border-radius:10px;background:#fff;color:var(--navy);font:inherit;font-weight:700;font-size:15px}
+.secbar-title{font-weight:800;color:var(--navy);font-size:17px;flex:1;min-width:0}
+.hdr-home{display:inline-block;margin-top:6px;color:#fff;font-weight:700;font-size:15px;text-decoration:none;border:1.5px solid rgba(255,255,255,.7);border-radius:10px;padding:8px 14px;min-height:44px}
+@media (max-width:480px){.secbar:has(#sec-back:not([hidden])) .secbar-title{display:none}}

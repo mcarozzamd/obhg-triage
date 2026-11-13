@@ -19,17 +19,52 @@
     '22 yo G1P0 at 32 weeks with leaking fluid since this morning',
   ];
 
-  // ---------- tabs ----------
+  // ---------- start page + sections (13 Nov 2026) ----------
+  // A fresh open (no #hash) always shows the start page. #clinician, #browse and #log open one section;
+  // the nurse section is nurse.html. Only the last-used section name is remembered (never clinical text).
+  const SECTIONS = { clinician: { view: 'triage', title: 'Clinician triage' }, browse: { view: 'browse', title: 'Browse guidelines', back: 'Back to guideline list' }, log: { view: 'log', title: 'Patient log', back: 'Back to patient log' } };
+  const LAST_KEY = 'obhg_start_last';
+  let section = 'start';
+  const hashSection = () => { const h = decodeURIComponent(location.hash.replace(/^#/, '')); return SECTIONS[h] ? h : 'start'; };
   function tab(which) {
-    for (const v of ['triage', 'browse', 'log']) {
-      const on = v === which; $('view-' + v).hidden = !on; $('tab-' + v).classList.toggle('on', on); $('tab-' + v).setAttribute('aria-selected', on);
-    }
+    for (const v of ['triage', 'browse', 'log']) $('view-' + v).hidden = v !== which;
+    // Outside the clinician section the triage view only shows an opened card (no HPI form) with a way back.
+    const sec = SECTIONS[section];
+    $('hpi-form').hidden = section !== 'clinician';
+    $('sec-back').hidden = !(which === 'triage' && sec && sec.back);
+    if (sec && sec.back) $('sec-back').textContent = '← ' + sec.back;
     if (which === 'browse') renderList();
     if (which === 'log') renderLog();
   }
-  $('tab-triage').onclick = () => tab('triage');
-  $('tab-browse').onclick = () => tab('browse');
-  $('tab-log').onclick = () => tab('log');
+  function markLast() {
+    let last = ''; try { last = localStorage.getItem(LAST_KEY) || ''; } catch (e) { /* storage unavailable */ }
+    for (const t of document.querySelectorAll('.start-tile')) {
+      const on = (t.dataset.go || t.dataset.last) === last; t.classList.toggle('last', on);
+      const b = t.querySelector('.st-last'); if (on && !b) t.querySelector('.st-name').insertAdjacentHTML('afterend', '<span class="st-last">Last used</span>'); if (!on && b) b.remove();
+    }
+  }
+  function remember(s) { try { localStorage.setItem(LAST_KEY, s); } catch (e) { /* storage unavailable */ } }
+  function route() {
+    section = hashSection();
+    const start = section === 'start';
+    $('view-start').hidden = !start; $('section-bar').hidden = start;
+    document.body.classList.toggle('on-start', start);
+    if (start) { for (const v of ['triage', 'browse', 'log']) $('view-' + v).hidden = true; $('viewer').hidden = true; markLast(); return; }
+    $('section-title').textContent = SECTIONS[section].title;
+    remember(section);
+    tab(SECTIONS[section].view);
+  }
+  function go(s) {
+    if (s === 'start') { if (location.hash) history.pushState(null, '', location.pathname + location.search); }
+    else if (location.hash !== '#' + s) location.hash = s;
+    route();
+  }
+  const onHistory = () => { if (hashSection() !== section) route(); };
+  window.addEventListener('hashchange', onHistory);
+  window.addEventListener('popstate', onHistory);
+  $('sec-back').onclick = () => { if (SECTIONS[section]) tab(SECTIONS[section].view); };
+  $('start-nurse').addEventListener('click', () => remember('nurse'));
+  self.OBHGStart = { go, section: () => section, SECTIONS };
 
   // ---------- rendering ----------
   function verifyBox(flags) {
@@ -143,6 +178,7 @@
   }
 
   document.addEventListener('click', e => {
+    const g = e.target.closest('[data-go]'); if (g) { go(g.dataset.go); return; }
     const z = e.target.closest('[data-zoom]'); if (z) { openViewer(byId(z.dataset.zoom)); return; }
     const o = e.target.closest('[data-open]'); if (o) { openItem(byId(o.dataset.open)); return; }
     const x = e.target.closest('[data-ex]'); if (x) { $('hpi').value = x.dataset.ex; run(); }
@@ -495,6 +531,8 @@
   });
   $('lg-export').onclick = () => exportShift(store.current().id);
   $('lg-purge').onclick = () => purgeShift(store.current().id, 'Purge');
+
+  route(); // start page on a fresh open; a #section deep link opens that section
 
   // Service worker + 'new version' prompt (new SW skipWaiting + clients.claim -> controllerchange).
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
