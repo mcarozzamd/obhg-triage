@@ -153,6 +153,23 @@
         btn.addEventListener('click', function () { setPath(btn.getAttribute('data-sti-entry')); });
       });
     }
+    const utiEntry = container.querySelector('[data-cue="uti-entry"]');
+    if (utiEntry) {
+      const status = utiEntry.querySelector('[data-uti-entry-status]');
+      const setPath = function (path) {
+        if (status) {
+          status.textContent = path === 'triage'
+            ? 'OB ED triage: not in labor (any GA) or postpartum ≤12 wk. Use the triage branch below.'
+            : 'In labor / admitted: use the labor path (node L) below.';
+        }
+        container.querySelectorAll('[data-uti-path]').forEach(function (el) {
+          el.hidden = el.getAttribute('data-uti-path') !== path;
+        });
+      };
+      utiEntry.querySelectorAll('[data-uti-entry]').forEach(function (btn) {
+        btn.addEventListener('click', function () { setPath(btn.getAttribute('data-uti-entry')); });
+      });
+    }
   }
 
   const api = {

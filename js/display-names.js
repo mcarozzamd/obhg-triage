@@ -2,791 +2,829 @@
 (function (root) {
   'use strict';
   const rows = [
- {
-  "id": "FORMULARY",
-  "old": "Quick reference formulary (OB)",
-  "name": "Obstetric medicines",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "FORMULARY"
-  ]
- },
- {
-  "id": "ANT-10",
-  "old": "Indicated late-preterm / early-term delivery (ACOG CO 831 + CO 751)",
-  "name": "Delivery timing",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "ANT-10"
-  ]
- },
- {
-  "id": "LND-01",
-  "old": "Intrapartum FHR (ACOG CPG 10)",
-  "name": "Fetal heart rate monitoring",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "LND-01"
-  ]
- },
- {
-  "id": "LND-02",
-  "old": "First and second stage labor (ACOG CPG 8)",
-  "name": "Labor progress",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "LND-02"
-  ]
- },
- {
-  "id": "LND-03",
-  "old": "Cervical ripening (ACOG CPG 9)",
-  "name": "Cervical ripening",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "LND-03"
-  ]
- },
- {
-  "id": "LND-04",
-  "old": "Intraamniotic infection (CO 712 + 2024 CPU)",
-  "name": "Intraamniotic infection",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "LND-04"
-  ]
- },
- {
-  "id": "LND-05",
-  "old": "GBS prophylaxis (ACOG CO 797)",
-  "name": "Group B streptococcus",
-  "review": "Michael title decision 11 Nov 2026",
-  "aliases": [
-   "Group B streptococcal prevention",
-   "Group B strep prophylaxis during labor",
-   "GBS",
-   "group B strep"
-  ],
-  "codes": [
-   "LND-05"
-  ]
- },
- {
-  "id": "LND-06",
-  "old": "Shoulder dystocia (ACOG PB 178)",
-  "name": "Shoulder dystocia",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "LND-06"
-  ]
- },
- {
-  "id": "LND-07",
-  "old": "Operative vaginal birth (ACOG PB 219)",
-  "name": "Assisted vaginal birth",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "LND-07"
-  ]
- },
- {
-  "id": "LND-08",
-  "old": "TOLAC / VBAC (ACOG PB 205)",
-  "name": "Labor after cesarean",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "LND-08"
-  ]
- },
- {
-  "id": "ANT-01",
-  "old": "PROM / PPROM (ACOG PB 217)",
-  "name": "Prelabor rupture of membranes, term and preterm",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Membrane rupture"
-  ],
-  "codes": [
-   "ANT-01"
-  ]
- },
- {
-  "id": "ANT-02",
-  "old": "Preterm labor (ACOG PB 171)",
-  "name": "Preterm labor",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "ANT-02"
-  ]
- },
- {
-  "id": "ANT-03",
-  "old": "Cerclage (ACOG CPG 12)",
-  "name": "Short cervix, cervical insufficiency and cerclage",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Cervical insufficiency"
-  ],
-  "codes": [
-   "ANT-03"
-  ]
- },
- {
-  "id": "ANT-04",
-  "old": "Gestational HTN / preeclampsia (PB 222 + 2024 CPU)",
-  "name": "Hypertensive disorders of pregnancy",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "ANT-04"
-  ]
- },
- {
-  "id": "ANT-05",
-  "old": "Diabetes in pregnancy (ACOG PB 190 + 201)",
-  "name": "Diabetes in pregnancy",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "ANT-05"
-  ]
- },
- {
-  "id": "ANT-06",
-  "old": "Antenatal corticosteroids (ACOG CO 713)",
-  "name": "Antenatal corticosteroids",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Fetal lung maturation"
-  ],
-  "codes": [
-   "ANT-06"
-  ]
- },
- {
-  "id": "ANT-07",
-  "old": "Placenta accreta spectrum (ACOG OCC 7)",
-  "name": "Placenta accreta spectrum",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "ANT-07"
-  ]
- },
- {
-  "id": "ANT-08",
-  "old": "Hyperemesis in Pregnancy (ACOG PB 189)",
-  "name": "Nausea, vomiting and hyperemesis in pregnancy",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Hyperemesis gravidarum"
-  ],
-  "codes": [
-   "ANT-08"
-  ]
- },
- {
-  "id": "ANT-09",
-  "old": "Outpatient antenatal surveillance (ACOG CO 828)",
-  "name": "Antenatal fetal surveillance",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "ANT-09"
-  ]
- },
- {
-  "id": "GYN-01",
-  "old": "Tubal ectopic (ACOG PB 193)",
-  "name": "Tubal ectopic pregnancy",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "GYN-01"
-  ]
- },
- {
-  "id": "GYN-02",
-  "old": "Early pregnancy loss (ACOG PB 200)",
-  "name": "Early pregnancy loss",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "GYN-02"
-  ]
- },
- {
-  "id": "PP-01",
-  "old": "Postpartum hemorrhage (PB 183 + 2025 CPU)",
-  "name": "Postpartum hemorrhage",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "PP-01"
-  ]
- },
- {
-  "id": "PP-02",
-  "old": "Anemia in pregnancy / postpartum (ACOG PB 233)",
-  "name": "Pregnancy and postpartum anemia",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "PP-02"
-  ]
- },
- {
-  "id": "SYS-01",
-  "old": "Critical care in pregnancy (ACOG PB 211)",
-  "name": "Maternal critical illness",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "SYS-01"
-  ]
- },
- {
-  "id": "SYS-02",
-  "old": "Thromboembolism in pregnancy (ACOG PB 196 · CMQCC VTE)",
-  "name": "Pregnancy-related thromboembolism",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "SYS-02"
-  ]
- },
- {
-  "id": "GYNB-FORMULARY",
-  "old": "Quick reference formulary (GYN)",
-  "name": "Gynecologic medicines",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "GYN formulary",
-   "GYNB-FORMULARY"
-  ]
- },
- {
-  "id": "GYNB-01",
-  "old": "Tubal ectopic / PUL (ACOG PB 193)",
-  "name": "Ectopic pregnancy and pregnancy of unknown location",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Ectopic pregnancy and unknown location"
-  ],
-  "codes": [
-   "GYN-01 (GYN book)",
-   "GYNB-01"
-  ]
- },
- {
-  "id": "GYNB-02",
-  "old": "Acute abnormal uterine bleeding (CO 557 + PB 128 / 136 / 228 + house)",
-  "name": "Acute abnormal uterine bleeding",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Abnormal uterine bleeding"
-  ],
-  "codes": [
-   "GYN-02 (GYN book)",
-   "GYNB-02"
-  ]
- },
- {
-  "id": "GYNB-03",
-  "old": "PID / tubo-ovarian abscess (CDC STI 2021 + house drainage)",
-  "name": "Pelvic inflammatory disease and tubo-ovarian abscess",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Pelvic infection and abscess"
-  ],
-  "codes": [
-   "GYN-03 (GYN book)",
-   "GYNB-03"
-  ]
- },
- {
-  "id": "GYNB-04",
-  "old": "Adnexal torsion (ACOG PB 174)",
-  "name": "Adnexal torsion",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "GYN-04 (GYN book)",
-   "GYNB-04"
-  ]
- },
- {
-  "id": "GYNB-05",
-  "old": "Adnexal mass (not torsion) (ACOG PB 174)",
-  "name": "Adnexal mass",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "GYN-05 (GYN book)",
-   "GYNB-05"
-  ]
- },
- {
-  "id": "GYNB-06",
-  "old": "Pyelo / cUTI / obstructing stone (IDSA 2025 + AAFP 2019)",
-  "name": "Kidney infection, complicated UTI and obstructing stones",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Complicated urinary infection and stones"
-  ],
-  "codes": [
-   "GYN-06 (GYN book)",
-   "GYNB-06"
-  ]
- },
- {
-  "id": "GYNB-07",
-  "old": "IUD / implant emergencies (PB 186 + CO 672 + CDC)",
-  "name": "Contraceptive device complications",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "GYN-07 (GYN book)",
-   "GYNB-07"
-  ]
- },
- {
-  "id": "GYNB-08",
-  "old": "Chronic pelvic pain (ACOG PB 218 + house PT)",
-  "name": "Chronic pelvic pain",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "GYN-08 (GYN book)",
-   "GYNB-08"
-  ]
- },
- {
-  "id": "GYNB-09",
-  "old": "Post-hysterectomy + delayed complications (CO 750 + PB 195)",
-  "name": "Hysterectomy complications",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "GYN-09 (GYN book)",
-   "GYNB-09"
-  ]
- },
- {
-  "id": "GYNB-10",
-  "old": "Molar pregnancy / GTD (ACOG 2025 + CC 11)",
-  "name": "Molar pregnancy and trophoblastic disease",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "GYN-10 (GYN book)",
-   "GYNB-10"
-  ]
- },
- {
-  "id": "SYS-02-EXP",
-  "old": "VTE · CMQCC expanded text",
-  "name": "Pregnancy-related blood clots: diagnosis, treatment and prevention",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Thrombosis prevention"
-  ],
-  "codes": [
-   "SYS-02 appx",
-   "SYS-02-EXP"
-  ]
- },
- {
-  "id": "FD-ANT-04",
-  "old": "Severe-range BP: the 15-minute clock",
-  "name": "Severe hypertension",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "ANT-04",
-   "FD-ANT-04"
-  ]
- },
- {
-  "id": "FD-PP-01",
-  "old": "Postpartum hemorrhage flow",
-  "name": "Postpartum hemorrhage response",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Acute postpartum bleeding"
-  ],
-  "codes": [
-   "FD-PP-01",
-   "PP-01"
-  ]
- },
- {
-  "id": "FD-LND-01",
-  "old": "Category II FHR flow",
-  "name": "Category II (indeterminate) fetal heart rate",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Indeterminate fetal heart rate"
-  ],
-  "codes": [
-   "FD-LND-01",
-   "LND-01"
-  ]
- },
- {
-  "id": "FD-SYS-03",
-  "old": "Maternal sepsis flow",
-  "name": "Maternal sepsis",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "FD-SYS-03",
-   "SYS-03"
-  ]
- },
- {
-  "id": "FD-SYS-02",
-  "old": "Postpartum VTE prophylaxis decision tree (CMQCC)",
-  "name": "Postpartum VTE prophylaxis",
-  "review": "Michael title decision 11 Nov 2026",
-  "aliases": [
-   "Postpartum thrombosis prevention",
-   "postpartum thrombosis prevention",
-   "VTE prevention",
-   "VTE prophylaxis"
-  ],
-  "codes": [
-   "FD-SYS-02",
-   "SYS-02"
-  ]
- },
- {
-  "id": "FD-LND-04",
-  "old": "Intraamniotic infection: diagnose, treat, deliver",
-  "name": "Suspected intraamniotic infection",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "FD-LND-04",
-   "LND-04"
-  ]
- },
- {
-  "id": "FD-GYN-01",
-  "old": "Tubal ectopic and PUL: stable, scan, trend, treat",
-  "name": "Suspected ectopic pregnancy or pregnancy of unknown location",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Suspected ectopic pregnancy"
-  ],
-  "codes": [
-   "FD-GYN-01",
-   "GYN-01",
-   "GYN-01 (GYN + OB book)"
-  ]
- },
- {
-  "id": "FD-GYNB-02",
-  "old": "Acute abnormal uterine bleeding: stabilize, test, stop it",
-  "name": "Acute uterine bleeding",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "FD-GYNB-02",
-   "GYN-02 (GYN book)",
-   "GYNB-02"
-  ]
- },
- {
-  "id": "FD-GYNB-04",
-  "old": "Adnexal torsion and mass: call it, untwist, keep the ovary",
-  "name": "Adnexal torsion and ovarian mass",
-  "review": "Michael title decision 11 Nov 2026",
-  "aliases": [
-   "Acute adnexal pain",
-   "Adnexal torsion and mass assessment",
-   "adnexal mass",
-   "ovarian torsion"
-  ],
-  "codes": [
-   "FD-GYNB-04",
-   "GYN-04/05 (GYN book)",
-   "GYNB-04"
-  ]
- },
- {
-  "id": "FD-LND-06",
-  "old": "Shoulder dystocia: call it, time it, work the maneuvers",
-  "name": "Shoulder dystocia emergency",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "FD-LND-06",
-   "LND-06"
-  ]
- },
- {
-  "id": "FD-ANT-01",
-  "old": "PROM and PPROM: confirm, date, manage by gestational age",
-  "name": "Prelabor membrane rupture",
-  "review": "Doc naming review (11 Nov 2026)",
-  "codes": [
-   "ANT-01",
-   "FD-ANT-01"
-  ]
- },
- {
-  "id": "FD-ANT-07",
-  "old": "Placenta accreta spectrum: suspect, transfer, leave the placenta",
-  "name": "Suspected placenta accreta spectrum",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Suspected placenta accreta"
-  ],
-  "codes": [
-   "ANT-07",
-   "FD-ANT-07"
-  ]
- },
- {
-  "id": "FD-ED-OB",
-  "old": "ED-to-OB pathway decision tree",
-  "name": "Emergency department–obstetric triage and handoff",
-  "review": "Doc naming review (11 Nov 2026)",
-  "aliases": [
-   "Pregnancy and postpartum triage"
-  ],
-  "codes": [
-   "ED-OB",
-   "ED→OB",
-   "FD-ED-OB"
-  ]
- },
- {
-  "id": "LND-09",
-  "old": "Umbilical cord prolapse (RCOG GTG 50, international)",
-  "name": "Umbilical cord prolapse",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "codes": [
-   "LND-09"
-  ]
- },
- {
-  "id": "LND-10",
-  "old": "Uterine rupture / TOLAC emergency (ACOG PB 205)",
-  "name": "Uterine rupture",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "codes": [
-   "LND-10"
-  ]
- },
- {
-  "id": "ANT-11",
-  "old": "Eclamptic seizure (PB 222 + CO 767)",
-  "name": "Eclampsia",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "codes": [
-   "ANT-11"
-  ]
- },
- {
-  "id": "SYS-04",
-  "old": "Maternal cardiac arrest / resuscitative hysterotomy (AHA 2025 + PB 211)",
-  "name": "Maternal cardiac arrest",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "codes": [
-   "SYS-04"
-  ]
- },
- {
-  "id": "SYS-05",
-  "old": "Amniotic fluid embolism (SMFM CG 9 + 2026 checklist)",
-  "name": "Amniotic fluid embolism",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "codes": [
-   "SYS-05"
-  ]
- },
- {
-  "id": "FD-ANT-02",
-  "old": "Preterm labor: confirm change, steroids, 48 hours, stop (flow)",
-  "name": "Preterm labor assessment and treatment",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "codes": [
-   "ANT-02",
-   "FD-ANT-02"
-  ]
- },
- {
-  "id": "FD-LND-05",
-  "old": "GBS prophylaxis: who gets it, which drug (flow)",
-  "name": "Group B streptococcus",
-  "review": "Michael title decision 11 Nov 2026",
-  "aliases": [
-   "Group B strep: who gets antibiotics and which drug",
-   "GBS",
-   "group B strep"
-  ],
-  "codes": [
-   "FD-LND-05",
-   "LND-05"
-  ]
- },
- {
-  "id": "FD-LND-02",
-  "old": "Labor progress: is this really arrest? (flow)",
-  "name": "Suspected labor arrest",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "codes": [
-   "FD-LND-02",
-   "LND-02"
-  ]
- },
- {
-  "id": "FD-ANT-08",
-  "old": "NVP and hyperemesis: rule out, climb the ladder (flow)",
-  "name": "Nausea and vomiting of pregnancy: treatment steps",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "aliases": [
-   "Hyperemesis treatment steps",
-   "hyperemesis"
-  ],
-  "codes": [
-   "ANT-08",
-   "FD-ANT-08"
-  ]
- },
- {
-  "id": "FD-SYS-04",
-  "old": "Maternal cardiac arrest: the 4-minute clock",
-  "name": "Maternal cardiac arrest response",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "aliases": [
-   "Cardiac arrest in pregnancy response"
-  ],
-  "codes": [
-   "FD-SYS-04",
-   "SYS-04"
-  ]
- },
- {
-  "id": "FD-ANT-11",
-  "old": "Eclamptic seizure: protect, magnesium, stabilize, then deliver",
-  "name": "Eclamptic seizure response",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "codes": [
-   "ANT-11",
-   "FD-ANT-11"
-  ]
- },
- {
-  "id": "FD-SYS-05",
-  "old": "Amniotic fluid embolism: resuscitate, support the RV, treat the DIC",
-  "name": "Amniotic fluid embolism response",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "codes": [
-   "FD-SYS-05",
-   "SYS-05"
-  ]
- },
- {
-  "id": "FD-LND-09",
-  "old": "Umbilical cord prolapse: hand up, hold it, deliver fast",
-  "name": "Umbilical cord prolapse emergency",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "aliases": [
-   "Cord prolapse emergency"
-  ],
-  "codes": [
-   "FD-LND-09",
-   "LND-09"
-  ]
- },
- {
-  "id": "FD-LND-10",
-  "old": "Uterine rupture and TOLAC emergency: read the tracing, cut now",
-  "name": "Suspected uterine rupture",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "aliases": [
-   "Uterine rupture emergency"
-  ],
-  "codes": [
-   "FD-LND-10",
-   "LND-10"
-  ]
- },
- {
-  "id": "FD-ANT-05",
-  "old": "Diabetes in labor: insulin and IV fluids",
-  "name": "Diabetes in labor: insulin and IV fluids",
-  "review": "Doc naming review 11 Nov 2026 (Q8)",
-  "aliases": [
-   "Diabetes in labor: insulin and dextrose",
-   "insulin drip",
-   "insulin infusion",
-   "ALG-DM-INTRAPARTUM"
-  ],
-  "codes": [
-   "ALG-DM-INTRAPARTUM",
-   "ANT-05",
-   "FD-ANT-05"
-  ]
- },
- {
-  "id": "ANT-TRAUMA",
-  "old": "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
-  "name": "Trauma in pregnancy",
-  "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
-  "aliases": [
-   "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
-   "fall in pregnancy",
-   "MVC",
-   "MVA",
-   "motor vehicle collision",
-   "blunt abdominal injury",
-   "blunt trauma",
-   "ANT-TRAUMA"
-  ],
-  "codes": [
-   "ANT-TRAUMA"
-  ]
- },
- {
-  "id": "ANT-STI",
-  "old": "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
-  "name": "STIs on Labor and Delivery",
-  "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
-  "aliases": [
-   "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
-   "syphilis",
-   "RPR",
-   "HSV",
-   "herpes",
-   "gonorrhea",
-   "chlamydia",
-   "trichomonas",
-   "BV",
-   "yeast",
-   "STI",
-   "HIV unknown",
-   "hep B unknown",
-   "ANT-STI"
-  ],
-  "codes": [
-   "ANT-STI"
-  ]
- },
- {
-  "id": "FD-ANT-TRAUMA",
-  "old": "Trauma in pregnancy: evaluate, monitor, decide",
-  "name": "Trauma in pregnancy: evaluate, monitor, decide",
-  "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
-  "aliases": [
-   "ALG-ANT-TRAUMA",
-   "trauma algorithm",
-   "trauma in pregnancy algorithm"
-  ],
-  "codes": [
-   "ALG-ANT-TRAUMA",
-   "ANT-TRAUMA",
-   "FD-ANT-TRAUMA"
-  ]
- },
- {
-  "id": "FD-ANT-STI",
-  "old": "STIs on labor and delivery: what to do now",
-  "name": "STIs on labor and delivery: what to do now",
-  "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
-  "aliases": [
-   "ALG-ANT-STI",
-   "STI algorithm",
-   "STIs on L&D algorithm"
-  ],
-  "codes": [
-   "ALG-ANT-STI",
-   "ANT-STI",
-   "FD-ANT-STI"
-  ]
- }
+  {
+    "id": "FORMULARY",
+    "old": "Quick reference formulary (OB)",
+    "name": "Obstetric medicines",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "FORMULARY"
+    ]
+  },
+  {
+    "id": "ANT-10",
+    "old": "Indicated late-preterm / early-term delivery (ACOG CO 831 + CO 751)",
+    "name": "Delivery timing",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "ANT-10"
+    ]
+  },
+  {
+    "id": "LND-01",
+    "old": "Intrapartum FHR (ACOG CPG 10)",
+    "name": "Fetal heart rate monitoring",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "LND-01"
+    ]
+  },
+  {
+    "id": "LND-02",
+    "old": "First and second stage labor (ACOG CPG 8)",
+    "name": "Labor progress",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "LND-02"
+    ]
+  },
+  {
+    "id": "LND-03",
+    "old": "Cervical ripening (ACOG CPG 9)",
+    "name": "Cervical ripening",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "LND-03"
+    ]
+  },
+  {
+    "id": "LND-04",
+    "old": "Intraamniotic infection (CO 712 + 2024 CPU)",
+    "name": "Intraamniotic infection",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "LND-04"
+    ]
+  },
+  {
+    "id": "LND-05",
+    "old": "GBS prophylaxis (ACOG CO 797)",
+    "name": "Group B streptococcus",
+    "review": "Michael title decision 11 Nov 2026",
+    "aliases": [
+      "Group B streptococcal prevention",
+      "Group B strep prophylaxis during labor",
+      "GBS",
+      "group B strep"
+    ],
+    "codes": [
+      "LND-05"
+    ]
+  },
+  {
+    "id": "LND-06",
+    "old": "Shoulder dystocia (ACOG PB 178)",
+    "name": "Shoulder dystocia",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "LND-06"
+    ]
+  },
+  {
+    "id": "LND-07",
+    "old": "Operative vaginal birth (ACOG PB 219)",
+    "name": "Assisted vaginal birth",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "LND-07"
+    ]
+  },
+  {
+    "id": "LND-08",
+    "old": "TOLAC / VBAC (ACOG PB 205)",
+    "name": "Labor after cesarean",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "LND-08"
+    ]
+  },
+  {
+    "id": "ANT-01",
+    "old": "PROM / PPROM (ACOG PB 217)",
+    "name": "Prelabor rupture of membranes, term and preterm",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Membrane rupture"
+    ],
+    "codes": [
+      "ANT-01"
+    ]
+  },
+  {
+    "id": "ANT-02",
+    "old": "Preterm labor (ACOG PB 171)",
+    "name": "Preterm labor",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "ANT-02"
+    ]
+  },
+  {
+    "id": "ANT-03",
+    "old": "Cerclage (ACOG CPG 12)",
+    "name": "Short cervix, cervical insufficiency and cerclage",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Cervical insufficiency"
+    ],
+    "codes": [
+      "ANT-03"
+    ]
+  },
+  {
+    "id": "ANT-04",
+    "old": "Gestational HTN / preeclampsia (PB 222 + 2024 CPU)",
+    "name": "Hypertensive disorders of pregnancy",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "ANT-04"
+    ]
+  },
+  {
+    "id": "ANT-05",
+    "old": "Diabetes in pregnancy (ACOG PB 190 + 201)",
+    "name": "Diabetes in pregnancy",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "ANT-05"
+    ]
+  },
+  {
+    "id": "ANT-06",
+    "old": "Antenatal corticosteroids (ACOG CO 713)",
+    "name": "Antenatal corticosteroids",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Fetal lung maturation"
+    ],
+    "codes": [
+      "ANT-06"
+    ]
+  },
+  {
+    "id": "ANT-07",
+    "old": "Placenta accreta spectrum (ACOG OCC 7)",
+    "name": "Placenta accreta spectrum",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "ANT-07"
+    ]
+  },
+  {
+    "id": "ANT-08",
+    "old": "Hyperemesis in Pregnancy (ACOG PB 189)",
+    "name": "Nausea, vomiting and hyperemesis in pregnancy",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Hyperemesis gravidarum"
+    ],
+    "codes": [
+      "ANT-08"
+    ]
+  },
+  {
+    "id": "ANT-09",
+    "old": "Outpatient antenatal surveillance (ACOG CO 828)",
+    "name": "Antenatal fetal surveillance",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "ANT-09"
+    ]
+  },
+  {
+    "id": "GYN-01",
+    "old": "Tubal ectopic (ACOG PB 193)",
+    "name": "Tubal ectopic pregnancy",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "GYN-01"
+    ]
+  },
+  {
+    "id": "GYN-02",
+    "old": "Early pregnancy loss (ACOG PB 200)",
+    "name": "Early pregnancy loss",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "GYN-02"
+    ]
+  },
+  {
+    "id": "PP-01",
+    "old": "Postpartum hemorrhage (PB 183 + 2025 CPU)",
+    "name": "Postpartum hemorrhage",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "PP-01"
+    ]
+  },
+  {
+    "id": "PP-02",
+    "old": "Anemia in pregnancy / postpartum (ACOG PB 233)",
+    "name": "Pregnancy and postpartum anemia",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "PP-02"
+    ]
+  },
+  {
+    "id": "SYS-01",
+    "old": "Critical care in pregnancy (ACOG PB 211)",
+    "name": "Maternal critical illness",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "SYS-01"
+    ]
+  },
+  {
+    "id": "SYS-02",
+    "old": "Thromboembolism in pregnancy (ACOG PB 196 \u00b7 CMQCC VTE)",
+    "name": "Pregnancy-related thromboembolism",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "SYS-02"
+    ]
+  },
+  {
+    "id": "GYNB-FORMULARY",
+    "old": "Quick reference formulary (GYN)",
+    "name": "Gynecologic medicines",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "GYN formulary",
+      "GYNB-FORMULARY"
+    ]
+  },
+  {
+    "id": "GYNB-01",
+    "old": "Tubal ectopic / PUL (ACOG PB 193)",
+    "name": "Ectopic pregnancy and pregnancy of unknown location",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Ectopic pregnancy and unknown location"
+    ],
+    "codes": [
+      "GYN-01 (GYN book)",
+      "GYNB-01"
+    ]
+  },
+  {
+    "id": "GYNB-02",
+    "old": "Acute abnormal uterine bleeding (CO 557 + PB 128 / 136 / 228 + house)",
+    "name": "Acute abnormal uterine bleeding",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Abnormal uterine bleeding"
+    ],
+    "codes": [
+      "GYN-02 (GYN book)",
+      "GYNB-02"
+    ]
+  },
+  {
+    "id": "GYNB-03",
+    "old": "PID / tubo-ovarian abscess (CDC STI 2021 + house drainage)",
+    "name": "Pelvic inflammatory disease and tubo-ovarian abscess",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Pelvic infection and abscess"
+    ],
+    "codes": [
+      "GYN-03 (GYN book)",
+      "GYNB-03"
+    ]
+  },
+  {
+    "id": "GYNB-04",
+    "old": "Adnexal torsion (ACOG PB 174)",
+    "name": "Adnexal torsion",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "GYN-04 (GYN book)",
+      "GYNB-04"
+    ]
+  },
+  {
+    "id": "GYNB-05",
+    "old": "Adnexal mass (not torsion) (ACOG PB 174)",
+    "name": "Adnexal mass",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "GYN-05 (GYN book)",
+      "GYNB-05"
+    ]
+  },
+  {
+    "id": "GYNB-06",
+    "old": "Pyelo / cUTI / obstructing stone (IDSA 2025 + AAFP 2019)",
+    "name": "Kidney infection, complicated UTI and obstructing stones",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Complicated urinary infection and stones"
+    ],
+    "codes": [
+      "GYN-06 (GYN book)",
+      "GYNB-06"
+    ]
+  },
+  {
+    "id": "GYNB-07",
+    "old": "IUD / implant emergencies (PB 186 + CO 672 + CDC)",
+    "name": "Contraceptive device complications",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "GYN-07 (GYN book)",
+      "GYNB-07"
+    ]
+  },
+  {
+    "id": "GYNB-08",
+    "old": "Chronic pelvic pain (ACOG PB 218 + house PT)",
+    "name": "Chronic pelvic pain",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "GYN-08 (GYN book)",
+      "GYNB-08"
+    ]
+  },
+  {
+    "id": "GYNB-09",
+    "old": "Post-hysterectomy + delayed complications (CO 750 + PB 195)",
+    "name": "Hysterectomy complications",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "GYN-09 (GYN book)",
+      "GYNB-09"
+    ]
+  },
+  {
+    "id": "GYNB-10",
+    "old": "Molar pregnancy / GTD (ACOG 2025 + CC 11)",
+    "name": "Molar pregnancy and trophoblastic disease",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "GYN-10 (GYN book)",
+      "GYNB-10"
+    ]
+  },
+  {
+    "id": "SYS-02-EXP",
+    "old": "VTE \u00b7 CMQCC expanded text",
+    "name": "Pregnancy-related blood clots: diagnosis, treatment and prevention",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Thrombosis prevention"
+    ],
+    "codes": [
+      "SYS-02 appx",
+      "SYS-02-EXP"
+    ]
+  },
+  {
+    "id": "FD-ANT-04",
+    "old": "Severe-range BP: the 15-minute clock",
+    "name": "Severe hypertension",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "ANT-04",
+      "FD-ANT-04"
+    ]
+  },
+  {
+    "id": "FD-PP-01",
+    "old": "Postpartum hemorrhage flow",
+    "name": "Postpartum hemorrhage response",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Acute postpartum bleeding"
+    ],
+    "codes": [
+      "FD-PP-01",
+      "PP-01"
+    ]
+  },
+  {
+    "id": "FD-LND-01",
+    "old": "Category II FHR flow",
+    "name": "Category II (indeterminate) fetal heart rate",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Indeterminate fetal heart rate"
+    ],
+    "codes": [
+      "FD-LND-01",
+      "LND-01"
+    ]
+  },
+  {
+    "id": "FD-SYS-03",
+    "old": "Maternal sepsis flow",
+    "name": "Maternal sepsis",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "FD-SYS-03",
+      "SYS-03"
+    ]
+  },
+  {
+    "id": "FD-SYS-02",
+    "old": "Postpartum VTE prophylaxis decision tree (CMQCC)",
+    "name": "Postpartum VTE prophylaxis",
+    "review": "Michael title decision 11 Nov 2026",
+    "aliases": [
+      "Postpartum thrombosis prevention",
+      "postpartum thrombosis prevention",
+      "VTE prevention",
+      "VTE prophylaxis"
+    ],
+    "codes": [
+      "FD-SYS-02",
+      "SYS-02"
+    ]
+  },
+  {
+    "id": "FD-LND-04",
+    "old": "Intraamniotic infection: diagnose, treat, deliver",
+    "name": "Suspected intraamniotic infection",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "FD-LND-04",
+      "LND-04"
+    ]
+  },
+  {
+    "id": "FD-GYN-01",
+    "old": "Tubal ectopic and PUL: stable, scan, trend, treat",
+    "name": "Suspected ectopic pregnancy or pregnancy of unknown location",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Suspected ectopic pregnancy"
+    ],
+    "codes": [
+      "FD-GYN-01",
+      "GYN-01",
+      "GYN-01 (GYN + OB book)"
+    ]
+  },
+  {
+    "id": "FD-GYNB-02",
+    "old": "Acute abnormal uterine bleeding: stabilize, test, stop it",
+    "name": "Acute uterine bleeding",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "FD-GYNB-02",
+      "GYN-02 (GYN book)",
+      "GYNB-02"
+    ]
+  },
+  {
+    "id": "FD-GYNB-04",
+    "old": "Adnexal torsion and mass: call it, untwist, keep the ovary",
+    "name": "Adnexal torsion and ovarian mass",
+    "review": "Michael title decision 11 Nov 2026",
+    "aliases": [
+      "Acute adnexal pain",
+      "Adnexal torsion and mass assessment",
+      "adnexal mass",
+      "ovarian torsion"
+    ],
+    "codes": [
+      "FD-GYNB-04",
+      "GYN-04/05 (GYN book)",
+      "GYNB-04"
+    ]
+  },
+  {
+    "id": "FD-LND-06",
+    "old": "Shoulder dystocia: call it, time it, work the maneuvers",
+    "name": "Shoulder dystocia emergency",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "FD-LND-06",
+      "LND-06"
+    ]
+  },
+  {
+    "id": "FD-ANT-01",
+    "old": "PROM and PPROM: confirm, date, manage by gestational age",
+    "name": "Prelabor membrane rupture",
+    "review": "Doc naming review (11 Nov 2026)",
+    "codes": [
+      "ANT-01",
+      "FD-ANT-01"
+    ]
+  },
+  {
+    "id": "FD-ANT-07",
+    "old": "Placenta accreta spectrum: suspect, transfer, leave the placenta",
+    "name": "Suspected placenta accreta spectrum",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Suspected placenta accreta"
+    ],
+    "codes": [
+      "ANT-07",
+      "FD-ANT-07"
+    ]
+  },
+  {
+    "id": "FD-ED-OB",
+    "old": "ED-to-OB pathway decision tree",
+    "name": "Emergency department\u2013obstetric triage and handoff",
+    "review": "Doc naming review (11 Nov 2026)",
+    "aliases": [
+      "Pregnancy and postpartum triage"
+    ],
+    "codes": [
+      "ED-OB",
+      "ED\u2192OB",
+      "FD-ED-OB"
+    ]
+  },
+  {
+    "id": "LND-09",
+    "old": "Umbilical cord prolapse (RCOG GTG 50, international)",
+    "name": "Umbilical cord prolapse",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "codes": [
+      "LND-09"
+    ]
+  },
+  {
+    "id": "LND-10",
+    "old": "Uterine rupture / TOLAC emergency (ACOG PB 205)",
+    "name": "Uterine rupture",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "codes": [
+      "LND-10"
+    ]
+  },
+  {
+    "id": "ANT-11",
+    "old": "Eclamptic seizure (PB 222 + CO 767)",
+    "name": "Eclampsia",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "codes": [
+      "ANT-11"
+    ]
+  },
+  {
+    "id": "SYS-04",
+    "old": "Maternal cardiac arrest / resuscitative hysterotomy (AHA 2025 + PB 211)",
+    "name": "Maternal cardiac arrest",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "codes": [
+      "SYS-04"
+    ]
+  },
+  {
+    "id": "SYS-05",
+    "old": "Amniotic fluid embolism (SMFM CG 9 + 2026 checklist)",
+    "name": "Amniotic fluid embolism",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "codes": [
+      "SYS-05"
+    ]
+  },
+  {
+    "id": "FD-ANT-02",
+    "old": "Preterm labor: confirm change, steroids, 48 hours, stop (flow)",
+    "name": "Preterm labor assessment and treatment",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "codes": [
+      "ANT-02",
+      "FD-ANT-02"
+    ]
+  },
+  {
+    "id": "FD-LND-05",
+    "old": "GBS prophylaxis: who gets it, which drug (flow)",
+    "name": "Group B streptococcus",
+    "review": "Michael title decision 11 Nov 2026",
+    "aliases": [
+      "Group B strep: who gets antibiotics and which drug",
+      "GBS",
+      "group B strep"
+    ],
+    "codes": [
+      "FD-LND-05",
+      "LND-05"
+    ]
+  },
+  {
+    "id": "FD-LND-02",
+    "old": "Labor progress: is this really arrest? (flow)",
+    "name": "Suspected labor arrest",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "codes": [
+      "FD-LND-02",
+      "LND-02"
+    ]
+  },
+  {
+    "id": "FD-ANT-08",
+    "old": "NVP and hyperemesis: rule out, climb the ladder (flow)",
+    "name": "Nausea and vomiting of pregnancy: treatment steps",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "aliases": [
+      "Hyperemesis treatment steps",
+      "hyperemesis"
+    ],
+    "codes": [
+      "ANT-08",
+      "FD-ANT-08"
+    ]
+  },
+  {
+    "id": "FD-SYS-04",
+    "old": "Maternal cardiac arrest: the 4-minute clock",
+    "name": "Maternal cardiac arrest response",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "aliases": [
+      "Cardiac arrest in pregnancy response"
+    ],
+    "codes": [
+      "FD-SYS-04",
+      "SYS-04"
+    ]
+  },
+  {
+    "id": "FD-ANT-11",
+    "old": "Eclamptic seizure: protect, magnesium, stabilize, then deliver",
+    "name": "Eclamptic seizure response",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "codes": [
+      "ANT-11",
+      "FD-ANT-11"
+    ]
+  },
+  {
+    "id": "FD-SYS-05",
+    "old": "Amniotic fluid embolism: resuscitate, support the RV, treat the DIC",
+    "name": "Amniotic fluid embolism response",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "codes": [
+      "FD-SYS-05",
+      "SYS-05"
+    ]
+  },
+  {
+    "id": "FD-LND-09",
+    "old": "Umbilical cord prolapse: hand up, hold it, deliver fast",
+    "name": "Umbilical cord prolapse emergency",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "aliases": [
+      "Cord prolapse emergency"
+    ],
+    "codes": [
+      "FD-LND-09",
+      "LND-09"
+    ]
+  },
+  {
+    "id": "FD-LND-10",
+    "old": "Uterine rupture and TOLAC emergency: read the tracing, cut now",
+    "name": "Suspected uterine rupture",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "aliases": [
+      "Uterine rupture emergency"
+    ],
+    "codes": [
+      "FD-LND-10",
+      "LND-10"
+    ]
+  },
+  {
+    "id": "FD-ANT-05",
+    "old": "Diabetes in labor: insulin and IV fluids",
+    "name": "Diabetes in labor: insulin and IV fluids",
+    "review": "Doc naming review 11 Nov 2026 (Q8)",
+    "aliases": [
+      "Diabetes in labor: insulin and dextrose",
+      "insulin drip",
+      "insulin infusion",
+      "ALG-DM-INTRAPARTUM"
+    ],
+    "codes": [
+      "ALG-DM-INTRAPARTUM",
+      "ANT-05",
+      "FD-ANT-05"
+    ]
+  },
+  {
+    "id": "ANT-TRAUMA",
+    "old": "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
+    "name": "Trauma in pregnancy",
+    "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
+    "aliases": [
+      "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
+      "fall in pregnancy",
+      "MVC",
+      "MVA",
+      "motor vehicle collision",
+      "blunt abdominal injury",
+      "blunt trauma",
+      "ANT-TRAUMA"
+    ],
+    "codes": [
+      "ANT-TRAUMA"
+    ]
+  },
+  {
+    "id": "ANT-STI",
+    "old": "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
+    "name": "STIs on Labor and Delivery",
+    "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
+    "aliases": [
+      "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
+      "syphilis",
+      "RPR",
+      "HSV",
+      "herpes",
+      "gonorrhea",
+      "chlamydia",
+      "trichomonas",
+      "BV",
+      "yeast",
+      "STI",
+      "HIV unknown",
+      "hep B unknown",
+      "ANT-STI"
+    ],
+    "codes": [
+      "ANT-STI"
+    ]
+  },
+  {
+    "id": "FD-ANT-TRAUMA",
+    "old": "Trauma in pregnancy: evaluate, monitor, decide",
+    "name": "Trauma in pregnancy: evaluate, monitor, decide",
+    "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+    "aliases": [
+      "ALG-ANT-TRAUMA",
+      "trauma algorithm",
+      "trauma in pregnancy algorithm"
+    ],
+    "codes": [
+      "ALG-ANT-TRAUMA",
+      "ANT-TRAUMA",
+      "FD-ANT-TRAUMA"
+    ]
+  },
+  {
+    "id": "FD-ANT-STI",
+    "old": "STIs on labor and delivery: what to do now",
+    "name": "STIs on labor and delivery: what to do now",
+    "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+    "aliases": [
+      "ALG-ANT-STI",
+      "STI algorithm",
+      "STIs on L&D algorithm"
+    ],
+    "codes": [
+      "ALG-ANT-STI",
+      "ANT-STI",
+      "FD-ANT-STI"
+    ]
+  },
+  {
+    "id": "ANT-UTI",
+    "old": "UTI and pyelonephritis in pregnancy and postpartum (ASB, cystitis, pyelo)",
+    "name": "UTI and pyelonephritis in pregnancy",
+    "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
+    "aliases": [
+      "UTI and pyelonephritis in pregnancy and postpartum (ASB, cystitis, pyelo)",
+      "UTI in pregnancy",
+      "pyelo",
+      "pyelonephritis",
+      "dysuria",
+      "cystitis",
+      "ASB",
+      "flank pain",
+      "CVA tenderness",
+      "ANT-UTI"
+    ],
+    "codes": [
+      "ANT-UTI"
+    ]
+  },
+  {
+    "id": "FD-ANT-UTI",
+    "old": "UTI and pyelonephritis in pregnancy: what to do now",
+    "name": "UTI and pyelonephritis in pregnancy: what to do now",
+    "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+    "aliases": [
+      "ALG-ANT-UTI",
+      "UTI algorithm",
+      "pyelo algorithm",
+      "UTI in pregnancy algorithm"
+    ],
+    "codes": [
+      "ALG-ANT-UTI",
+      "ANT-UTI",
+      "FD-ANT-UTI"
+    ]
+  }
 ];
   const byId = Object.fromEntries(rows.map(r => [r.id, Object.freeze(r)]));
   function title(item) { const id = typeof item === 'string' ? item : item && item.id; return (byId[id] && byId[id].name) || (item && item.title) || 'Clinical reference'; }

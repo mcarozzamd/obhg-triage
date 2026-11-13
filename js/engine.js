@@ -74,6 +74,7 @@
     pregTrauma: R('\\bMVA\\b|\\bMVC\\b|motor vehicle|\\btrauma\\b|\\bfall\\b|fell|assault|blunt abdominal|abdominal (?:trauma|injury|blow)|direct abdominal blow|pedestrian struck|strangulation|strangled|neck compression'),
     // L&D STI card (ANT-STI): syphilis/RPR/HSV/herpes/lesions/GC/CT/trich/BV/yeast/STI, plus unknown HIV or hep B status. Bare HIV or viral load still go to the timing card unless status is unknown.
     stiLD: R('syphilis|\\bRPR\\b|\\bVDRL\\b|treponem|\\bTP-?PA\\b|\\bHSV\\b|herpes|\\blesions?\\b|gonorrho?ea|gonococcal|\\bGC\\b|chlamydi|trichomonas|trichomoniasis|\\btrich\\b|bacterial vaginosis|\\bBV\\b|\\byeast\\b|candidiasis|\\bcandida\\b|\\bVVC\\b|\\bSTIs?\\b|\\bSTD\\b|sexually transmitted|(?:HIV|human immunodeficiency).{0,40}unknown|unknown.{0,40}(?:HIV|human immunodeficiency)|no (?:3rd|third)[- ]trimester.{0,30}HIV|expedited HIV|(?:hep(?:atitis)?\\s*B|HBsAg|HBV).{0,40}unknown|unknown.{0,40}(?:hep(?:atitis)?\\s*B|HBsAg|HBV)|HBsAg (?:not (?:done|on file|available)|missing|pending)|vaginal discharge|vaginal itching|vulvar itching|genital ulcers?|\\bPID\\b|pelvic inflammatory|dysuria|\\bcystitis\\b|pyelonephritis|\\bpyelo\\b|flank pain|CVA tenderness|costovertebral|\\bCVAT\\b|endometritis|partner exposure|expedited partner|\\bEPT\\b|chancroid|\\bLGV\\b|lymphogranuloma'),
+    pregUti: R('pyelonephritis|\\bpyelo\\b|flank pain|CVA tenderness|costovertebral|\\bCVAT\\b|dysuria|\\bcystitis\\b|\\bUTI\\b|urinary tract infection|asymptomatic bacteriuria|\\bASB\\b|bacteriuria|positive urine culture|urine culture positive'),
     imminent: R('crowning|delivery imminent|imminent delivery|precipitous|urge to push'),
     cordProlapse: R('cord prolapse|prolapsed cord'),
     abruption: R('abruption|abruptio'),
@@ -359,6 +360,7 @@
     // ANT-TRAUMA (provisional 13 Nov 2026): blunt trauma / fall / MVC / abdominal injury in a pregnant patient. Not postpartum-only; not the broader ED `trauma` terms (chest pain, overdose, stroke, syncope).
     ['ANT-TRAUMA', 94, f => f.kw.pregTrauma && f.pregnant, () => 'Trauma / fall / MVC / blunt abdominal injury in pregnancy'],
     ['ANT-STI', 93, f => f.kw.stiLD && ob(f), () => 'STI / syphilis / HSV / GC-CT / BV / yeast, or unknown HIV or hepatitis B status, in pregnancy or postpartum'],
+    ['ANT-UTI', 95, f => f.kw.pregUti && ob(f), () => 'UTI / pyelo / dysuria / flank pain / CVA tenderness in pregnancy or postpartum'],
     // ED-to-OB
     ['ED-OB', 45, f => f.kw.ed && ob(f), () => 'Pregnant or ≤6 wk postpartum patient in the main ED (ED-to-OB pathway)'],
     ['ED-OB', 25, f => f.kw.ed && f.kw.trauma && ob(f), () => 'Non-OB signs/symptoms in the ED'],
@@ -499,6 +501,7 @@
     'GYNB-02': ['GYNB-05', 'PP-02'], 'GYNB-03': ['GYNB-04', 'GYNB-06'], 'GYNB-04': ['GYNB-05', 'GYNB-01'], 'GYNB-05': ['GYNB-04'],
     'GYNB-06': ['SYS-03', 'GYNB-03'], 'GYNB-07': ['GYNB-01', 'GYNB-03'], 'GYNB-08': ['GYNB-05', 'GYNB-03'], 'GYNB-09': ['SYS-02', 'GYNB-03'],
     'GYNB-10': ['GYN-02', 'GYNB-01'],
+    'ANT-UTI': ['ANT-STI', 'SYS-03'],
   };
   function padAlternates(ranked, f) {
     if (!ranked.length) return ranked;

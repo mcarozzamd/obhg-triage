@@ -81,11 +81,11 @@ test('browser history: Back from a section returns to the start page', async () 
   t.w.history.back(); await new Promise(r => setTimeout(r, 50)); only(t, 'view-start'); t.close();
 });
 test('start-page shell plus ANT-TRAUMA/ANT-STI card and algorithm files are the only app-path diffs from live 3ae4907', () => {
-  const allowed = ['css/app.css', 'index.html', 'js/app.js', 'js/content.js', 'js/display-names.js', 'js/engine.js', 'js/review.js', 'js/flow-cues.js', 'nurse.html', 'sw.js', 'assets/diagrams/ANT-TRAUMA_FLOW_2026-11-13.png', 'assets/diagrams/ANT-STI_FLOW_2026-11-13.png', 'assets/display-diagrams/FD-ANT-TRAUMA.png', 'assets/display-diagrams/FD-ANT-STI.png', 'assets/display-diagrams/manifest.json'];
+  const allowed = ['css/app.css', 'index.html', 'js/app.js', 'js/content.js', 'js/display-names.js', 'js/engine.js', 'js/review.js', 'js/flow-cues.js', 'nurse.html', 'sw.js', 'assets/diagrams/ANT-TRAUMA_FLOW_2026-11-13.png', 'assets/diagrams/ANT-STI_FLOW_2026-11-13.png', 'assets/display-diagrams/FD-ANT-TRAUMA.png', 'assets/display-diagrams/FD-ANT-STI.png', 'assets/display-diagrams/FD-ANT-UTI.png', 'assets/diagrams/ANT-UTI_FLOW_2026-11-13.png', 'assets/display-diagrams/manifest.json'];
   const changed = execFileSync('git', ['diff', '--name-only', '3ae4907', '--', 'js', 'css', 'codes', 'assets', 'index.html', 'nurse.html', 'sw.js', 'manifest.webmanifest'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean)
     .concat(execFileSync('git', ['ls-files', '--others', '--exclude-standard', 'js', 'css', 'codes', 'assets'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean));
   assert.deepEqual(changed.sort(), allowed.slice().sort());
-  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v30-2026-11-13-trauma-obed-fix';/);
+  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v31-2026-11-13-ant-uti';/);
   const nurseDiff = execFileSync('git', ['diff', '3ae4907', '--', 'nurse.html'], {cwd: base, encoding: 'utf8'}); assert.equal((nurseDiff.match(/^[+-](?![+-])/gm) || []).length, 2, 'nurse.html: only the header line gains the Start link');
 });
 test('every clinical view element from 3ae4907 is still in index.html (only the tab bar and small nurse link were replaced)', () => {

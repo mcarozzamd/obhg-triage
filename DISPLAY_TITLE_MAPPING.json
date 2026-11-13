@@ -235,7 +235,7 @@
   },
   {
     "id": "SYS-02",
-    "old": "Thromboembolism in pregnancy (ACOG PB 196 · CMQCC VTE)",
+    "old": "Thromboembolism in pregnancy (ACOG PB 196 \u00b7 CMQCC VTE)",
     "name": "Pregnancy-related thromboembolism",
     "review": "Doc naming review (11 Nov 2026)",
     "codes": [
@@ -366,7 +366,7 @@
   },
   {
     "id": "SYS-02-EXP",
-    "old": "VTE · CMQCC expanded text",
+    "old": "VTE \u00b7 CMQCC expanded text",
     "name": "Pregnancy-related blood clots: diagnosis, treatment and prevention",
     "review": "Doc naming review (11 Nov 2026)",
     "aliases": [
@@ -527,14 +527,14 @@
   {
     "id": "FD-ED-OB",
     "old": "ED-to-OB pathway decision tree",
-    "name": "Emergency department–obstetric triage and handoff",
+    "name": "Emergency department\u2013obstetric triage and handoff",
     "review": "Doc naming review (11 Nov 2026)",
     "aliases": [
       "Pregnancy and postpartum triage"
     ],
     "codes": [
       "ED-OB",
-      "ED→OB",
+      "ED\u2192OB",
       "FD-ED-OB"
     ]
   },
@@ -782,6 +782,44 @@
       "ALG-ANT-STI",
       "ANT-STI",
       "FD-ANT-STI"
+    ]
+  },
+  {
+    "id": "ANT-UTI",
+    "old": "UTI and pyelonephritis in pregnancy and postpartum (ASB, cystitis, pyelo)",
+    "name": "UTI and pyelonephritis in pregnancy",
+    "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
+    "aliases": [
+      "UTI and pyelonephritis in pregnancy and postpartum (ASB, cystitis, pyelo)",
+      "UTI in pregnancy",
+      "pyelo",
+      "pyelonephritis",
+      "dysuria",
+      "cystitis",
+      "ASB",
+      "flank pain",
+      "CVA tenderness",
+      "ANT-UTI"
+    ],
+    "codes": [
+      "ANT-UTI"
+    ]
+  },
+  {
+    "id": "FD-ANT-UTI",
+    "old": "UTI and pyelonephritis in pregnancy: what to do now",
+    "name": "UTI and pyelonephritis in pregnancy: what to do now",
+    "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+    "aliases": [
+      "ALG-ANT-UTI",
+      "UTI algorithm",
+      "pyelo algorithm",
+      "UTI in pregnancy algorithm"
+    ],
+    "codes": [
+      "ALG-ANT-UTI",
+      "ANT-UTI",
+      "FD-ANT-UTI"
     ]
   }
 ]

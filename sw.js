@@ -1,4 +1,5 @@
-// OBHG CLINICAL TRIAGE service worker. v30 (13 Nov 2026): Doc review fixes — GYNB-06 pregnancy gate, stiLD flank/CVA, SMFM #69 HBIG dose line (test build).
+// OBHG CLINICAL TRIAGE service worker. v31 (13 Nov 2026): adds provisional ANT-UTI and FD-ANT-UTI (test build).
+// v30 (13 Nov 2026): Doc review fixes — GYNB-06 pregnancy gate, stiLD flank/CVA, SMFM #69 HBIG dose line (test build).
 // v29 (13 Nov 2026): adds OBED triage branches and house decisions to the provisional trauma and STI algorithms (test build).
 // v28 (13 Nov 2026): adds provisional FD-ANT-TRAUMA and FD-ANT-STI algorithms (test build).
 // v27 (13 Nov 2026): adds provisional ANT-TRAUMA (trauma in pregnancy) clinician card.
@@ -7,7 +8,7 @@
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v30-2026-11-13-trauma-obed-fix';
+const CACHE = PREFIX + 'v31-2026-11-13-ant-uti';
 const ASSETS = [
   './',
   './index.html',
@@ -42,6 +43,7 @@ const ASSETS = [
   './assets/display-diagrams/FD-ANT-11.png',
   './assets/display-diagrams/FD-ANT-STI.png',
   './assets/display-diagrams/FD-ANT-TRAUMA.png',
+  './assets/display-diagrams/FD-ANT-UTI.png',
   './assets/display-diagrams/FD-ED-OB.png',
   './assets/display-diagrams/FD-GYN-01.png',
   './assets/display-diagrams/FD-GYNB-02.png',

@@ -49,8 +49,6 @@ const routes = [
   ['22 yo G1 at 16 weeks with vaginal discharge and itching', 'OBED vaginal discharge'],
   ['30 yo G2P1 at 22 weeks with genital ulcers', 'OBED genital ulcers'],
   ['25 yo G1 at 8 weeks with pelvic pain and fever, concern for PID', 'OBED PID'],
-  ['28 yo G3P2 at 30 weeks with dysuria and frequency', 'OBED dysuria'],
-  ['31 yo G2P1 at 34 weeks, pyelonephritis, fever and CVA tenderness', 'OBED pyelonephritis'],
   ['27 yo P1 day 3 postpartum with fever and uterine tenderness, endometritis', 'OBED endometritis'],
   ['24 yo G1 at 20 weeks, partner treated for gonorrhea, exposure 1 week ago', 'OBED partner exposure'],
 ];
@@ -170,14 +168,20 @@ test('GYNB-06 is never offered in pregnancy or postpartum; ANT-STI is primary fo
   for (const hpi of pregnant) {
     const r = triage(hpi);
     assert.equal(offered(r, 'GYNB-06'), false, 'GYNB-06 offered on ' + hpi + ' → ' + JSON.stringify((r.ranked || []).slice(0, 4)));
-    assert.ok(r.top && (r.top.id === 'ANT-STI' || r.top.id === 'SYS-03'), hpi + ' → ' + (r.top && r.top.id));
+    assert.ok(r.top && (r.top.id === 'ANT-UTI' || r.top.id === 'ANT-STI' || r.top.id === 'SYS-03'), hpi + ' → ' + (r.top && r.top.id));
   }
   const r26 = triage('24 yo G1P0 at 26 weeks with flank pain, CVA tenderness, dysuria');
-  assert.equal(r26.top.id, 'ANT-STI');
+  assert.equal(r26.top.id, 'ANT-UTI');
+  assert.ok(offered(r26, 'ANT-STI'), 'ANT-STI is the first alternate');
   const rSeptic = triage('26 yo G1P0 at 30 weeks with temp 38.6, HR 120, RR 26, flank pain');
   assert.equal(rSeptic.top.id, 'SYS-03', 'septic 30-wk flank pain stays on SYS-03');
-  assert.ok(offered(rSeptic, 'ANT-STI'), 'ANT-STI is the source-card alternate');
+  assert.ok(offered(rSeptic, 'ANT-UTI'), 'ANT-UTI is the source-card alternate');
   assert.equal(offered(rSeptic, 'GYNB-06'), false);
   const rNP = triage('32 yo nonpregnant woman with flank pain, CVA tenderness, dysuria');
   assert.equal(rNP.top && rNP.top.id, 'GYNB-06', 'non-pregnant pyelo still opens GYNB-06');
+});
+
+test('ANT-STI OBED test-of-cure is labeled house practice, not attributed to ACOG', () => {
+  assert.match(card.html, /test of cure culture after treatment \(house practice, Michael\)/);
+  assert.doesNotMatch(card.html, /test of cure culture after treatment \(ACOG\)/);
 });
