@@ -64,7 +64,7 @@ for(const lang of LANGS_W)for(const vw of [375,390,430]){const p=await b.newPage
  ok(!ES.test(all),'no Spanish UI text on any visited nurse screen'+(ES.test(all)?' ('+all.match(ES)[0]+')':''));
  ok(!(await p.$('[data-act=lang]')),'no language picker anywhere');
  const cached=await p.evaluate(async()=>{const ks=await caches.keys();const k=ks.find(x=>x.startsWith('obhg-triage-'));if(!k)return null;const c=await caches.open(k);const i=await c.match('./index.html'),n=await c.match('./nurse.html');return {k,i:i?await i.text():'',n:n?await n.text():''};});
- ok(cached&&cached.k==='obhg-triage-v34-2026-11-14-release','service worker cache v25 installed ('+(cached&&cached.k)+')');
+ ok(cached&&cached.k==='obhg-triage-v35-2026-11-14-release','service worker cache v25 installed ('+(cached&&cached.k)+')');
  ok(cached&&/OBHG CLINICAL TRIAGE/.test(cached.i)&&!/id="nurse-app"/.test(cached.i),'after visiting nurse.html the cached index.html is still the physician app');
  ok(cached&&/id="nurse-app"/.test(cached.n),'nurse.html cached under its own key');
  await ctx.setOffline(true);await p.goto(ROOT+'nurse.html').catch(()=>{});ok(await p.$('#nurse-app').then(Boolean).catch(()=>false),'nurse page loads offline');await p.goto(ROOT).catch(()=>{});ok(await p.$('#start-clinician').then(Boolean).catch(()=>false),'physician app still loads offline');await ctx.setOffline(false);

@@ -80,12 +80,12 @@ test('browser history: Back from a section returns to the start page', async () 
   const t = await open(); t.click('start-browse'); assert.equal(t.w.location.hash, '#browse');
   t.w.history.back(); await new Promise(r => setTimeout(r, 50)); only(t, 'view-start'); t.close();
 });
-test('start-page shell plus ANT-TRAUMA/ANT-STI card and algorithm files plus the v34 release cleanup are the only app-path diffs from live 3ae4907', () => {
+test('start-page shell plus ANT-TRAUMA/ANT-STI card and algorithm files plus the v34–v35 release cleanup are the only app-path diffs from live 3ae4907', () => {
   const allowed = ['css/app.css', 'index.html', 'js/app.js', 'js/content.js', 'js/display-names.js', 'js/engine.js', 'js/review.js', 'js/flow-cues.js', 'nurse.html', 'sw.js', 'assets/diagrams/ANT-TRAUMA_FLOW_2026-11-13.png', 'assets/diagrams/ANT-STI_FLOW_2026-11-13.png', 'assets/display-diagrams/FD-ANT-TRAUMA.png', 'assets/display-diagrams/FD-ANT-STI.png', 'assets/display-diagrams/FD-ANT-UTI.png', 'assets/diagrams/ANT-UTI_FLOW_2026-11-13.png', 'assets/display-diagrams/manifest.json', 'assets/diagrams/DM_INTRAPARTUM_FLOW_2026-11-11.png', 'assets/display-diagrams/FD-ANT-05.png', 'css/nurse.css', 'js/dm-intrapartum.js', 'js/engine.js.bak-batch2-2026-10-18', 'js/nurse-cards.js', 'js/nurse-engine.js', 'js/nurse-flow.js', 'js/nurse-protocols.js', 'js/nurse-red-flags.js', 'js/nurse-safety-vocabulary.js', 'js/nurse-ui.js', 'js/routine_codes.js', 'js/shiftlog.js'];
   const changed = execFileSync('git', ['diff', '--name-only', '3ae4907', '--', 'js', 'css', 'codes', 'assets', 'index.html', 'nurse.html', 'sw.js', 'manifest.webmanifest'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean)
     .concat(execFileSync('git', ['ls-files', '--others', '--exclude-standard', 'js', 'css', 'codes', 'assets'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean));
   assert.deepEqual(changed.sort(), allowed.slice().sort());
-  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v34-2026-11-14-release';/);
+  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v35-2026-11-14-release';/);
   const nurseDiff = execFileSync('git', ['diff', '3ae4907', '--', 'nurse.html'], {cwd: base, encoding: 'utf8'}); assert.equal((nurseDiff.match(/^[+-](?![+-])/gm) || []).length, 2, 'nurse.html: only the header line gains the Start link');
 });
 test('every clinical view element from 3ae4907 is still in index.html (only the tab bar and small nurse link were replaced)', () => {
