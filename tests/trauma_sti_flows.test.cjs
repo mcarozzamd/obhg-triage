@@ -113,7 +113,7 @@ test('STI flow starts with an entry choice and a filled OB ED triage branch', ()
   assert.match(triage, /SMFM Consult #69, vaccine plus HBIG within 12 h/);
   assert.match(triage, /House practice \(not a cited rule\)/);
   assert.doesNotMatch(triage, /Pending house decision/);
-  assert.match(triage, /regimen per ID\/pharmacy/);
+  assert.match(triage, /regimen per ID and pharmacy/);
   assert.doesNotMatch(triage, /Pending house decision\s+HIV test/);
   assert.doesNotMatch(triage, /Pending house decision\s+Postpartum endometritis/);
   assert.doesNotMatch(triage, /oral therapy 7–10 days/);
@@ -232,7 +232,7 @@ test('algorithm images exist, display copies are precached, and index loads the 
     assert.ok(fs.existsSync(path.join(root, 'assets/display-diagrams/' + it.id + '.png')), it.id);
     assert.ok(sw.includes('./assets/display-diagrams/' + it.id + '.png'), it.id);
   }
-  assert.ok(sw.includes('v35-2026-11-14-release'));
+  assert.ok(sw.includes('v36-2026-11-14-house-answers'));
   assert.ok(sw.includes('./js/flow-cues.js'));
   assert.match(html, /js\/flow-cues\.js/);
 });
@@ -246,4 +246,25 @@ test('v34 release cleanup: no personal approval names or internal review flags i
     assert.doesNotMatch(s, /Michael|Carozza/, f);
     assert.doesNotMatch(s, /PENDING DOC REVIEW|pending Doc review|UNVERIFIED\)|re-verify against full text|before card goes live|verify citation numbers|_DRAFT_|PENDING MICHAEL/, f);
   }
+});
+
+test('v36 house answers: UTI suppression to 4–6 wk postpartum, 2-week test of cure, trauma RhIG/30–60 min/case management, STI TP-PA and ID/pharmacy', () => {
+  const C2 = id => C.items.find(i => i.id === id);
+  const uti = C2('ANT-UTI').html, futi = C2('FD-ANT-UTI').html, tr = C2('ANT-TRAUMA').html, ftr = C2('FD-ANT-TRAUMA').html, st = C2('ANT-STI').html, fst = C2('FD-ANT-STI').html;
+  assert.match(uti, /rest of pregnancy and until 4–6 weeks postpartum \(ACOG says "may consider"\)/);
+  assert.match(uti, /After pyelonephritis: test-of-cure urine culture 2 weeks after completing treatment/);
+  assert.match(uti, /routine test-of-cure culture 2 weeks after completing treatment\. ACOG and IDSA/);
+  assert.match(futi, /After pyelonephritis: test-of-cure urine culture 2 weeks after completing treatment/);
+  assert.match(futi, /until 4–6 weeks postpartum/);
+  assert.match(tr, /EFM \+ toco for 30–60 minutes \(house practice/);
+  assert.match(tr, /always give RhIG if indicated, including &gt;72 h/);
+  assert.match(tr, /including &lt;12 wk/);
+  assert.match(tr, /Always consult case management for hospital and community policy/);
+  assert.doesNotMatch(tr + ftr, /confirm with CSM social work\/legal|house decides minimum|house to confirm|confirm with CSM blood bank/);
+  assert.match(ftr, /EFM \+ toco for 30–60 minutes/);
+  assert.match(ftr, /consult case management for hospital and community policy/);
+  assert.match(st, /TP-PA is available at CSM/);
+  assert.doesNotMatch(st, /availability at CSM unknown/);
+  assert.match(fst, /TP-PA is available at CSM/);
+  assert.match(st + fst, /regimen per ID and pharmacy/i);
 });

@@ -95,10 +95,10 @@ action(c, 20, 738, 372, 48, "a) DISCHARGE / ITCHING · WHITE",
        "Workup and treatment per the card. Trich: always treat, including an incidental asymptomatic finding. BV symptomatic only. VVC: no oral fluconazole in pregnancy.",
        fill=WHITE, tsize=6.6, bsize=6.2, tag="oa")
 action(c, 404, 738, 368, 48, "b) LESIONS / ULCERS · WHITE",
-       "HSV PCR, syphilis serology, HIV. Darkfield/PCR if available (do not wait). Treatment per the card.",
+       "HSV PCR, syphilis serology (TP-PA available at CSM), HIV. Darkfield/PCR only if available (do not wait). Treatment per the card.",
        fill=WHITE, tsize=6.6, bsize=6.2, tag="ob")
 action(c, 20, 788, 372, 48, "c) PELVIC PAIN / FEVER · WHITE",
-       "Rule out ectopic, septic abortion, IAI, pyelo first. PID in pregnancy: hospitalize, IV, ID consult. Regimen per ID/pharmacy.",
+       "Rule out ectopic, septic abortion, IAI, pyelo first. PID in pregnancy: hospitalize, IV, ID consult. Regimen per ID and pharmacy.",
        fill=WHITE, tsize=6.6, bsize=6.2, tag="oc")
 action(c, 404, 788, 368, 48, "d) DYSURIA · WHITE",
        "UA, culture, and GC/CT/trich NAAT. Pyelonephritis: admit as an inpatient for IV antibiotics. Cystitis/ASB: treatment per the card.",

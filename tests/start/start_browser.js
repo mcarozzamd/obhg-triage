@@ -2,7 +2,7 @@
 // Run: BASE=http://127.0.0.1:8891/ SHOTS=/path NODE_PATH=$(npm root -g) node tests/start/start_browser.js   (playwright-core + /usr/bin/google-chrome)
 const {chromium}=require('playwright-core');const fs=require('fs');
 const BASE=(process.env.BASE||'http://127.0.0.1:8891/').replace(/\/?$/,'/');const SHOTS=process.env.SHOTS||'/tmp/start-shots';fs.mkdirSync(SHOTS,{recursive:true});
-const CACHE=process.env.CACHE||'v35-2026-11-14-release';
+const CACHE=process.env.CACHE||'v36-2026-11-14-house-answers';
 (async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});let n=0,f=0;const ok=(c,m)=>{n++;if(!c)f++;console.log((c?'PASS ':'FAIL ')+m);};
 for(const [dev,opt] of [['phone',{viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2}],['desktop',{viewport:{width:1280,height:900}}]]){
  const ctx=await b.newContext(opt);const p=await ctx.newPage();const errs=[];p.on('pageerror',e=>errs.push('pageerror '+e.message));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});const bad=[];p.on('response',r=>{if(r.status()>=400)bad.push(r.status()+' '+r.url())});

@@ -147,8 +147,8 @@ test('house decisions applied on ANT-STI: SMFM #69, always-treat trich, inpatien
 
   // remaining pending tags only
   assert.doesNotMatch(h, /Pending house decision/);
-  assert.match(h, /regimen per ID\/pharmacy/i);
-  assert.match(h, /Darkfield\/T\. pallidum PCR/);
+  assert.match(h, /regimen per ID and pharmacy/i);
+  assert.match(h, /TP-PA is available at CSM/);
 });
 
 function offered(r, id) {
@@ -180,6 +180,6 @@ test('GYNB-06 is never offered in pregnancy or postpartum; ANT-STI is primary fo
 });
 
 test('ANT-STI OBED test-of-cure is labeled house practice, not attributed to ACOG', () => {
-  assert.match(card.html, /test of cure culture after treatment \(house practice\)/);
+  assert.match(card.html, /test of cure culture 2 weeks after treatment \(house practice\)/);
   assert.doesNotMatch(card.html, /test of cure culture after treatment \(ACOG\)/);
 });

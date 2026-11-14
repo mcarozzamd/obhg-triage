@@ -63,7 +63,7 @@ action(c, 20, 398, 752, 48, "6. POSTPARTUM (\u226412 WK) \u00b7 LIGHT GRAY",
 action(c, 20, 452, 752, 48, "7. DISPOSITION AND RETURN PRECAUTIONS \u00b7 WHITE",
        "Home (ASB, cystitis, or postpartum per node 6): afebrile, no CVA tenderness, tolerating PO, call-back named, GBS flag if applicable. Admit: any pyelo in pregnancy; sepsis; postpartum admit criterion. "
        "Return for fever, flank pain, vomiting, contractions, bleeding, leaking, decreased FM, shortness of breath, or symptoms not better in 48 h. "
-       "<b>House practice:</b> routine test-of-cure culture after treated ASB or cystitis (ACOG and IDSA do not require it). <b>House practice:</b> routine suppression after a single pyelo \u2014 see ANT-UTI card.",
+       "<b>House practice:</b> routine test-of-cure culture 2 weeks after completing treatment for ASB or cystitis (ACOG and IDSA do not require it); after pyelo, test-of-cure culture 2 weeks after completing treatment. <b>House practice:</b> routine suppression after a single pyelo, until 4\u20136 weeks postpartum \u2014 see ANT-UTI card.",
        fill=WHITE, tsize=6.4, bsize=6.0, tag="n7")
 
 y = 452 + 48 + 8

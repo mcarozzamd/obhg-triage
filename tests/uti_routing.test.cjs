@@ -54,7 +54,7 @@ test('algorithm has no dose amounts and points treatment to the card', () => {
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-UTI.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v35-2026-11-14-release'));
+  assert.ok(sw.includes('v36-2026-11-14-house-answers'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-UTI.png'));
 });
 

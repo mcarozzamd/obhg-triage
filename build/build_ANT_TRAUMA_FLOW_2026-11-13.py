@@ -87,18 +87,18 @@ action(c, 412, 500, 194, 88, "DISCHARGE \u00b7 WHITE",
 # NODES 5 and 6 \u2014 every branch
 y = strips(c, 598, [
     ("5 \u00b7 RH STEP (EVERY BRANCH)",
-     "<b>Rh-negative:</b> KB, then RhIG within 72 hours, with extra vials per the KB (dose on the card). "
+     "<b>Rh-negative:</b> KB, then RhIG within 72 hours, with extra vials per the KB (dose on the card); always give if indicated, including beyond 72 h and &lt;12 wk. "
      "<b>Rh-positive:</b> no RhIG.", 28),
     ("6 \u00b7 REQUIRED, ANY BRANCH",
      "Private IPV screen. Ultrasound for previa before any digital exam. "
      "A normal ultrasound does not rule out abruption.", 28),
     ("OBED WALK-IN",
      "Walk-in after minor trauma (not via ED/trauma): send to ED / activate trauma for any red flag, head strike with LOC, suspected fracture, injury beyond the uterus, or care OBED cannot provide. "
-     "Delayed (&gt;24 h): still evaluate fully. Any contractions, bleeding, pain, leaking or decreased FM → extended monitoring. "
-     "RhIG within 72 h; beyond 72 h still give and send KB (dose on the card).", 42),
+     "Delayed (&gt;24 h): still evaluate fully. Asymptomatic with a reassuring exam: EFM + toco 30–60 min (house practice). Any contractions, bleeding, pain, leaking or decreased FM → extended monitoring. "
+     "Rh-negative: always give RhIG if indicated, including beyond 72 h; send KB (dose on the card).", 42),
     ("MECHANISM / IPV / FOLLOW-UP",
      "Document mechanism in her words. Strangulation (any neck compression) is a high-lethality marker → ED/forensic evaluation. "
-     "IPV screen alone; if positive, National Domestic Violence Hotline 1-800-799-7233, text START to 88788, discreetly, not on a printed AVS. "
+     "IPV screen alone; if positive, consult case management (hospital and community policy), National Domestic Violence Hotline 1-800-799-7233, text START to 88788, discreetly, not on a printed AVS. "
      "Prenatal follow-up within 1 week. Seat-belt and fall-prevention counseling; acetaminophen (avoid NSAIDs ≥20 wk unless directed).", 42),
 ], labw=150, gap=2)
 

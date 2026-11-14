@@ -4,24 +4,24 @@
     "original": "assets/diagrams/ANT-TRAUMA_FLOW_2026-11-13.png",
     "output": "assets/display-diagrams/FD-ANT-TRAUMA.png",
     "titleBandHeight": 129,
-    "bodySha256": "c63e4744ef87f182420b14f9fc73ae6d591b681dbc5fa0a4e14d0d7dd47f5cfc",
-    "originalSha256": "d3af9e581ce19744f2982013a5e7f9dbe852a980d8a46cfc2b33a2db9bb581dd"
+    "bodySha256": "2ff41335aeea60d2a0165fb9d9761e43b332dd9ff13802513c312d823925d8e3",
+    "originalSha256": "4896d0ac2bda6d4b807bb3882e7778260f54bb9d2810c6b52128417cf850a2b0"
   },
   {
     "id": "FD-ANT-STI",
     "original": "assets/diagrams/ANT-STI_FLOW_2026-11-13.png",
     "output": "assets/display-diagrams/FD-ANT-STI.png",
     "titleBandHeight": 129,
-    "bodySha256": "ae4f5d7dd798fc946864ccc19c82ab41a0e24ab1cf57baa4b7c1ad87f59b2d7d",
-    "originalSha256": "697746632acd03db19915e7a7fea0da951f1b6657be30b54c0e4e488ca468b02"
+    "bodySha256": "2a5458019c151e0734fe4f700b0c6128b999352a12fdd4fdd834542ccb162ec3",
+    "originalSha256": "34e8ef1965d621be48b9ae12b253c4c09603cf29a1ad03ee511873eaae55860b"
   },
   {
     "id": "FD-ANT-UTI",
     "original": "assets/diagrams/ANT-UTI_FLOW_2026-11-13.png",
     "output": "assets/display-diagrams/FD-ANT-UTI.png",
     "titleBandHeight": 129,
-    "bodySha256": "4fbb8e939acdea228a7d48ef1dc86a2ecb1940f236c8c8f9c58850071cae22de",
-    "originalSha256": "af83c646e5c9121ef95a8f7bd25989d8abb6db8f10acae58dc8ec5c02a849e21"
+    "bodySha256": "3c4c678964a19919ab94fa109de9dc792ac2bb3d38088da557aebb1656625941",
+    "originalSha256": "ffe712beec38cb1d60259b7ea6851b1e218e63d92019e516601a1db8dbe20e1b"
   },
   {
     "id": "FD-ANT-04",

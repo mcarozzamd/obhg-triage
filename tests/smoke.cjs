@@ -102,7 +102,7 @@ let count=0;const check=(name,f)=>{f();count++;console.log('PASS '+name);};
  await page.clock.runFor(2000);await page.locator('#row-actions').screenshot({path:path.join(OUT,'05-imported-phone.png')});
  // Service worker must precache all assets and support reload without network.
  await page.waitForFunction(()=>navigator.serviceWorker.controller);
- const cacheNames=await page.evaluate(()=>caches.keys());assert.ok(cacheNames.includes('obhg-triage-v35-2026-11-14-release'));
+ const cacheNames=await page.evaluate(()=>caches.keys());assert.ok(cacheNames.includes('obhg-triage-v36-2026-11-14-house-answers'));
  await context.setOffline(true);await page.reload();await (await page.locator('#start-log').isVisible() ? page.locator('#start-log').click() : page.evaluate(()=>{location.hash='log';}));await page.locator('#view-log').waitFor();assert.ok(await page.locator('#lg-closeout').isVisible());await context.setOffline(false);
  check('bumped service worker installs and staged app works offline',()=>{});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
