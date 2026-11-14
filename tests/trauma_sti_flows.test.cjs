@@ -112,7 +112,7 @@ test('STI flow starts with an entry choice and a filled OB ED triage branch', ()
   assert.match(triage, /ADMIT as an inpatient/i);
   assert.match(triage, /SMFM Consult #69, vaccine plus HBIG within 12 h/);
   assert.match(triage, /House practice \(not a cited rule\)/);
-  assert.match(triage, /Pending house decision/);
+  assert.doesNotMatch(triage, /Pending house decision/);
   assert.match(triage, /regimen per ID\/pharmacy/);
   assert.doesNotMatch(triage, /Pending house decision\s+HIV test/);
   assert.doesNotMatch(triage, /Pending house decision\s+Postpartum endometritis/);
@@ -212,12 +212,12 @@ test('trauma timer is a cue only and does not write storage', () => {
   assert.doesNotMatch(src, /sessionStorage/);
 });
 
-test('trauma flow has an OBED walk-in node; remaining house decisions stay pending', () => {
+test('trauma flow has an OBED walk-in node; no pending tags', () => {
   const t = flowText(trauma);
   assert.match(t, /OBED walk-in \/ delayed presentation/);
   assert.match(t, /strangulation/);
   assert.match(t, /1-800-799-7233/);
-  assert.match(t, /Pending house decision/);
+  assert.doesNotMatch(t, /Pending house decision/);
   assert.doesNotMatch(t, /300 mcg/);
   const card = traumaCard.html;
   assert.match(card, /OBED TRIAGE NOTE/);
@@ -232,7 +232,18 @@ test('algorithm images exist, display copies are precached, and index loads the 
     assert.ok(fs.existsSync(path.join(root, 'assets/display-diagrams/' + it.id + '.png')), it.id);
     assert.ok(sw.includes('./assets/display-diagrams/' + it.id + '.png'), it.id);
   }
-  assert.ok(sw.includes('v33-2026-11-13-unprovisional'));
+  assert.ok(sw.includes('v34-2026-11-14-release'));
   assert.ok(sw.includes('./js/flow-cues.js'));
   assert.match(html, /js\/flow-cues\.js/);
+});
+
+test('v34 release cleanup: no personal approval names or internal review flags in served app files', () => {
+  const files = ['index.html', 'nurse.html', 'sw.js', 'routine_codes.json', 'DISPLAY_TITLE_MAPPING.json'].concat(
+    fs.readdirSync(path.join(root, 'js')).filter(f => /\.js$/.test(f)).map(f => 'js/' + f),
+    fs.readdirSync(path.join(root, 'css')).filter(f => /\.css$/.test(f)).map(f => 'css/' + f));
+  for (const f of files) {
+    const s = fs.readFileSync(path.join(root, f), 'utf8').replace(/St\. Michael|ST\. MICHAEL/g, '');
+    assert.doesNotMatch(s, /Michael|Carozza/, f);
+    assert.doesNotMatch(s, /PENDING DOC REVIEW|pending Doc review|UNVERIFIED\)|re-verify against full text|before card goes live|verify citation numbers|_DRAFT_|PENDING MICHAEL/, f);
+  }
 });

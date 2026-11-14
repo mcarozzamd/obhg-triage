@@ -85,7 +85,7 @@
 .nf-byrow{display:flex;gap:4px;align-items:stretch}.nf-byrow .nf-proto{flex:1;min-width:0}
 .nf-setstatus{flex:none;border-color:#6b4e00;background:#fff3cd;color:#6b4e00;font-size:12px;padding:1px 6px;white-space:normal;max-width:112px;line-height:1.1;min-height:0}
 .nf-pinfoot .nf-proto2{max-width:40%}.nf-pinfoot .nf-chip{font-size:12px}.nf-pinfoot .nf-more{padding:1px 7px}
-/* Michael t1993u: Relevant protocols on the Act-now screen */
+/* Relevant protocols on the Act-now screen */
 .nf-relproto{border:2px solid var(--navy);border-radius:10px;padding:8px;margin:12px 0}
 .nf-relproto h3{margin:0 0 4px}.nf-relproto .nf-trig{margin:6px 0}
 /* NE1 full pulse-confirm block; NE2 URGENT link (amber, not a bypass) */

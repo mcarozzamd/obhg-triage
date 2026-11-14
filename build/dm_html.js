@@ -4,7 +4,7 @@ const base = require('../js/dm-intrapartum.js');
 const D = process.env.DM_SWITCHES ? base.create(JSON.parse(process.env.DM_SWITCHES)) : base;
 const T = D.TEXT;
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const mark = s => esc(s).replace(/(♦ PENDING MICHAEL \([^)]*\)\.?)/g, '<strong class="pending">$1</strong>');
+const mark = s => esc(s).replace(/(♦ PENDING HOUSE DECISION \([^)]*\)\.?)/g, '<strong class="pending">$1</strong>');
 const rows = D.table().map(r => '<tr><td>' + esc(r.band.label) + '</td><td>' + mark(r.cells.gdm) + '</td><td>' + mark(r.cells.t1) + '</td><td>' + esc(r.cells.fluid) + '</td></tr>').join('');
 const fd = [
   '<p><strong>STEP 0.</strong> ' + mark(T.step0) + '</p>',

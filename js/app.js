@@ -467,7 +467,7 @@
       [r.top].concat(r.alternates).map(a => { const it = a.diagram || a.card; return it ? '<li><b>' + esc(label(it)) + '</b></li>' : ''; }).join('') + '</ul></details>' +
       '<details class="companion"><summary>Suggested codes (verify)</summary>' + codingHTML(r.coding, r.top.id) + '</details>';
     const rt = SL.routineMatch(RC, [fl.hpi, text].join(' '), svc()) || SL.routineMatch(RC, [fl.hpi, text].join(' ')); showSvc();
-    if (!r.top && rt) { const rf = applyRoutine(rt, false); $('lg-sugg').innerHTML = '<p><b>No card match. Routine encounter suggested: ' + esc(rf.set.label) + '</b> (codes filled where empty; pending Doc review). Tap a routine button to change.</p>'; }
+    if (!r.top && rt) { const rf = applyRoutine(rt, false); $('lg-sugg').innerHTML = '<p><b>No card match. Routine encounter suggested: ' + esc(rf.set.label) + '</b> (codes filled where empty; provider verifies before billing). Tap a routine button to change.</p>'; }
     else if (r.top && rt) $('lg-sugg').innerHTML += '<p class="alt-tag">Routine encounter? <button type="button" class="small" data-rt="' + esc(rt) + '">' + esc(RC.sets.find(x => x.id === rt).label) + '</button></p>';
     lastAP = SL.assessPlan(r, fl, rt && !r.top ? RC.sets.find(x => x.id === rt) : null, C);
     $('lg-triage').hidden = false; $('lg-ap').value = lastAP.text; $('lg-flow-reference').hidden = !lastAP.text.includes('FLOW BRANCH REFERENCE:');

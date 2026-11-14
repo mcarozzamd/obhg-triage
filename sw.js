@@ -1,16 +1,17 @@
-// OBHG CLINICAL TRIAGE service worker. v33 (13 Nov 2026): ANT-TRAUMA, ANT-STI and ANT-UTI cards and algorithms released (provisional labels removed).
-// v32 (13 Nov 2026): provisional ANT-TRAUMA, ANT-STI and ANT-UTI cards and algorithms with OBED triage (live).
-// v31 (13 Nov 2026): adds provisional ANT-UTI and FD-ANT-UTI (test build).
+// OBHG CLINICAL TRIAGE service worker. v34 (14 Nov 2026): release cleanup: internal review flags and personal approval attributions removed app-wide (no clinical change).
+// v33 (13 Nov 2026): ANT-TRAUMA, ANT-STI and ANT-UTI cards and algorithms released.
+// v32 (13 Nov 2026): ANT-TRAUMA, ANT-STI and ANT-UTI cards and algorithms with OBED triage (live).
+// v31 (13 Nov 2026): adds ANT-UTI and FD-ANT-UTI (test build).
 // v30 (13 Nov 2026): Doc review fixes — GYNB-06 pregnancy gate, stiLD flank/CVA, SMFM #69 HBIG dose line (test build).
-// v29 (13 Nov 2026): adds OBED triage branches and house decisions to the provisional trauma and STI algorithms (test build).
-// v28 (13 Nov 2026): adds provisional FD-ANT-TRAUMA and FD-ANT-STI algorithms (test build).
-// v27 (13 Nov 2026): adds provisional ANT-TRAUMA (trauma in pregnancy) clinician card.
+// v29 (13 Nov 2026): adds OBED triage branches and house decisions to the trauma and STI algorithms (test build).
+// v28 (13 Nov 2026): adds FD-ANT-TRAUMA and FD-ANT-STI algorithms (test build).
+// v27 (13 Nov 2026): adds ANT-TRAUMA (trauma in pregnancy) clinician card.
 // v26 (13 Nov 2026): start page with four sections (Clinician, Nurse, Browse Guidelines, Patient log).
 // v25 (12 Nov 2026): adds the English-only nurse section (nurse.html) and keeps its navigation cache separate from index.html.
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v33-2026-11-13-unprovisional';
+const CACHE = PREFIX + 'v34-2026-11-14-release';
 const ASSETS = [
   './',
   './index.html',

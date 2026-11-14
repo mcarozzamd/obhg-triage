@@ -1,7 +1,7 @@
 # Build: FD-ANT-STI STIs on L&D router, 13 Nov 2026.
-# Labor-path wording is Doc's recommended nodes only. No dose numbers.
+# Labor-path wording is the reviewed nodes only. No dose numbers.
 # Entry choice (13 Nov 2026): In labor / admitted vs OB ED triage.
-# OB ED triage branch from Doc's 13 Nov 2026 draft; house decisions applied.
+# OB ED triage branch (13 Nov 2026); house decisions applied.
 import os, sys, subprocess
 sys.dont_write_bytecode = True
 sys.path.insert(0, "/workspace/grok-obgyn/cards/flow-diagrams/")
@@ -37,7 +37,7 @@ arrow(c, [(206, 204), (206, 214)])
 line(c, [(206, 214), (396, 214)])
 arrow(c, [(396, 214), (396, 226)], head=4)
 
-# NODE 1 (labor path — Doc's nodes, numbering unchanged)
+# NODE 1 (labor path, numbering unchanged)
 action(c, 20, 226, 752, 48, "1. ADMISSION STATUS CHECK \u00b7 LIGHT GRAY",
        "Syphilis, HIV and HBsAg must be known; also GC/CT and HSV history. Anything unknown gets ordered now. Then go to node 2.",
        fill=LIGHT, tsize=7.4, bsize=7.0, tag="n1")
@@ -95,10 +95,10 @@ action(c, 20, 738, 372, 48, "a) DISCHARGE / ITCHING · WHITE",
        "Workup and treatment per the card. Trich: always treat, including an incidental asymptomatic finding. BV symptomatic only. VVC: no oral fluconazole in pregnancy.",
        fill=WHITE, tsize=6.6, bsize=6.2, tag="oa")
 action(c, 404, 738, 368, 48, "b) LESIONS / ULCERS · WHITE",
-       "HSV PCR, syphilis serology, HIV. Darkfield/PCR if available (do not wait). Pending house decision on darkfield/PCR availability. Treatment per the card.",
+       "HSV PCR, syphilis serology, HIV. Darkfield/PCR if available (do not wait). Treatment per the card.",
        fill=WHITE, tsize=6.6, bsize=6.2, tag="ob")
 action(c, 20, 788, 372, 48, "c) PELVIC PAIN / FEVER · WHITE",
-       "Rule out ectopic, septic abortion, IAI, pyelo first. PID in pregnancy: hospitalize, IV, ID consult. Regimen per ID/pharmacy. Pending house decision.",
+       "Rule out ectopic, septic abortion, IAI, pyelo first. PID in pregnancy: hospitalize, IV, ID consult. Regimen per ID/pharmacy.",
        fill=WHITE, tsize=6.6, bsize=6.2, tag="oc")
 action(c, 404, 788, 368, 48, "d) DYSURIA · WHITE",
        "UA, culture, and GC/CT/trich NAAT. Pyelonephritis: admit as an inpatient for IV antibiotics. Cystitis/ASB: treatment per the card.",

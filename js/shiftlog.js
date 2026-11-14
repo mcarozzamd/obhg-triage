@@ -437,7 +437,7 @@
     const L = ['ASSESSMENT AND PLAN (DRAFT, DECISION SUPPORT ONLY, CLINICIAN MUST VERIFY)'];
     if (!top && routine) {
       L.push('', 'ASSESSMENT', [fl.age && fl.age + ' yo', fl.gp, fl.ga && 'at ' + fl.ga].filter(Boolean).join(' ') + (fl.hpi ? ' with ' + fl.hpi : '') + '.', 'Routine encounter: ' + routine.label + '. No high-risk card matched; confirm no complicating condition.');
-      L.push('', 'PLAN', '- ' + (routine.diagnosis || routine.label) + '.', '- Disposition: ' + (routine.disposition || fl.disposition || '[select]') + '.', '- Codes: routine set (PENDING DOC REVIEW) + Z3A from GA; see routine_codes.json rationale.', ...(routine.notes || []).map(n => '- ' + n), '- Codes are suggestions; provider verifies before billing.');
+      L.push('', 'PLAN', '- ' + (routine.diagnosis || routine.label) + '.', '- Disposition: ' + (routine.disposition || fl.disposition || '[select]') + '.', '- Codes: routine set (suggested; verify) + Z3A from GA; see routine_codes.json rationale.', ...(routine.notes || []).map(n => '- ' + n), '- Codes are suggestions; provider verifies before billing.');
       L.push('', 'Generated on-device by rules. Not the medical record. Verify every element.'); return { text: L.join('\n'), sources: ['RT-' + routine.id] };
     }
     if (!top) { L.push('No confident card match. Add GA/postpartum status, vitals, or key symptom.'); return { text: L.join('\n'), sources: [] }; }
@@ -480,7 +480,7 @@
     return { text: L.join('\n'), sources: [top.id].concat((r.alternates || []).map(a => a.id)) };
   }
 
-  // ---------- routine encounters (codes in routine_codes.json, PENDING DOC REVIEW) ----------
+  // ---------- routine encounters (codes in routine_codes.json, suggested; provider verifies) ----------
   function gaWeeks(ga) { const m = String(ga || '').replace(/\s/g, '').match(/^(\d{1,2})(?:w(\d)?d?)?$/i); return m ? +m[1] + (+m[2] || 0) / 7 : null; }
   function z3aFor(ga, R) {
     const w = gaWeeks(ga); if (w == null) return null; const wk = Math.floor(w);
@@ -538,7 +538,7 @@
   // Search ICD/CPT across app code tables, CMS-validated descriptions, and routine list.
   function codeIndex(T, V, R) {
     const m = new Map(); const add = (code, label, kind, src) => { const k = kind + code; if (!m.has(k)) m.set(k, { code, label, kind, src }); };
-    if (R) { for (const s of R.sets) { for (const c of s.icd) add(c.code, c.label, 'ICD', 'routine (pending review)'); for (const c of s.cpt) add(c.code, c.label, 'CPT', 'routine (pending review)'); } for (const [c, l] of Object.entries(R.em_labels || {})) add(c, l, 'CPT', 'E/M (pending review)'); }
+    if (R) { for (const s of R.sets) { for (const c of s.icd) add(c.code, c.label, 'ICD', 'routine (suggested)'); for (const c of s.cpt) add(c.code, c.label, 'CPT', 'routine (suggested)'); } for (const [c, l] of Object.entries(R.em_labels || {})) add(c, l, 'CPT', 'E/M (suggested)'); }
     if (V) for (const [c, v] of Object.entries(V.codes)) add(c, v.desc_fy2026 || '', 'ICD', 'CMS FY2026');
     if (R && R.z3a_valid) for (const c of R.z3a_valid) add(c, 'Weeks of gestation', 'ICD', 'CMS FY2026');
     if (T) { for (const e of T.em) add(e.code, e.label, 'CPT', 'E/M'); for (const card of Object.values(T.cards)) for (const c of card.cpt || []) add(c.code, c.label, 'CPT', 'app table'); }

@@ -1,5 +1,5 @@
 # Build: FD-ANT-TRAUMA trauma-in-pregnancy algorithm, 13 Nov 2026.
-# Wording is Doc's recommended nodes only. No dose numbers. Companion card holds doses.
+# Wording is the reviewed nodes only. No dose numbers. Companion card holds doses.
 import os, sys, subprocess
 sys.dont_write_bytecode = True
 sys.path.insert(0, "/workspace/grok-obgyn/cards/flow-diagrams/")
@@ -95,7 +95,7 @@ y = strips(c, 598, [
     ("OBED WALK-IN",
      "Walk-in after minor trauma (not via ED/trauma): send to ED / activate trauma for any red flag, head strike with LOC, suspected fracture, injury beyond the uterus, or care OBED cannot provide. "
      "Delayed (&gt;24 h): still evaluate fully. Any contractions, bleeding, pain, leaking or decreased FM → extended monitoring. "
-     "RhIG within 72 h; beyond 72 h still give and send KB (dose on the card). <b>Pending house decision</b> on RhIG &gt;72 h and on observation time after late trauma.", 42),
+     "RhIG within 72 h; beyond 72 h still give and send KB (dose on the card).", 42),
     ("MECHANISM / IPV / FOLLOW-UP",
      "Document mechanism in her words. Strangulation (any neck compression) is a high-lethality marker → ED/forensic evaluation. "
      "IPV screen alone; if positive, National Domestic Violence Hotline 1-800-799-7233, text START to 88788, discreetly, not on a printed AVS. "

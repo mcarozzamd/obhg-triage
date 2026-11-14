@@ -1,7 +1,7 @@
 /* Emergent item → protocol map for the nurse bypass (TEST build). Doc bypass verdict NB1–NB14 applied.
- * IDs are existing app content (js/content.js), new PROVISIONAL nurse cards (NC-*, js/nurse-cards.js)
+ * IDs are existing app content (js/content.js), new nurse cards (NC-*, js/nurse-cards.js)
  * or bilingual NB4 emergency action cards (EA-*). Tested: every id exists; no trigger is a dead end.
- * level: mapped (existing protocol) · card (new provisional card) · partial (nearest content, gap note shown)
+ * level: mapped (existing protocol) · card (new nurse card) · partial (nearest content, gap note shown)
  *        · gap (interim emergency action card, gap note shown). Lookup never changes acuity. */
 (function(root){
  'use strict';
@@ -27,7 +27,7 @@
   'ANT-02':{en:'Preterm labor',es:'Trabajo de parto prematuro'},
   'FD-ED-OB':{en:'Emergency department–OB triage and handoff',es:'Triaje y entrega de urgencias a obstetricia'},
  };
- if(NC){for(const [id,c] of Object.entries(NC.CARDS))NAMES[id]={en:c.title.en+' (provisional card)',es:c.title.es+' (tarjeta provisional)'};for(const [id,c] of Object.entries(NC.ACTION))NAMES[id]={en:c.title.en,es:c.title.es};}
+ if(NC){for(const [id,c] of Object.entries(NC.CARDS))NAMES[id]={en:c.title.en,es:c.title.es};for(const [id,c] of Object.entries(NC.ACTION))NAMES[id]={en:c.title.en,es:c.title.es};}
  // Per-link condition labels (Doc Q9 / NB1 / NB2 / NB11), bilingual (ES provisional).
  const COND={
   if_mag:{en:'if on magnesium',es:'si recibe magnesio'},
@@ -42,7 +42,7 @@
  const STATUS_LBL={unknown:{en:'status unknown',es:'estado desconocido'},lt20:{en:'for <20 wk',es:'para <20 semanas'},ge20:{en:'for ≥20 wk',es:'para ≥20 semanas'},postpartum:{en:'for postpartum',es:'para posparto'}};
  const L=(id,cond)=>cond?{id,cond}:{id};
  const st=(byStatus,dflt)=>s=>byStatus[s]||dflt;
- const PROV={en:'Provisional — new card pending Doc and Michael review.',es:'Provisional — tarjeta nueva pendiente de revisión por Doc y Michael.'}; // NC10
+ const PROV={en:'New protocol card.',es:'Tarjeta de protocolo nueva.'}; // NC10
  const MAP={
   // NB1: ≥20 wk / unknown never opens PPH first; antepartum card first. <20 wk adds the ectopic algorithm.
   hemorrhage:{links:st({lt20:[L('FD-GYN-01'),L('FD-GYNB-02'),L('GYN-02')],ge20:[L('NC-APH'),L('ANT-07','if_accreta')],postpartum:[L('FD-PP-01'),L('PP-01')]},[L('NC-APH'),L('FD-GYN-01','if_lt20_test'),L('FD-PP-01','if_delivered')]),level:'card',note:PROV}, // NC7 unknown order

@@ -13,18 +13,16 @@ const V = require(base + '/codes/validation.js');
 function triage(hpi) { return E.triage(hpi, C, T, V); }
 const card = C.items.find(i => i.id === 'ANT-STI');
 
-test('ANT-STI card is present, released (no PROVISIONAL tag or personal name), with every pharmacy and coding line', () => {
+test('ANT-STI card is present, released (no PROVISIONAL tag or personal name), with every pharmacy and coding line (no verify-box flags)', () => {
   assert.ok(card, 'card exists in CONTENT');
   assert.equal(card.kind, 'card');
   assert.equal(card.book, 'OB');
   assert.match(card.title, /STIs on Labor and Delivery/i);
-  assert.ok(card.flags && card.flags.length >= 2);
+  assert.deepEqual(card.flags, []);
   assert.ok(!card.flags.some(f => /PROVISIONAL|Michael|Carozza/i.test(f)));
   assert.doesNotMatch(card.html + card.text, /PROVISIONAL|Michael|Carozza|Not live/i);
-  assert.ok(card.flags.some(f => /Bicillin/i.test(f) && /ZDV/i.test(f)));
-  assert.ok(card.flags.some(f => /Coding/i.test(f) && /hep B/i.test(f)));
   assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 9);
-  assert.match(card.html, /CODING \(draft — verify with OBHG coding\)/);
+  assert.match(card.html, /<strong>CODING<\/strong>/);
   assert.match(card.html, /Only TWO things on this card change the WAY she delivers/);
   assert.match(card.html, /Benzathine penicillin G 2\.4 million units IM x1/);
   assert.match(card.html, /Never Bicillin C-R/);
@@ -148,10 +146,9 @@ test('house decisions applied on ANT-STI: SMFM #69, always-treat trich, inpatien
   assert.doesNotMatch(h, /per maternal HBsAg\/weight rules above/);
 
   // remaining pending tags only
-  const pend = [...h.matchAll(/Pending house decision/g)];
-  assert.equal(pend.length, 4);
-  assert.match(h, /regimen per ID\/pharmacy[\s\S]{0,80}Pending house decision/);
-  assert.match(h, /Darkfield\/T\. pallidum PCR[\s\S]{0,80}Pending house decision/);
+  assert.doesNotMatch(h, /Pending house decision/);
+  assert.match(h, /regimen per ID\/pharmacy/i);
+  assert.match(h, /Darkfield\/T\. pallidum PCR/);
 });
 
 function offered(r, id) {

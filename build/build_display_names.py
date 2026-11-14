@@ -18,11 +18,11 @@ for r in R:
 for k,v in new.items():
     assert k in by,k
     rows.append(dict({'id':k,'old':by[k]['title'],'name':v,'review':'Doc naming review 11 Nov 2026 (Q8)'},**({'aliases':PREV[k]} if k in PREV else {})))
-# Michael title decisions (11 Nov 2026, 8:56 PM CT). Previous display names stay searchable as hidden aliases.
-MICHAEL={'LND-05':'Group B streptococcus','FD-LND-05':'Group B streptococcus','FD-SYS-02':'Postpartum VTE prophylaxis','FD-GYNB-04':'Adnexal torsion and ovarian mass'}
+# Title decisions (11 Nov 2026). Previous display names stay searchable as hidden aliases.
+TITLE_DECISIONS={'LND-05':'Group B streptococcus','FD-LND-05':'Group B streptococcus','FD-SYS-02':'Postpartum VTE prophylaxis','FD-GYNB-04':'Adnexal torsion and ovarian mass'}
 for r in rows:
-    if r['id'] in MICHAEL:
-        prev=r['name'];r['name']=MICHAEL[r['id']];r['review']='Michael title decision 11 Nov 2026'
+    if r['id'] in TITLE_DECISIONS:
+        prev=r['name'];r['name']=TITLE_DECISIONS[r['id']];r['review']='Title decision 11 Nov 2026'
         r['aliases']=list(dict.fromkeys((r.get('aliases') or [])+[prev]+(['GBS','group B strep'] if 'LND-05' in r['id'] else ['postpartum thrombosis prevention','VTE prevention','VTE prophylaxis'] if r['id']=='FD-SYS-02' else ['adnexal mass','ovarian torsion'])))
 assert len(rows)==len(items),(len(rows),len(items))
 # names unique within each kind (a card and its algorithm may share a name; the UI labels them CARD / ALGORITHM)

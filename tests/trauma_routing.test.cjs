@@ -16,14 +16,13 @@ function triage(hpi) {
 
 const card = C.items.find(i => i.id === 'ANT-TRAUMA');
 
-test('ANT-TRAUMA card is present, released (no PROVISIONAL tag or personal name), with pharmacy-check flags', () => {
+test('ANT-TRAUMA card is present, released (no PROVISIONAL tag or personal name), with inline pharmacy-check lines (no verify-box flags)', () => {
   assert.ok(card, 'card exists in CONTENT');
   assert.equal(card.kind, 'card');
   assert.equal(card.book, 'OB');
   assert.match(card.title, /Trauma in pregnancy/i);
-  assert.ok(card.flags && card.flags.length >= 1);
+  assert.deepEqual(card.flags, []);
   assert.ok(!card.flags.some(f => /PROVISIONAL|Michael|Carozza/i.test(f)));
-  assert.ok(card.flags.some(f => /RhIG/i.test(f) && /betamethasone/i.test(f) && /Tdap/i.test(f)));
   assert.doesNotMatch(card.html + card.text, /PROVISIONAL|Michael|Carozza|Not live/i);
   assert.match(card.html, /Mother first: primary survey \(ABCDE\) before the fetus/);
   assert.match(card.html, /RhIG 300 mcg IM within 72 h/);
@@ -146,6 +145,6 @@ test('routes to ANT-TRAUMA: OBED walk-in after strangulation', () => {
   assert.equal(r.top.id, 'ANT-TRAUMA');
   assert.equal(r.top.diagram && r.top.diagram.id, 'FD-ANT-TRAUMA');
   assert.match(r.top.card.html, /1-800-799-7233/);
-  assert.match(r.top.card.html, /Pending house decision/);
+  assert.doesNotMatch(r.top.card.html, /Pending house decision|UNVERIFIED|before card goes live/);
   assert.match(r.top.diagram.html, /OBED walk-in/);
 });

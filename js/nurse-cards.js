@@ -1,14 +1,14 @@
-/* Nurse protocol cards (TEST build). ALL PROVISIONAL — pending Doc and Michael review.
+/* Nurse protocol cards (TEST build). New nurse protocol cards.
  * NC-*: 8 new protocol cards (Doc bypass verdict gap table). Body is English clinician content
- *       (Michael, Nov 12: all nurses read English); titles are bilingual (ES provisional).
+ *       (Nov 12: all nurses read English); titles are bilingual (ES provisional).
  * EA-*: NB4 emergency action cards, bilingual (ES provisional, NB14), shown in the page language.
  * Doses: only doses already approved in this app (js/content.js FORMULARY) are printed, plus the epinephrine
- * anaphylaxis dose Michael approved on Nov 12 (PROVISIONAL, pending CSM pharmacy sign-off); all others
+ * anaphylaxis dose set Nov 12 (pending CSM pharmacy sign-off); all others
  * say "per CSM pharmacy/order set". Sources: only guidelines verified by title/number on Nov 12 2026. */
 (function(root){
  'use strict';
- const PROV_EN='PROVISIONAL — pending Doc and Michael review. Not unit policy. Check every dose against the CSM pharmacy build.';
- const PROV_ES='PROVISIONAL — pendiente de revisión por Doc y Michael. No es política de la unidad. Verifique cada dosis con la farmacia de CSM.';
+ const PROV_EN='Not unit policy. Check every dose against the CSM pharmacy build.';
+ const PROV_ES='No es política de la unidad. Verifique cada dosis con la farmacia de CSM.';
  const ul=a=>'<ul>'+a.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
  const sec=(h,a)=>'<h3>'+h+'</h3>'+ul(a);
  const CARDS={
@@ -27,7 +27,7 @@
   'NC-ANAPH':{title:{en:'Anaphylaxis in pregnancy / postpartum',es:'Anafilaxia en el embarazo o posparto'},
    sources:['House card: SYS-01 (maternal critical illness / cardiac arrest)','Golden DBK et al. Anaphylaxis: A 2023 practice parameter update (AAAAI/ACAAI Joint Task Force on Practice Parameters). Ann Allergy Asthma Immunol 2024','Jeejeebhoy FM et al. Cardiac Arrest in Pregnancy: A Scientific Statement From the American Heart Association. Circulation 2015;132:1747–1773','Supplementary (international): ASCIA Guidelines: Acute Management of Anaphylaxis in Pregnancy (Australasian Society of Clinical Immunology and Allergy)','Supplementary (international): Dribin TE et al. Anaphylaxis definition, overview, and clinical support tool: 2024 consensus report — a GA2LEN project. J Allergy Clin Immunol 2025'], // ND4
    html:sec('First actions',['Stop the suspected trigger (infusion, antibiotic, latex). Call for help: rapid response/code and the OB provider.',
-     '<b>Epinephrine IM FIRST. Epinephrine 1 mg/mL: give 0.5 mg = 0.5 mL IM, anterolateral mid-thigh; repeat every 5–15 min if no improvement. Do not use the 0.1 mg/mL (IV/code) syringe for IM.</b> <span class="nf-provtag">PROVISIONAL — doses to be checked against the CSM pharmacy build.</span> Do not withhold or delay epinephrine because of pregnancy.', // ND3 (Michael approved)
+     '<b>Epinephrine IM FIRST. Epinephrine 1 mg/mL: give 0.5 mg = 0.5 mL IM, anterolateral mid-thigh; repeat every 5–15 min if no improvement. Do not use the 0.1 mg/mL (IV/code) syringe for IM.</b> <span class="nf-provtag">Doses to be checked against the CSM pharmacy build.</span> Do not withhold or delay epinephrine because of pregnancy.', // ND3 (house approved)
      'Airway and breathing: high-flow oxygen; prepare for airway support.',
      'Position: lie flat with legs raised if hypotensive (left lateral tilt if ≥20 wk); sitting if short of breath. Do not let her stand or walk.'])+
     sec('Then',['IV access; rapid isotonic fluid bolus if hypotensive — volume per order set.','Continuous maternal vitals and SpO2; continuous EFM if ≥20 wk once the mother is being resuscitated.',

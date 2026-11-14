@@ -40,7 +40,7 @@ test('house practices: routine TOC, postpartum pyelo IV-then-oral, routine suppr
   assert.match(h, /ACOG says ["“]may consider["”]/i);
   assert.doesNotMatch(card.html, /Pending house decision/);
   assert.doesNotMatch(flow.html, /Pending house decision/);
-  assert.match(card.html, /Pending full-text re-check \(ACOG CC No\. 4 dose table and 48–72 h window/);
+  assert.doesNotMatch(card.html + card.text, /re-check|re-verify|before publishing|UNVERIFIED/i);
 });
 
 test('algorithm has no dose amounts and points treatment to the card', () => {
@@ -54,7 +54,7 @@ test('algorithm has no dose amounts and points treatment to the card', () => {
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-UTI.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v33-2026-11-13-unprovisional'));
+  assert.ok(sw.includes('v34-2026-11-14-release'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-UTI.png'));
 });
 

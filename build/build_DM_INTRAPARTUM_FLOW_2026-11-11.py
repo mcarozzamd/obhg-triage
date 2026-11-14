@@ -1,6 +1,6 @@
-# Build: Diabetes in labor (ALG-DM-INTRAPARTUM) one-page flow diagram, 11 Nov 2026 (rev. after Doc fixes). fd_common house visual model.
+# Build: Diabetes in labor (ALG-DM-INTRAPARTUM) one-page flow diagram, 11 Nov 2026 (rev. after review fixes). fd_common house visual model.
 # ALL wording, doses and bands come from js/dm-intrapartum.js (single source; switches applied there), so the image, the text companion
-# and the tests cannot drift. Page is landscape-letter width, taller (792 x 906 pt) to carry Doc's full rescue matrix legibly.
+# and the tests cannot drift. Page is landscape-letter width, taller (792 x 906 pt) to carry the full rescue matrix legibly.
 import os, sys, subprocess, json
 sys.dont_write_bytecode = True
 sys.path.insert(0, "/workspace/grok-obgyn/cards/flow-diagrams/")
@@ -16,7 +16,7 @@ import re
 def e(s): return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 def m(s, dark=False):
     col = "#F3C969" if dark else AMBER
-    return re.sub(r"(\u2666 PENDING MICHAEL \([^)]*\)\.?)", r'<font color="%s"><b>\1</b></font>' % col, e(s))
+    return re.sub(r"(\u2666 PENDING HOUSE DECISION \([^)]*\)\.?)", r'<font color="%s"><b>\1</b></font>' % col, e(s))
 PH = fd_common.PH
 c = new_canvas(OUT, T["title"])
 header(c, T["title"].upper(),

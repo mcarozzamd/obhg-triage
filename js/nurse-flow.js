@@ -135,7 +135,7 @@ function parseVitals(s){
   const headerTrees=headers.filter(h=>pos(a[h])).map(h=>h.slice(4));
   for(const t of headerTrees)TREES[t].items.filter(vis).forEach(i=>req.add(i));
   const activeTrees=[...baseTrees,...headerTrees];
-  // ---------- bypass (Michael 12:54 PM CT Nov 12; Doc review pending) ----------
+  // ---------- bypass (Nov 12) ----------
   // Any positive Act-now item, positive IMMEDIATE universal emergency, or immediate measured vital locks EMERGENT
   // (extends NF12 beyond the gate). The nurse can open the protocol and is not forced through more questions.
   const {bp:bp0,v:v0}=parseVitals(s);

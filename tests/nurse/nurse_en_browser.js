@@ -1,6 +1,6 @@
 // LIVE CANDIDATE English-only browser check (derived from the staging nurse_nc_browser.js; ES runs removed).
 // Real-browser check (manual; needs Chrome + a local server on :8768 serving this dir): NB12 160 px pinned-bar limit with the
-// NC7 status chip and NC9/NC1 confirm chips (ND1: never replacing the rescue text), ND5 jump chip, plus the Act-now "Relevant protocols" section (Michael t1993u), EN + ES, no console errors.
+// NC7 status chip and NC9/NC1 confirm chips (ND1: never replacing the rescue text), ND5 jump chip, plus the Act-now "Relevant protocols" section (t1993u), EN + ES, no console errors.
 const {chromium}=require('playwright-core');const BASE=process.env.BASE||'http://127.0.0.1:8881/nurse.html';
 (async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});let fail=0,n=0;const ok=(c,m)=>{n++;if(!c){fail++;console.log('FAIL '+m);}else console.log('PASS '+m);};
 const cases=[['unknown-hem',['hemorrhage']],['hemorrhage-ge20',['status:ge20','hemorrhage']],['cord',['cord_prolapse']],['stroke+sepsis',['stroke','u:sepsis']],['collapse+cord+birth+hem',['collapse_maternal','cord_prolapse','birth_imminent','hemorrhage']],['cord+birth+hem',['cord_prolapse','birth_imminent','hemorrhage']],['collapse_baby',['collapse_baby']],['hr220+hem',['hr:220','hemorrhage']],['hr45',['hr:45']],['hr45+syncope',['hr:45','syncope']],['hr120-ge20',['status:ge20','hr:120']],['spo2-65+anaph',['spo2:65','anaphylaxis']]];
@@ -64,7 +64,7 @@ for(const lang of LANGS_W)for(const vw of [375,390,430]){const p=await b.newPage
  ok(!ES.test(all),'no Spanish UI text on any visited nurse screen'+(ES.test(all)?' ('+all.match(ES)[0]+')':''));
  ok(!(await p.$('[data-act=lang]')),'no language picker anywhere');
  const cached=await p.evaluate(async()=>{const ks=await caches.keys();const k=ks.find(x=>x.startsWith('obhg-triage-'));if(!k)return null;const c=await caches.open(k);const i=await c.match('./index.html'),n=await c.match('./nurse.html');return {k,i:i?await i.text():'',n:n?await n.text():''};});
- ok(cached&&cached.k==='obhg-triage-v33-2026-11-13-unprovisional','service worker cache v25 installed ('+(cached&&cached.k)+')');
+ ok(cached&&cached.k==='obhg-triage-v34-2026-11-14-release','service worker cache v25 installed ('+(cached&&cached.k)+')');
  ok(cached&&/OBHG CLINICAL TRIAGE/.test(cached.i)&&!/id="nurse-app"/.test(cached.i),'after visiting nurse.html the cached index.html is still the physician app');
  ok(cached&&/id="nurse-app"/.test(cached.n),'nurse.html cached under its own key');
  await ctx.setOffline(true);await p.goto(ROOT+'nurse.html').catch(()=>{});ok(await p.$('#nurse-app').then(Boolean).catch(()=>false),'nurse page loads offline');await p.goto(ROOT).catch(()=>{});ok(await p.$('#start-clinician').then(Boolean).catch(()=>false),'physician app still loads offline');await ctx.setOffline(false);

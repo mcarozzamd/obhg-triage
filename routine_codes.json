@@ -1,6 +1,6 @@
 {
  "version": "0.4.0-pending",
- "status": "PENDING DOC REVIEW (Doc review 1 + Michael override (admit E/M tracking with delivery; OBED 9928x default) applied 2026-10-23). ICD-10-CM validated against CMS FY2026/FY2027 by codes/build_routine.py; CPT/E-M are suggestions (AMA CPT not machine-verified). Codes are suggestions; provider verifies before billing.",
+ "status": "Clinical review 1 and house override (admit E/M tracking with delivery; OBED 9928x default) applied 2026-10-23. ICD-10-CM validated against CMS FY2026/FY2027 by codes/build_routine.py; CPT/E-M are suggestions (AMA CPT not machine-verified). Codes are suggestions; provider verifies before billing.",
  "z3a_rule": "Z3A.xx from GA field (for inpatient, GA on the admission date). No Z3A when GA blank. Not with Z03.7x primary unless an O code is present. 'optional' sets offer Z3A as an add-on; 'ifga' adds only if GA entered; GYN non-pregnant sets never.",
  "icd_rules": [
   "O80 requires Z37.0",

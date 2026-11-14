@@ -10,4 +10,4 @@ for(const [cmd,args] of steps){
  const r=spawnSync(cmd,args,{cwd:root,stdio:'inherit',env:{...process.env,TZ:'America/Chicago'}});
  if(r.status!==0){console.error('FAILED: '+cmd+' '+args.join(' '));process.exit(r.status||1);}
 }
-console.log('All live-candidate checks passed. Michael\'s go still required before any push.');
+console.log('All live-candidate checks passed. The owner\'s explicit go is still required before any push.');

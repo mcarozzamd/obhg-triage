@@ -1,5 +1,5 @@
 # Build: FD-ANT-UTI UTI/pyelo-in-pregnancy algorithm, 13 Nov 2026.
-# Doc's nodes. No dose numbers. Companion card holds doses. House practices applied.
+# Reviewed nodes. No dose numbers. Companion card holds doses. House practices applied.
 import os, sys, subprocess
 sys.dont_write_bytecode = True
 sys.path.insert(0, "/workspace/grok-obgyn/cards/flow-diagrams/")
@@ -67,8 +67,7 @@ action(c, 20, 452, 752, 48, "7. DISPOSITION AND RETURN PRECAUTIONS \u00b7 WHITE"
        fill=WHITE, tsize=6.4, bsize=6.0, tag="n7")
 
 y = 452 + 48 + 8
-draw_para(c, "Doses, regimens and durations live only on the companion card (UTI and pyelonephritis in pregnancy). Decision support only, not unit policy. "
-       "ACOG CC No. 4 dose table and 48\u201372 h window: pending full-text re-check (secondary summary only).",
+draw_para(c, "Doses, regimens and durations live only on the companion card (UTI and pyelonephritis in pregnancy). Decision support only, not unit policy.",
        20, y + 4, PW - 40, 32, 6.4, 5.4, SLATE, tag="footer")
 assert y + 40 <= PH, (y, PH)
 c.showPage(); c.save()

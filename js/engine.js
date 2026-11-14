@@ -96,7 +96,7 @@
   function parse(input) {
     const t = ' ' + String(input || '').replace(/\s+/g, ' ') + ' ';
     const f = { raw: input, kw: {} };
-    // voice-to-text gravida (Michael, 18 Oct 2026): 'GTP won', 'G one', 'gravida one' → G1
+    // voice-to-text gravida (18 Oct 2026): 'GTP won', 'G one', 'gravida one' → G1
     const gv = t.match(/\b(?:GTP|G\.?|gee|gravida)\s*(won|one|two|three|four|five|\d{1,2})\b(?!\s*(?:P\s*\d|para))/i);
     if (gv && !/\bG\s?\d{1,2}\s?P\s?\d/i.test(t)) { const w = { won: 1, one: 1, two: 2, three: 3, four: 4, five: 5 }; f.G = w[gv[1].toLowerCase()] || +gv[1]; f.gVoice = gv[0].trim(); }
     for (const k in KW) if (KW[k].test(t)) f.kw[k] = true;
@@ -198,11 +198,11 @@
     if (f.rr > 24) f.sirs.push('RR ' + f.rr + ' (>24)');
     if (f.wbc !== undefined && (f.wbc > 15 || f.wbc < 4)) f.sirs.push('WBC ' + f.wbc);
     f.abnormalVS = (f.hr >= 110) || (f.sbpMin <= 85) || (f.dbpMin <= 45) || (f.spo2 !== undefined && f.spo2 < 95);
-    // pregnancy / fever split (Michael, 18 Oct 2026): IAI first for intrapartum fever unless sepsis red flags
+    // pregnancy / fever split (18 Oct 2026): IAI first for intrapartum fever unless sepsis red flags
     f.febrile = f.feverC || (!!f.kw.fever && f.tempC === undefined);
     f.lowGradeFever = f.feverC && f.tempC < 38.5;
     f.fetalTachy = /fetal tachy/i.test(t) || f.fhr > 160;
-    // IAI context (Michael, 23 Oct 2026): fever + fetal tachycardia is a strong IAI discriminator even without labor wording
+    // IAI context (23 Oct 2026): fever + fetal tachycardia is a strong IAI discriminator even without labor wording
     f.iaiFeatures = [];
     if (f.fetalTachy) f.iaiFeatures.push('fetal tachycardia' + (f.fhr > 160 ? ' (FHR ' + f.fhr + ')' : ''));
     if (/uterine (tenderness|tender)|fundal tender|tender (uterus|fundus)/i.test(t)) f.iaiFeatures.push('uterine tenderness');
@@ -228,7 +228,7 @@
     if (f.kw.shock) f.sepsisFlags.push('shock wording');
     // explicit 'sepsis' wording counts on its own outside IAI; in the IAI context it needs an objective feature above
     if (f.kw.sepsis && (!f.iaiContext || f.sepsisFlags.length)) f.sepsisFlags.push('sepsis / septic wording');
-    // maternal cause in the HPI (Michael, 18 Oct 2026): LND-01 is then 'also consider', never the top card
+    // maternal cause in the HPI (18 Oct 2026): LND-01 is then 'also consider', never the top card
     f.maternalCauses = [];
     if (f.febrile) f.maternalCauses.push('maternal fever');
     if (f.kw.iai || (f.kw.infection && !f.febrile)) f.maternalCauses.push('chorio / IAI / infection wording');

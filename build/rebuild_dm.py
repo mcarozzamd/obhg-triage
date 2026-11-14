@@ -18,7 +18,7 @@ obj=json.loads(s[i:j]);items=obj['items']
 fd=next(x for x in items if x['id']=='FD-ANT-05');a=next(x for x in items if x['id']=='ANT-05')
 fd.update(title=T['title'],img=png,html=fd_html,text=T['title']+' '+strip(fd_html),sha=hashlib.sha256(open(os.path.join(ROOT,'build/DM_INTRAPARTUM_FLOW_2026-11-11.pdf'),'rb').read()).hexdigest()[:12])
 a.update(html=ant_html,text=strip(ant_html))
-a['source_note']='ANT-05 landing card revised 11 Nov 2026 per ALG-DM-INTRAPARTUM spec DM-0 and Doc verdict F10 (generated from js/dm-intrapartum.js).'
+a['source_note']='ANT-05 landing card revised 11 Nov 2026 per ALG-DM-INTRAPARTUM spec DM-0 and review verdict F10 (generated from js/dm-intrapartum.js).'
 open(p,'w',encoding='utf-8').write(s[:i]+json.dumps(obj,ensure_ascii=False)+s[j:])
 run('python3','build/build_display_names.py')
 run('python3','build/build_display_images.py')

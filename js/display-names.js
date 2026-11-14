@@ -60,7 +60,7 @@
     "id": "LND-05",
     "old": "GBS prophylaxis (ACOG CO 797)",
     "name": "Group B streptococcus",
-    "review": "Michael title decision 11 Nov 2026",
+    "review": "Title decision 11 Nov 2026",
     "aliases": [
       "Group B streptococcal prevention",
       "Group B strep prophylaxis during labor",
@@ -430,7 +430,7 @@
     "id": "FD-SYS-02",
     "old": "Postpartum VTE prophylaxis decision tree (CMQCC)",
     "name": "Postpartum VTE prophylaxis",
-    "review": "Michael title decision 11 Nov 2026",
+    "review": "Title decision 11 Nov 2026",
     "aliases": [
       "Postpartum thrombosis prevention",
       "postpartum thrombosis prevention",
@@ -481,7 +481,7 @@
     "id": "FD-GYNB-04",
     "old": "Adnexal torsion and mass: call it, untwist, keep the ovary",
     "name": "Adnexal torsion and ovarian mass",
-    "review": "Michael title decision 11 Nov 2026",
+    "review": "Title decision 11 Nov 2026",
     "aliases": [
       "Acute adnexal pain",
       "Adnexal torsion and mass assessment",
@@ -600,7 +600,7 @@
     "id": "FD-LND-05",
     "old": "GBS prophylaxis: who gets it, which drug (flow)",
     "name": "Group B streptococcus",
-    "review": "Michael title decision 11 Nov 2026",
+    "review": "Title decision 11 Nov 2026",
     "aliases": [
       "Group B strep: who gets antibiotics and which drug",
       "GBS",

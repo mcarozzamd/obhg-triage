@@ -1,5 +1,5 @@
 // Emergent bypass, protocol mapping, finish-screening reminders, discharge gating, state preservation, parity.
-// Michael nurse feedback 12:54 PM CT Nov 12 2026. Synthetic inputs only; no holdout/blind cases read.
+// Nurse feedback 12:54 PM CT Nov 12 2026. Synthetic inputs only; no holdout/blind cases read.
 const assert=require('node:assert/strict'),fs=require('fs'),path=require('path'),vm=require('vm');
 const root=path.resolve(__dirname,'../..');let pass=0,total=0;
 const N=require('../../js/nurse-flow.js'),PR=require('../../js/nurse-protocols.js');
