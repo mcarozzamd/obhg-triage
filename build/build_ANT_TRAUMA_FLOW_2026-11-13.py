@@ -13,7 +13,7 @@ OUT = os.path.join(HERE, "ANT-TRAUMA_FLOW_2026-11-13.pdf")
 c = new_canvas(OUT, "Trauma in pregnancy: evaluate, monitor, decide")
 header(c, "TRAUMA IN PREGNANCY: EVALUATE, MONITOR, DECIDE",
        "FD-ANT-TRAUMA \u00b7 Companion to Trauma in pregnancy \u00b7 SOGC CPG No. 325 \u00b7 EAST 2010 \u00b7 ACOG \u00b7 Labor and delivery / OBED \u00b7 Decision support only, not unit policy",
-       "Last reviewed: Provisional, Nov 2026", "PROVISIONAL")
+       "Last reviewed: Nov 2026", "")
 howto(c, "<b>HOW TO READ THIS CHART:</b> start at node 1. Hexagons are questions; shaded rectangles are actions. "
          "Nodes 5 and 6 apply at <b>every branch</b>. <b>Doses live on the companion card; this chart lists none.</b> "
          "The 4\u20136 hour timer is a cue only, not a documented time.", h=20)
@@ -102,8 +102,7 @@ y = strips(c, 598, [
      "Prenatal follow-up within 1 week. Seat-belt and fall-prevention counseling; acetaminophen (avoid NSAIDs ≥20 wk unless directed).", 42),
 ], labw=150, gap=2)
 
-draw_para(c, "<b>PROVISIONAL</b> \u2014 pending Michael review and CSM pharmacy check. Not live. "
-       "Doses live only on the companion card (Trauma in pregnancy). Decision support only, not unit policy. "
+draw_para(c, "Doses live only on the companion card (Trauma in pregnancy). Decision support only, not unit policy. "
        "The 4\u20136 hour timer is a cue only, not a documented time; nothing is stored.",
        20, y + 4, PW - 40, 26, 6.4, 5.4, SLATE, tag="footer")
 

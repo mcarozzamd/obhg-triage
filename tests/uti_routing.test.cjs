@@ -14,13 +14,16 @@ function offered(r, id) { return [r.top, ...(r.alternates || [])].some(x => x &&
 const card = C.items.find(i => i.id === 'ANT-UTI');
 const flow = C.items.find(i => i.id === 'FD-ANT-UTI');
 
-test('ANT-UTI card is present, tagged PROVISIONAL, with a pharmacy line', () => {
+test('ANT-UTI card is present, released (no PROVISIONAL tag or personal name), with a pharmacy line', () => {
   assert.ok(card && flow);
   assert.equal(card.kind, 'card');
   assert.equal(flow.kind, 'diagram');
   assert.equal(flow.card, 'ANT-UTI');
-  assert.ok(card.flags.some(f => /PROVISIONAL/i.test(f)));
-  assert.ok(flow.flags.some(f => /PROVISIONAL/i.test(f)));
+  for (const it of [card, flow]) {
+    assert.ok(!it.flags.some(f => /PROVISIONAL|Michael|Carozza/i.test(f)));
+    assert.doesNotMatch(it.html + it.text, /PROVISIONAL|Michael|Carozza|Not live/i);
+  }
+  assert.equal(card.lastReviewed, 'Nov 2026');
   assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 1);
   assert.match(card.html, /ALWAYS ADMIT/);
   assert.equal(D.title('ANT-UTI'), 'UTI and pyelonephritis in pregnancy');
@@ -29,11 +32,11 @@ test('ANT-UTI card is present, tagged PROVISIONAL, with a pharmacy line', () => 
 
 test('house practices: routine TOC, postpartum pyelo IV-then-oral, routine suppression after pyelo', () => {
   const h = (card.html + flow.html).replace(/<[^>]+>/g, ' ');
-  assert.match(h, /House practice \(Michael\):\s*after treated ASB or cystitis, obtain a routine test-of-cure culture/i);
+  assert.match(h, /House practice:\s*after treated ASB or cystitis, obtain a routine test-of-cure culture/i);
   assert.match(h, /ACOG and IDSA do not require routine test of cure/i);
-  assert.match(h, /House practice \(Michael\):\s*IV dose plus oral therapy with follow-up in 24–48 h/i);
+  assert.match(h, /House practice:\s*IV dose plus oral therapy with follow-up in 24–48 h/i);
   assert.match(h, /Pregnant pyelo is still always admitted/i);
-  assert.match(h, /House practice \(Michael\):\s*routine suppression after a single pyelo/i);
+  assert.match(h, /House practice:\s*routine suppression after a single pyelo/i);
   assert.match(h, /ACOG says ["“]may consider["”]/i);
   assert.doesNotMatch(card.html, /Pending house decision/);
   assert.doesNotMatch(flow.html, /Pending house decision/);
@@ -51,7 +54,7 @@ test('algorithm has no dose amounts and points treatment to the card', () => {
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-UTI.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v32-2026-11-13-trauma-sti-uti'));
+  assert.ok(sw.includes('v33-2026-11-13-unprovisional'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-UTI.png'));
 });
 

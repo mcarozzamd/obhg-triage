@@ -13,13 +13,14 @@ const V = require(base + '/codes/validation.js');
 function triage(hpi) { return E.triage(hpi, C, T, V); }
 const card = C.items.find(i => i.id === 'ANT-STI');
 
-test('ANT-STI card is present, tagged PROVISIONAL, with every pharmacy and coding line', () => {
+test('ANT-STI card is present, released (no PROVISIONAL tag or personal name), with every pharmacy and coding line', () => {
   assert.ok(card, 'card exists in CONTENT');
   assert.equal(card.kind, 'card');
   assert.equal(card.book, 'OB');
   assert.match(card.title, /STIs on Labor and Delivery/i);
   assert.ok(card.flags && card.flags.length >= 2);
-  assert.ok(card.flags.some(f => /PROVISIONAL/i.test(f)));
+  assert.ok(!card.flags.some(f => /PROVISIONAL|Michael|Carozza/i.test(f)));
+  assert.doesNotMatch(card.html + card.text, /PROVISIONAL|Michael|Carozza|Not live/i);
   assert.ok(card.flags.some(f => /Bicillin/i.test(f) && /ZDV/i.test(f)));
   assert.ok(card.flags.some(f => /Coding/i.test(f) && /hep B/i.test(f)));
   assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 9);
@@ -115,7 +116,7 @@ test('Browse Guidelines lists STIs on Labor and Delivery and opens the card', as
   btn.click();
   assert.ok(t.vis('result'));
   assert.match(t.$('top').textContent, /Only TWO things on this card change the WAY she delivers/);
-  assert.match(t.$('top').textContent, /PROVISIONAL/);
+  assert.doesNotMatch(t.$('top').textContent, /PROVISIONAL|Michael|Carozza/i);
   assert.deepEqual(t.errors, []);
   t.close();
 });
@@ -182,6 +183,6 @@ test('GYNB-06 is never offered in pregnancy or postpartum; ANT-STI is primary fo
 });
 
 test('ANT-STI OBED test-of-cure is labeled house practice, not attributed to ACOG', () => {
-  assert.match(card.html, /test of cure culture after treatment \(house practice, Michael\)/);
+  assert.match(card.html, /test of cure culture after treatment \(house practice\)/);
   assert.doesNotMatch(card.html, /test of cure culture after treatment \(ACOG\)/);
 });

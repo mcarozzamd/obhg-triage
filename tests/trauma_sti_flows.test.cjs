@@ -23,7 +23,7 @@ function flowText(item) {
   return (item.html || '') + '\n' + (item.text || '');
 }
 
-test('both flow records exist, are provisional, and point at their cards', () => {
+test('both flow records exist, are released (no provisional tag), and point at their cards', () => {
   assert.ok(trauma && sti);
   assert.equal(trauma.kind, 'diagram');
   assert.equal(sti.kind, 'diagram');
@@ -34,9 +34,9 @@ test('both flow records exist, are provisional, and point at their cards', () =>
   assert.deepEqual(trauma.topics, ['ANT-TRAUMA']);
   assert.deepEqual(sti.topics, ['ANT-STI']);
   for (const it of [trauma, sti]) {
-    assert.ok(it.flags.some(f => /PROVISIONAL/i.test(f)));
-    assert.ok(it.html.includes('PROVISIONAL'));
-    assert.match(it.lastReviewed || '', /Provisional/i);
+    assert.ok(!it.flags.some(f => /PROVISIONAL|Michael|Carozza/i.test(f)));
+    assert.doesNotMatch(it.html + it.text, /PROVISIONAL|Michael|Carozza|Not live|Doc's draft/i);
+    assert.doesNotMatch(it.lastReviewed || '', /Provisional/i);
   }
 });
 
@@ -232,7 +232,7 @@ test('algorithm images exist, display copies are precached, and index loads the 
     assert.ok(fs.existsSync(path.join(root, 'assets/display-diagrams/' + it.id + '.png')), it.id);
     assert.ok(sw.includes('./assets/display-diagrams/' + it.id + '.png'), it.id);
   }
-  assert.ok(sw.includes('v32-2026-11-13-trauma-sti-uti'));
+  assert.ok(sw.includes('v33-2026-11-13-unprovisional'));
   assert.ok(sw.includes('./js/flow-cues.js'));
   assert.match(html, /js\/flow-cues\.js/);
 });

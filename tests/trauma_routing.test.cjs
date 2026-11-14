@@ -16,15 +16,15 @@ function triage(hpi) {
 
 const card = C.items.find(i => i.id === 'ANT-TRAUMA');
 
-test('ANT-TRAUMA card is present, tagged PROVISIONAL, with pharmacy-check flags and draft wording', () => {
+test('ANT-TRAUMA card is present, released (no PROVISIONAL tag or personal name), with pharmacy-check flags', () => {
   assert.ok(card, 'card exists in CONTENT');
   assert.equal(card.kind, 'card');
   assert.equal(card.book, 'OB');
   assert.match(card.title, /Trauma in pregnancy/i);
-  assert.ok(card.flags && card.flags.length >= 2);
-  assert.ok(card.flags.some(f => /PROVISIONAL/i.test(f)));
+  assert.ok(card.flags && card.flags.length >= 1);
+  assert.ok(!card.flags.some(f => /PROVISIONAL|Michael|Carozza/i.test(f)));
   assert.ok(card.flags.some(f => /RhIG/i.test(f) && /betamethasone/i.test(f) && /Tdap/i.test(f)));
-  assert.match(card.html, /PROVISIONAL/);
+  assert.doesNotMatch(card.html + card.text, /PROVISIONAL|Michael|Carozza|Not live/i);
   assert.match(card.html, /Mother first: primary survey \(ABCDE\) before the fetus/);
   assert.match(card.html, /RhIG 300 mcg IM within 72 h/);
   assert.match(card.html, /Betamethasone 12 mg IM q24h x 2/);
@@ -122,7 +122,7 @@ test('Browse Guidelines lists Trauma in pregnancy and opens the card', async () 
   btn.click();
   assert.ok(t.vis('result'));
   assert.match(t.$('top').textContent, /Mother first: primary survey/);
-  assert.match(t.$('top').textContent, /PROVISIONAL/);
+  assert.doesNotMatch(t.$('top').textContent, /PROVISIONAL|Michael|Carozza/i);
   assert.deepEqual(t.errors, []);
   t.close();
 });
@@ -135,7 +135,7 @@ test('HPI triage of a fall in pregnancy shows the ANT-TRAUMA card', async () => 
   assert.ok(t.vis('result'));
   assert.match(t.$('top').textContent, /Trauma in pregnancy/);
   assert.match(t.$('top').textContent, /RhIG 300 mcg IM/);
-  assert.match(t.$('flags').textContent + t.$('top').textContent, /PROVISIONAL|pharmacy/i);
+  assert.match(t.$('flags').textContent + t.$('top').textContent, /pharmacy/i);
   assert.deepEqual(t.errors, []);
   t.close();
 });

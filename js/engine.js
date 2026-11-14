@@ -357,7 +357,7 @@
     ['GYNB-07', 86, f => f.kw.iud, () => 'IUD / implant keyword'],
     ['GYNB-08', 84, f => f.kw.cpp, () => 'Chronic pelvic pain keyword'],
     ['GYNB-09', 87, f => f.kw.posthyst, () => 'Post-hysterectomy / cuff keyword'],
-    // ANT-TRAUMA (provisional 13 Nov 2026): blunt trauma / fall / MVC / abdominal injury in a pregnant patient. Not postpartum-only; not the broader ED `trauma` terms (chest pain, overdose, stroke, syncope).
+    // ANT-TRAUMA (13 Nov 2026): blunt trauma / fall / MVC / abdominal injury in a pregnant patient. Not postpartum-only; not the broader ED `trauma` terms (chest pain, overdose, stroke, syncope).
     ['ANT-TRAUMA', 94, f => f.kw.pregTrauma && f.pregnant, () => 'Trauma / fall / MVC / blunt abdominal injury in pregnancy'],
     ['ANT-STI', 93, f => f.kw.stiLD && ob(f), () => 'STI / syphilis / HSV / GC-CT / BV / yeast, or unknown HIV or hepatitis B status, in pregnancy or postpartum'],
     ['ANT-UTI', 95, f => f.kw.pregUti && ob(f), () => 'UTI / pyelo / dysuria / flank pain / CVA tenderness in pregnancy or postpartum'],

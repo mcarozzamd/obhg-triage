@@ -715,7 +715,7 @@
     "id": "ANT-TRAUMA",
     "old": "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
     "name": "Trauma in pregnancy",
-    "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
+    "review": "Card released 13 Nov 2026",
     "aliases": [
       "Trauma in pregnancy (fall, MVC, blunt abdominal injury)",
       "fall in pregnancy",
@@ -734,7 +734,7 @@
     "id": "ANT-STI",
     "old": "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
     "name": "STIs on Labor and Delivery",
-    "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
+    "review": "Card released 13 Nov 2026",
     "aliases": [
       "STIs on Labor and Delivery (syphilis, HSV, GC/CT, trich, BV, VVC)",
       "syphilis",
@@ -759,7 +759,7 @@
     "id": "FD-ANT-TRAUMA",
     "old": "Trauma in pregnancy: evaluate, monitor, decide",
     "name": "Trauma in pregnancy: evaluate, monitor, decide",
-    "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+    "review": "Algorithm released 13 Nov 2026",
     "aliases": [
       "ALG-ANT-TRAUMA",
       "trauma algorithm",
@@ -775,7 +775,7 @@
     "id": "FD-ANT-STI",
     "old": "STIs on labor and delivery: what to do now",
     "name": "STIs on labor and delivery: what to do now",
-    "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+    "review": "Algorithm released 13 Nov 2026",
     "aliases": [
       "ALG-ANT-STI",
       "STI algorithm",
@@ -791,7 +791,7 @@
     "id": "ANT-UTI",
     "old": "UTI and pyelonephritis in pregnancy and postpartum (ASB, cystitis, pyelo)",
     "name": "UTI and pyelonephritis in pregnancy",
-    "review": "Provisional card 13 Nov 2026 (pending Doc and Michael review)",
+    "review": "Card released 13 Nov 2026",
     "aliases": [
       "UTI and pyelonephritis in pregnancy and postpartum (ASB, cystitis, pyelo)",
       "UTI in pregnancy",
@@ -812,7 +812,7 @@
     "id": "FD-ANT-UTI",
     "old": "UTI and pyelonephritis in pregnancy: what to do now",
     "name": "UTI and pyelonephritis in pregnancy: what to do now",
-    "review": "Provisional algorithm 13 Nov 2026 (Doc nodes; pending Michael review)",
+    "review": "Algorithm released 13 Nov 2026",
     "aliases": [
       "ALG-ANT-UTI",
       "UTI algorithm",

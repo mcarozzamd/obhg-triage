@@ -1,6 +1,6 @@
 # Build: FD-ANT-STI STIs on L&D router, 13 Nov 2026.
 # Labor-path wording is Doc's recommended nodes only. No dose numbers.
-# Entry choice added per Michael (13 Nov 2026): In labor / admitted vs OB ED triage.
+# Entry choice (13 Nov 2026): In labor / admitted vs OB ED triage.
 # OB ED triage branch from Doc's 13 Nov 2026 draft; house decisions applied.
 import os, sys, subprocess
 sys.dont_write_bytecode = True
@@ -15,7 +15,7 @@ OUT = os.path.join(HERE, "ANT-STI_FLOW_2026-11-13.pdf")
 c = new_canvas(OUT, "STIs on labor and delivery: what to do now")
 header(c, "STIs ON LABOR AND DELIVERY: WHAT TO DO NOW",
        "FD-ANT-STI \u00b7 Companion to STIs on Labor and Delivery \u00b7 CDC STI Treatment Guidelines 2021 \u00b7 ACOG PB 220 \u00b7 Labor and delivery / OBED \u00b7 Decision support only, not unit policy",
-       "Last reviewed: Provisional, Nov 2026", "PROVISIONAL")
+       "Last reviewed: Nov 2026", "")
 howto(c, "<b>HOW TO READ THIS CHART:</b> start by choosing <b>In labor / admitted</b> or <b>OB ED triage</b>. "
          "The labor path is the router below (hard stops first). The OB ED triage branch is for patients not in labor or postpartum ≤12 wk. "
          "Doses and regimens live on the companion card; this chart lists none.", h=22)
@@ -84,7 +84,7 @@ action(c, 20, 604, 752, 48, "5. PEDS HANDOFF SUMMARY \u00b7 LIGHT GRAY",
        "Use the peds-handoff cue with this algorithm. Nothing is stored.",
        fill=LIGHT, tsize=7.2, bsize=6.8, tag="n5")
 
-# OB ED TRIAGE BRANCH (Doc draft + Michael house decisions, 13 Nov 2026)
+# OB ED TRIAGE BRANCH (house decisions, 13 Nov 2026)
 action(c, 20, 662, 752, 36, "OB ED TRIAGE BRANCH · LIGHT GRAY",
        "Not in labor (any GA) or postpartum ≤12 wk. Early pregnancy, location unknown, or pain/bleeding <20 wk: confirm pregnancy and location first; ectopic and septic abortion outrank every STI diagnosis.",
        fill=LIGHT, tsize=7.0, bsize=6.4, tag="obed-h")
@@ -113,8 +113,7 @@ action(c, 20, 892, 752, 32, "BEFORE DISCHARGE · LIGHT GRAY",
        "Single-dose treatments given in OBED, not just prescribed. Doses live only on the companion card. TOC/retest, Texas reporting, partner treatment or DIS, prenatal follow-up within 1 wk. Return precautions.",
        fill=LIGHT, tsize=6.6, bsize=6.2, tag="odc")
 y = 892 + 32 + 8
-draw_para(c, "<b>PROVISIONAL</b> \u2014 pending Michael review and CSM pharmacy check. Not live. "
-           "Doses and regimens live only on the companion card (STIs on Labor and Delivery). "
+draw_para(c, "Doses and regimens live only on the companion card (STIs on Labor and Delivery). "
            "The OB ED triage branch is for patients not in labor or postpartum ≤12 wk. "
            "Decision support only, not orders or unit policy. Nothing typed into the cues is saved.",
            20, y, PW - 40, 28, 6.4, 5.4, SLATE, tag="footer")

@@ -13,7 +13,7 @@ OUT = os.path.join(HERE, "ANT-UTI_FLOW_2026-11-13.pdf")
 c = new_canvas(OUT, "UTI and pyelonephritis in pregnancy: what to do now")
 header(c, "UTI AND PYELONEPHRITIS IN PREGNANCY: WHAT TO DO NOW",
        "FD-ANT-UTI \u00b7 Companion to UTI and pyelonephritis in pregnancy \u00b7 ACOG CC No. 4 \u00b7 IDSA 2019 \u00b7 ACOG CO 797 / 717 \u00b7 SMFM #67 \u00b7 Labor and delivery / OBED \u00b7 Decision support only, not unit policy",
-       "Last reviewed: Provisional, Nov 2026", "PROVISIONAL")
+       "Last reviewed: Nov 2026", "")
 howto(c, "<b>HOW TO READ THIS CHART:</b> start by choosing In labor / admitted or OB ED triage. "
          "<b>Doses, regimens and durations live on the companion card; this chart lists none.</b> "
          "Every treatment node says see ANT-UTI card. Pregnant pyelo is always admitted.",
@@ -57,18 +57,17 @@ action(c, 20, 352, 752, 40, "5. SEPSIS RED FLAGS \u2014 SYS-03 FIRST \u00b7 DARK
 
 action(c, 20, 398, 752, 48, "6. POSTPARTUM (\u226412 WK) \u00b7 LIGHT GRAY",
        "No ASB screening or treatment postpartum. Cystitis \u2192 node 3 (lactation check on the card). Admit pyelo if any admit criterion (sepsis/red flag, unable to take PO, vomiting, immunocompromise, obstruction/stone, failed oral therapy, unreliable follow-up, within the delivery admission or \u22641 wk after cesarean). "
-       "<b>House practice (Michael):</b> well-appearing, no admit criteria \u2014 IV dose plus oral therapy with follow-up in 24\u201348 h; see ANT-UTI card. Pregnant pyelo is still always admitted. GYNB-06 is still not used.",
+       "<b>House practice:</b> well-appearing, no admit criteria \u2014 IV dose plus oral therapy with follow-up in 24\u201348 h; see ANT-UTI card. Pregnant pyelo is still always admitted. GYNB-06 is still not used.",
        fill=LIGHT, tsize=6.5, bsize=6.0, tag="n6")
 
 action(c, 20, 452, 752, 48, "7. DISPOSITION AND RETURN PRECAUTIONS \u00b7 WHITE",
        "Home (ASB, cystitis, or postpartum per node 6): afebrile, no CVA tenderness, tolerating PO, call-back named, GBS flag if applicable. Admit: any pyelo in pregnancy; sepsis; postpartum admit criterion. "
        "Return for fever, flank pain, vomiting, contractions, bleeding, leaking, decreased FM, shortness of breath, or symptoms not better in 48 h. "
-       "<b>House practice (Michael):</b> routine test-of-cure culture after treated ASB or cystitis (ACOG and IDSA do not require it). <b>House practice (Michael):</b> routine suppression after a single pyelo \u2014 see ANT-UTI card.",
+       "<b>House practice:</b> routine test-of-cure culture after treated ASB or cystitis (ACOG and IDSA do not require it). <b>House practice:</b> routine suppression after a single pyelo \u2014 see ANT-UTI card.",
        fill=WHITE, tsize=6.4, bsize=6.0, tag="n7")
 
 y = 452 + 48 + 8
-draw_para(c, "<b>PROVISIONAL</b> \u2014 pending Michael review and CSM pharmacy check. Not live. "
-       "Doses, regimens and durations live only on the companion card (UTI and pyelonephritis in pregnancy). Decision support only, not unit policy. "
+draw_para(c, "Doses, regimens and durations live only on the companion card (UTI and pyelonephritis in pregnancy). Decision support only, not unit policy. "
        "ACOG CC No. 4 dose table and 48\u201372 h window: pending full-text re-check (secondary summary only).",
        20, y + 4, PW - 40, 32, 6.4, 5.4, SLATE, tag="footer")
 assert y + 40 <= PH, (y, PH)
