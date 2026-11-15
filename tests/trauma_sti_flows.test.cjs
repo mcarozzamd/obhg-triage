@@ -232,7 +232,7 @@ test('algorithm images exist, display copies are precached, and index loads the 
     assert.ok(fs.existsSync(path.join(root, 'assets/display-diagrams/' + it.id + '.png')), it.id);
     assert.ok(sw.includes('./assets/display-diagrams/' + it.id + '.png'), it.id);
   }
-  assert.ok(sw.includes('v37-2026-11-15-ask-test'));
+  assert.ok(sw.includes('v38-2026-11-15-ask-sud'));
   assert.ok(sw.includes('./js/flow-cues.js'));
   assert.match(html, /js\/flow-cues\.js/);
 });

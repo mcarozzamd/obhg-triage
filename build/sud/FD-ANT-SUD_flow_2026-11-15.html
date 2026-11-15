@@ -1,0 +1,132 @@
+<p><button type="button" class="linkbtn" data-open="ANT-SUD">Open companion card: Substance use in pregnancy</button></p>
+<p>Doses, regimens and drug amounts live only on the companion card. This algorithm lists none. Every treatment node says "see ANT-SUD card". Nothing typed into any cue is saved.</p>
+<p><button type="button" class="linkbtn" data-open="ANT-04">Open: Hypertensive disorders of pregnancy</button> <button type="button" class="linkbtn" data-open="SYS-04">Open: Maternal cardiac arrest</button> <button type="button" class="linkbtn" data-open="FD-SYS-03">Open: Maternal sepsis</button> <button type="button" class="linkbtn" data-open="ANT-08">Open: Nausea, vomiting and hyperemesis in pregnancy</button> <button type="button" class="linkbtn" data-open="LND-01">Open: Fetal heart rate monitoring</button></p>
+<div class="flow-cue" data-cue="sud-entry">
+<p><strong>START: IN LABOR / ADMITTED, OR OB ED TRIAGE?</strong> Choose the path that matches how she presents. Unresponsive, RR &lt;10, apnea or pulseless at any point → node 0 now.</p>
+<p><button type="button" data-sud-entry="labor">In labor / admitted</button> <button type="button" data-sud-entry="triage">OB ED triage</button></p>
+<p data-sud-entry-status></p>
+</div>
+<p class="subh">0. Overdose / arrest (either path)</p>
+<ul>
+<li>Pulseless → SYS-04 (maternal cardiac arrest) now.</li>
+<li>Breathing poorly with suspected opioid → ventilate, naloxone titrated to breathing (see ANT-SUD card), rapid response, attending now. Observe after naloxone (shorter-acting than many opioids). Viable GA → EFM once the mother is stable.</li>
+<li>Then continue on the labor path (node L) or the OB ED path (node 1).</li>
+</ul>
+<div data-sud-path="labor">
+<p class="subh">L. In labor / admitted (labor, ROM, induction, scheduled cesarean, antepartum or postpartum inpatient)</p>
+<ol>
+<li>On MOUD (buprenorphine or methadone)? Verify dose and last dose (Texas PMP / prescriber / OTP). CONTINUE the home dose — never hold for labor, NPO or cesarean; never taper acutely. Dose details: see ANT-SUD card.</li>
+<li>Early anesthesia consult (OUD/MOUD, recent meth/cocaine, alcohol withdrawal).</li>
+<li>Labor pain: neuraxial preferred, early. NO nalbuphine or butorphanol in OUD/MOUD. Expect higher opioid needs — do not under-treat.</li>
+<li>Cesarean: continue MOUD + neuraxial opioid + scheduled multimodal analgesia ± abdominal wall block or extended epidural (see ANT-SUD card).</li>
+<li>BP ≥140/90 in a stimulant user → preeclampsia until proven otherwise → ANT-04 in parallel. <strong>House practice:</strong> severe-range BP with recent cocaine/meth → labetalol first-line per ANT-04; never a pure beta-blocker.</li>
+<li>Recent meth/cocaine → tell anesthesia (hemodynamic instability, vasopressor choice); abruption watch (pain, bleeding, tachysystole, Category II/III → LND-01); platelets/fibrinogen before neuraxial if abruption suspected.</li>
+<li>Alcohol withdrawal (CIWA-Ar) → treat on L&amp;D (short-acting benzodiazepine near delivery, thiamine — see ANT-SUD card); tell peds.</li>
+<li>Opioid withdrawal (COWS) → treat promptly; continue/up-dose MOUD (see ANT-SUD card).</li>
+<li>Notify peds/NICU on admission → node N. Social work/case management consult on admission → node S.</li>
+<li>Postpartum → node P.</li>
+</ol>
+</div>
+<div data-sud-path="triage">
+<p class="subh">1. Universal first step (every OBED patient)</p>
+<ul>
+<li>Vitals with CSM maternal early warning tool (thresholds: use CSM tool); GA/viability; FHT Doppler (&lt;20 wk) or EFM/toco (viable). Contractions, bleeding, ROM, abdominal pain or abnormal FHR → L&amp;D evaluation (abruption/PTL) in parallel.</li>
+<li>Red flags → attending now: severe-range BP, chest pain, arrhythmia/wide QRS, seizure, hyperthermia, stroke signs, severe agitation/psychosis, suicidal ideation, delirium/hallucinations, abruption signs, Category II–III FHR, fever with injection use (→ SYS-03 screen).</li>
+<li>Verbal screen, every patient: 4Ps, NIDA Quick Screen, or CRAFFT (≤26 y). Ask: substance(s), route, last use, fentanyl, MOUD (name/dose/prescriber/OTP/last dose), alcohol pattern, prior withdrawal seizures/DTs, mood/suicidality, IPV, housing.</li>
+<li>UDS? Only for a clinical question AND with informed consent (why, right to refuse, consequences of a positive) → node 2.</li>
+<li>Then by substance: meth/stimulant intoxication → 3; stimulant withdrawal/"crash" → 4; opioids → 5; cocaine → 6; alcohol → 7; cannabis/CHS → 8. Polysubstance → open every node that applies; treat the most dangerous withdrawal first (alcohol/benzodiazepine &gt; opioid &gt; stimulant).</li>
+</ul>
+<p class="subh">2. Urine drug testing — consent</p>
+<ul>
+<li><strong>House practice:</strong> test only with informed consent and a clinical indication (AMS, unexplained HTN/tachycardia, abruption, seizure, overdose). No indication → do not test; the verbal screen is the screen.</li>
+<li>Indication present → consent conversation documented → test. Unable to consent (unresponsive) → test for emergency care; disclose afterward.</li>
+<li>Positive immunoassay = presumptive → send confirmatory test (GC/MS or LC-MS/MS) before it is used for any report or non-urgent decision. Negative does not exclude use (fentanyl, buprenorphine, methadone need specific assays).</li>
+<li>Positive result → social work consult (node S). A positive test alone, including cannabis, is not by itself a report → node T.</li>
+</ul>
+<p class="subh">3. Methamphetamine / amphetamine — intoxication</p>
+<ul>
+<li>HTN? → work up and treat as preeclampsia (ANT-04), not "just meth." Severe-range → <strong>house practice:</strong> labetalol first-line per ANT-04; no pure beta-blockers; magnesium if preeclampsia with severe features is possible.</li>
+<li>Agitation / hyperadrenergic → calm room, benzodiazepine first-line (see ANT-SUD card); psychosis unresolved → antipsychotic + psychiatry; hyperthermia → cool.</li>
+<li>ECG; troponin if chest pain.</li>
+<li>Viable GA → continuous EFM while hypertensive/intoxicated; abruption watch; growth US if none in 3–4 wk.</li>
+<li>Admit if severe BP, preeclampsia not excluded, abruption concern, psychosis, suicidality, unable to care for self. Otherwise → node 9 when sober and normotensive.</li>
+</ul>
+<p class="subh">4. Stimulant withdrawal ("crash") — including third-trimester methamphetamine</p>
+<ul>
+<li>Hypersomnia, fatigue, hunger, dysphoria, craving. Check it is not opioid/sedative oversedation (RR, SpO2, pupils, arousability).</li>
+<li>Suicidality screen with the CSM tool (e.g., C-SSRS) — every patient. Positive → sitter per CSM policy + psychiatry; do not discharge.</li>
+<li>No FDA-approved medication — supportive care: sleep, fluids, nutrition, symptom relief, psychosocial support (symptom adjuncts: see ANT-SUD card).</li>
+<li>Fetus: withdrawal itself is not known to harm the fetus; the risks are return to use, HTN/abruption, poor nutrition, self-harm. <strong>House practice:</strong> viable GA → NST on presentation; continuous EFM if recent use, HTN, contractions, bleeding or pain; growth US + fluid if none in 3–4 wk; no routine weekly testing for exposure alone. Do not deliver for withdrawal alone.</li>
+<li>Screen for co-existing opioid/alcohol/benzodiazepine withdrawal (these ARE dangerous) → nodes 5/7.</li>
+<li>Disposition → node 9.</li>
+</ul>
+<p class="subh">5. Opioids — OUD, MOUD, withdrawal</p>
+<ul>
+<li>On MOUD? → continue the verified dose; never taper or stop acutely (see ANT-SUD card). On methadone → do not switch to buprenorphine in pregnancy.</li>
+<li>Withdrawal (COWS)? Treat promptly — untreated withdrawal may cause fetal distress/preterm labor. Rhinorrhea, yawning, piloerection = opioid; mydriasis/sweats/agitation alone may be stimulant.</li>
+<li>Untreated OUD, wants treatment → start buprenorphine. <strong>House practice: OBED may start buprenorphine.</strong> COWS &gt;8 and no recent fentanyl → standard start in OBED for discharge (see ANT-SUD card). Fentanyl use → low-dose (overlap) start → ADMIT for inpatient initiation (see ANT-SUD card); addiction medicine/pharmacy if available. Precipitated withdrawal → rescue per ANT-SUD card. UDS is not required to start.</li>
+<li>Detox/medically supervised withdrawal → not recommended over MOUD.</li>
+<li>No nalbuphine/butorphanol in OUD/MOUD. <strong>House practice:</strong> enter them in the EHR allergy/intolerance field.</li>
+<li>Viable GA → EFM while in withdrawal.</li>
+<li>Disposition → node 9 with a naloxone kit in hand and a buprenorphine bridge to confirmed follow-up.</li>
+</ul>
+<p class="subh">6. Cocaine — intoxication</p>
+<ul>
+<li>Abdominal pain or bleeding = abruption until proven otherwise → L&amp;D, continuous EFM, CBC/fibrinogen/coags.</li>
+<li>Agitation/tachycardia/HTN → benzodiazepines first (see ANT-SUD card).</li>
+<li>No pure beta-blockers acutely. Severe-range BP → <strong>house practice:</strong> labetalol first-line per ANT-04 (combined alpha/beta).</li>
+<li>Chest pain → ECG, troponin, nitroglycerin for ischemia, cardiology. Wide QRS/arrhythmia → poison center + cardiology.</li>
+<li>Disposition → admit for abruption concern, ongoing HTN, chest pain; otherwise node 9.</li>
+</ul>
+<p class="subh">7. Alcohol</p>
+<ul>
+<li>Counsel: no known safe amount; FASD.</li>
+<li>Withdrawal? → CIWA-Ar (nausea, headache, anxiety, insomnia count as withdrawal, not pregnancy).</li>
+<li><strong>House practice:</strong> any pregnant patient in alcohol withdrawal → ADMIT. Benzodiazepines first-line; short-acting near term/preterm risk; no valproate; thiamine (before or with glucose; never delay glucose) — see ANT-SUD card.</li>
+<li>Seizure, hallucinations, DTs → attending now, ICU consideration.</li>
+<li>Viable GA → EFM during active withdrawal. Peds told if treated near delivery.</li>
+</ul>
+<p class="subh">8. Cannabis / cannabinoid hyperemesis (CHS)</p>
+<ul>
+<li>Counsel: no safe amount, no medical indication; ask what it is treating (nausea, anxiety, sleep, pain) → alternatives.</li>
+<li>Cyclic vomiting + daily use + relief with hot showers → consider CHS (vs hyperemesis gravidarum → ANT-08 for fluids/electrolytes/ketones).</li>
+<li>Usual antiemetics + fluids → if refractory: <strong>house practice:</strong> topical capsaicin and/or haloperidol may be used in pregnancy, ECG/QTc first — see ANT-SUD card. Hot showers OK. Definitive treatment = stopping cannabis.</li>
+<li>A positive cannabis UDS alone is not by itself grounds for a report → node T.</li>
+<li>Breastfeeding: discourage use; continued use is not a contraindication (shared decision-making).</li>
+</ul>
+<p class="subh">9. OBED disposition and discharge</p>
+<ul>
+<li>Admit: severe BP or preeclampsia not excluded; abruption concern; overdose needing observation beyond OBED; any alcohol withdrawal; low-dose buprenorphine start; suicidality; psychosis; unable to care for self; preterm labor.</li>
+<li>Home when: sober, vitals normal, preeclampsia excluded (if BP was up), reassuring FHR, suicidality screen negative, safety plan, prenatal follow-up booked.</li>
+<li>Every OUD patient: naloxone kit in hand + overdose teaching + buprenorphine/OTP follow-up confirmed.</li>
+<li>Every positive screen: social work/case management (node S) before discharge when available; resources given (FindTreatment.gov, SAMHSA helpline, 988, Texas OSAR).</li>
+<li>Return precautions: bleeding, abdominal pain, contractions, leaking fluid, decreased FM, headache/vision change, chest pain, shortness of breath, seizure, thoughts of self-harm, withdrawal symptoms, overdose (call 911, use naloxone).</li>
+</ul>
+</div>
+<p class="subh">N. Neonatal team / NICU notification (before delivery)</p>
+<ul>
+<li>Tell peds/NICU: substances, last use, MOUD + dose, alcohol, benzodiazepines, UDS results and consent status, breastfeeding plan.</li>
+<li>Opioid exposure including MOUD → NOWS expected and treatable; Eat, Sleep, Console with rooming-in, skin-to-skin, parental presence.</li>
+<li>Newborn testing = peds/NICU per CSM policy with parental consent (ACOG).</li>
+<li>Breastfeeding: stable MOUD → encouraged; ongoing meth/cocaine, nonprescribed opioids, or heavy alcohol → avoid; cannabis → counsel, not a contraindication. Look-back (ABM #21): breastfeeding recommended when nonprescribed use has stopped by delivery.</li>
+</ul>
+<p class="subh">S. Social work / case management</p>
+<ul>
+<li>Consult on every positive screen/known SUD/MOUD — on admission, not at discharge. Always consult case management for hospital and community policy.</li>
+<li>Plan of Safe Care: treatment follow-up, prenatal/postpartum + pediatric follow-up, naloxone, safe sleep, housing/food/transport, ECI if indicated, supports.</li>
+<li>Community: FindTreatment.gov, SAMHSA helpline, 988, Texas OSAR, local OTP/buprenorphine prescribers, Arkansas resources if applicable (case management).</li>
+</ul>
+<p class="subh">T. Texas reporting (statute summary, not legal advice — case management/social work for hospital and community policy)</p>
+<ul>
+<li>During pregnancy: substance use alone is not a mandated report to law enforcement; Tex. Fam. Code ch. 261 applies to a child (after birth).</li>
+<li>After birth: a professional with reasonable cause to believe a child is abused/neglected reports to DFPS within 48 h (cannot delegate). Newborn substance exposure → social work + DFPS intake/CAPTA Plan of Safe Care process. Prescribed MOUD is excluded from the "born addicted" statutory definition.</li>
+<li>DFPS: a positive drug test alone is not evidence of abuse or neglect.</li>
+</ul>
+<p class="subh">P. Postpartum (inpatient and ≤12 wk)</p>
+<ul>
+<li>Continue MOUD; watch for oversedation as metabolism normalizes (contact prescriber/OTP before any dose change).</li>
+<li>Scheduled acetaminophen + NSAID; limited opioid prescribing; naloxone kit at discharge.</li>
+<li>MOUD/OTP follow-up confirmed before discharge — postpartum is the highest overdose-risk window.</li>
+<li>Depression + suicidality screen; contraception including immediate postpartum LARC offered; Plan of Safe Care complete; lactation support.</li>
+</ul>
+<p>Sources: as on the ANT-SUD card (ACOG CO 711 + 2025 Clinical Practice Update; ACOG CO 633; ACOG CC No. 10, 2025; ACOG Statement of Policy 2020/2024; SOAP/SMFM/ASRA 2025; NPMS OUD bundle 2019; SAMHSA 2018; ASAM OUD 2020; ASAM alcohol withdrawal 2020; ASAM/AAAP stimulant 2024; ABM #21, 2023; AAP NOWS 2020; ESC NEJM 2023; SAEM GRACE-4; Tex. Fam. Code §§261.001, 261.101, 161.001; DFPS guidance). Decision support only, not unit policy.</p>

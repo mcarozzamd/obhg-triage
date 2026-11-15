@@ -74,6 +74,7 @@
     pregTrauma: R('\\bMVA\\b|\\bMVC\\b|motor vehicle|\\btrauma\\b|\\bfall\\b|fell|assault|blunt abdominal|abdominal (?:trauma|injury|blow)|direct abdominal blow|pedestrian struck|strangulation|strangled|neck compression'),
     // L&D STI card (ANT-STI): syphilis/RPR/HSV/herpes/lesions/GC/CT/trich/BV/yeast/STI, plus unknown HIV or hep B status. Bare HIV or viral load still go to the timing card unless status is unknown.
     stiLD: R('syphilis|\\bRPR\\b|\\bVDRL\\b|treponem|\\bTP-?PA\\b|\\bHSV\\b|herpes|\\blesions?\\b|gonorrho?ea|gonococcal|\\bGC\\b|chlamydi|trichomonas|trichomoniasis|\\btrich\\b|bacterial vaginosis|\\bBV\\b|\\byeast\\b|candidiasis|\\bcandida\\b|\\bVVC\\b|\\bSTIs?\\b|\\bSTD\\b|sexually transmitted|(?:HIV|human immunodeficiency).{0,40}unknown|unknown.{0,40}(?:HIV|human immunodeficiency)|no (?:3rd|third)[- ]trimester.{0,30}HIV|expedited HIV|(?:hep(?:atitis)?\\s*B|HBsAg|HBV).{0,40}unknown|unknown.{0,40}(?:hep(?:atitis)?\\s*B|HBsAg|HBV)|HBsAg (?:not (?:done|on file|available)|missing|pending)|vaginal discharge|vaginal itching|vulvar itching|genital ulcers?|\\bPID\\b|pelvic inflammatory|dysuria|\\bcystitis\\b|pyelonephritis|\\bpyelo\\b|flank pain|CVA tenderness|costovertebral|\\bCVAT\\b|endometritis|partner exposure|expedited partner|\\bEPT\\b|chancroid|\\bLGV\\b|lymphogranuloma'),
+    pregSud: R('methamphetamine|\\bmeth\\b|\\bamphetamines?\\b|\\bcocaine\\b|\\bcrack\\b|\\bheroin\\b|fentanyl (?:use|exposure|pills?|smok\\w*|inject\\w*|positive)|(?:uses|using|smokes|positive for) fentanyl|buprenorphine|suboxone|subutex|methadone|\\bMOUD\\b|\\bOUD\\b|opioid (?:use|dependence|addiction|withdrawal|overdose)|(?:drug|opiate|alcohol|stimulant|meth|heroin|fentanyl|substance) withdrawal|\\bCOWS\\b|\\bCIWA|overdose|narcan|naloxone|alcohol (?:use|abuse|intoxication)|\\bETOH\\b|delirium tremens|cannabis|marijuana|\\bTHC\\b|cannabinoid hyperemesis|\\bUDS\\b|urine drug (?:screen|test)|drug screen positive|positive (?:urine )?(?:drug|tox) (?:screen|test)|positive (?:amphetamine|cocaine|opiate|THC|methamphetamine) (?:screen|test)|substance use|polysubstance|IV drug use|\\bIVDU\\b|\\bPWID\\b'),
     pregUti: R('pyelonephritis|\\bpyelo\\b|flank pain|CVA tenderness|costovertebral|\\bCVAT\\b|dysuria|\\bcystitis\\b|\\bUTI\\b|urinary tract infection|asymptomatic bacteriuria|\\bASB\\b|bacteriuria|positive urine culture|urine culture positive'),
     imminent: R('crowning|delivery imminent|imminent delivery|precipitous|urge to push'),
     cordProlapse: R('cord prolapse|prolapsed cord'),
@@ -360,6 +361,8 @@
     // ANT-TRAUMA (13 Nov 2026): blunt trauma / fall / MVC / abdominal injury in a pregnant patient. Not postpartum-only; not the broader ED `trauma` terms (chest pain, overdose, stroke, syncope).
     ['ANT-TRAUMA', 94, f => f.kw.pregTrauma && f.pregnant, () => 'Trauma / fall / MVC / blunt abdominal injury in pregnancy'],
     ['ANT-STI', 93, f => f.kw.stiLD && ob(f), () => 'STI / syphilis / HSV / GC-CT / BV / yeast, or unknown HIV or hepatitis B status, in pregnancy or postpartum'],
+    // ANT-SUD (15 Nov 2026): substance use / MOUD / withdrawal / overdose / positive UDS in pregnancy or postpartum. Severe BP keeps ANT-04 on top; ANT-SUD is offered alongside.
+    ['ANT-SUD', 93, f => f.kw.pregSud && ob(f), () => 'Substance use / MOUD / withdrawal / overdose / positive drug screen in pregnancy or postpartum'],
     ['ANT-UTI', 95, f => f.kw.pregUti && ob(f), () => 'UTI / pyelo / dysuria / flank pain / CVA tenderness in pregnancy or postpartum'],
     // ED-to-OB
     ['ED-OB', 45, f => f.kw.ed && ob(f), () => 'Pregnant or ≤6 wk postpartum patient in the main ED (ED-to-OB pathway)'],
@@ -502,6 +505,7 @@
     'GYNB-06': ['SYS-03', 'GYNB-03'], 'GYNB-07': ['GYNB-01', 'GYNB-03'], 'GYNB-08': ['GYNB-05', 'GYNB-03'], 'GYNB-09': ['SYS-02', 'GYNB-03'],
     'GYNB-10': ['GYN-02', 'GYNB-01'],
     'ANT-UTI': ['ANT-STI', 'SYS-03'],
+    'ANT-SUD': ['ANT-04', 'ANT-08'],
   };
   function padAlternates(ranked, f) {
     if (!ranked.length) return ranked;

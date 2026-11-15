@@ -1,4 +1,5 @@
-// OBHG CLINICAL TRIAGE service worker. v37 (15 Nov 2026, TEST): Ask a question link-out (OpenEvidence/Grok, online only) and Suggest a card in Clinician and Nurse.
+// OBHG CLINICAL TRIAGE service worker. v38 (15 Nov 2026): ANT-SUD substance use in pregnancy card and FD-ANT-SUD algorithm; Ask a question link-out and Suggest a card released.
+// v37 (15 Nov 2026): Ask a question link-out (OpenEvidence/Grok, online only) and Suggest a card in Clinician and Nurse.
 // v36 (14 Nov 2026): house answers applied to trauma, STI and UTI (RhIG, delayed-presentation monitoring, case management, TP-PA, test-of-cure timing, postpartum suppression).
 // v35 (14 Nov 2026): source-metadata labels cleaned (no clinical change).
 // v34 (14 Nov 2026): release cleanup: internal review flags and personal approval attributions removed app-wide (no clinical change).
@@ -14,7 +15,7 @@
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v37-2026-11-15-ask-test';
+const CACHE = PREFIX + 'v38-2026-11-15-ask-sud';
 const ASSETS = [
   './',
   './index.html',
@@ -51,6 +52,7 @@ const ASSETS = [
   './assets/display-diagrams/FD-ANT-STI.png',
   './assets/display-diagrams/FD-ANT-TRAUMA.png',
   './assets/display-diagrams/FD-ANT-UTI.png',
+  './assets/display-diagrams/FD-ANT-SUD.png',
   './assets/display-diagrams/FD-ED-OB.png',
   './assets/display-diagrams/FD-GYN-01.png',
   './assets/display-diagrams/FD-GYNB-02.png',

@@ -821,5 +821,54 @@
       "ANT-UTI",
       "FD-ANT-UTI"
     ]
+  },
+  {
+    "id": "ANT-SUD",
+    "old": "Substance use in pregnancy (methamphetamine, opioids/MOUD, cocaine, alcohol, cannabis)",
+    "name": "Substance use in pregnancy",
+    "review": "Card released 15 Nov 2026",
+    "aliases": [
+      "Substance use in pregnancy (methamphetamine, opioids/MOUD, cocaine, alcohol, cannabis)",
+      "substance use",
+      "methamphetamine",
+      "meth",
+      "opioid use disorder",
+      "OUD",
+      "MOUD",
+      "buprenorphine",
+      "Suboxone",
+      "methadone",
+      "fentanyl",
+      "heroin",
+      "cocaine",
+      "alcohol withdrawal",
+      "cannabis",
+      "marijuana",
+      "cannabinoid hyperemesis",
+      "urine drug screen",
+      "UDS",
+      "withdrawal",
+      "ANT-SUD"
+    ],
+    "codes": [
+      "ANT-SUD"
+    ]
+  },
+  {
+    "id": "FD-ANT-SUD",
+    "old": "Substance use in pregnancy: what to do now",
+    "name": "Substance use in pregnancy: what to do now",
+    "review": "Algorithm released 15 Nov 2026",
+    "aliases": [
+      "ALG-ANT-SUD",
+      "substance use algorithm",
+      "withdrawal algorithm",
+      "MOUD algorithm"
+    ],
+    "codes": [
+      "ALG-ANT-SUD",
+      "ANT-SUD",
+      "FD-ANT-SUD"
+    ]
   }
 ]
