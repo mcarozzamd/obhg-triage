@@ -1,4 +1,5 @@
-// OBHG CLINICAL TRIAGE service worker. v36 (14 Nov 2026): house answers applied to trauma, STI and UTI (RhIG, delayed-presentation monitoring, case management, TP-PA, test-of-cure timing, postpartum suppression).
+// OBHG CLINICAL TRIAGE service worker. v37 (15 Nov 2026, TEST): Ask a question link-out (OpenEvidence/Grok, online only) and Suggest a card in Clinician and Nurse.
+// v36 (14 Nov 2026): house answers applied to trauma, STI and UTI (RhIG, delayed-presentation monitoring, case management, TP-PA, test-of-cure timing, postpartum suppression).
 // v35 (14 Nov 2026): source-metadata labels cleaned (no clinical change).
 // v34 (14 Nov 2026): release cleanup: internal review flags and personal approval attributions removed app-wide (no clinical change).
 // v33 (13 Nov 2026): ANT-TRAUMA, ANT-STI and ANT-UTI cards and algorithms released.
@@ -13,7 +14,7 @@
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v36-2026-11-14-house-answers';
+const CACHE = PREFIX + 'v37-2026-11-15-ask-test';
 const ASSETS = [
   './',
   './index.html',
@@ -28,6 +29,7 @@ const ASSETS = [
   './js/shiftlog.js',
   './js/app.js',
   './js/flow-cues.js',
+  './js/ask.js',
   './nurse.html',
   './css/nurse.css',
   './js/nurse-safety-vocabulary.js',

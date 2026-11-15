@@ -140,3 +140,9 @@ tr.amended td{background:#FFFBEA}
 .flow-cue .peds-out{margin:8px 0 0;padding:8px 10px;background:#fff;border:1px solid var(--line);border-radius:6px;font-weight:700}
 
 .house-pending{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:#F3C969;color:#1B2F4E;font-weight:800;font-size:12px;letter-spacing:.02em;vertical-align:middle;white-space:nowrap}
+
+/* Ask a question (15 Nov 2026) */
+.ask textarea{width:100%;box-sizing:border-box}
+.ask .btns button{white-space:normal}
+.ask-offline #ask-oe{background:#6b6b6b;border-color:#6b6b6b;color:#fff}
+.ask-suggest,.nf-suggest{margin:8px 0 0;font-size:14px}

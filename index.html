@@ -78,6 +78,16 @@
       <div id="coding"></div>
     </section>
   </div>
+  <section id="ask-box" class="box ask" aria-labelledby="ask-h">
+    <h3 id="ask-h">Ask a question</h3>
+    <label for="ask-q" class="lbl">General clinical question (not saved)</label>
+    <textarea id="ask-q" rows="2" maxlength="500" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="e.g. methamphetamine withdrawal in the third trimester"></textarea>
+    <p class="privacy-line">General questions only. No names, initials, ages, dates, MRNs or other identifiers.</p>
+    <div class="btns"><button type="button" id="ask-oe" class="primary">Ask OpenEvidence (copies question)</button><button type="button" id="ask-grok">Ask Grok</button></div>
+    <p id="ask-status" class="alt-tag" role="status" hidden></p>
+    <p id="ask-disclaimer" class="alt-tag">Outside resource, not CSM or OBHG policy.</p>
+    <p class="ask-suggest"><a id="ask-suggest" href="mailto:mcarozza@obhg.com?subject=Triage%20app%20card%20suggestion">Can't find it? Suggest a card</a></p>
+  </section>
   <p class="foot"><b>Decision support only · not unit policy · not the medical record · enter no PHI.</b><br>All matching runs on this device. Triage text is not sent, saved, or logged. Shift log entries stay on-device; optional lookup links send only your reviewed clinical query. Works offline after first load.</p>
 </section>
 
@@ -198,5 +208,6 @@
 <script src="js/shiftlog.js"></script>
 <script src="js/flow-cues.js"></script>
 <script src="js/app.js"></script>
+<script src="js/ask.js"></script>
 </body>
 </html>

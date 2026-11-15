@@ -234,7 +234,7 @@ function protocolsScreenHTML(lang,r){const L=T(lang);return (r?protoButtons(r,la
  const LANGS=Array.isArray(root.NURSE_UI_LANGS)&&root.NURSE_UI_LANGS.length?root.NURSE_UI_LANGS:['en']; // live: English only
  let s=null,r=null,screen='lang',prior=null,qnav=false,proto=null,remindOpen=false,deferOpen=null;
  function start(lang){if(!LANGS.includes(lang))lang='en';qnav=false;proto=null;remindOpen=false;deferOpen=null;s=N.create(lang);s.where={};s.noFit={};screen='gate';const L=T(lang);
-  if(doc.documentElement)doc.documentElement.lang=lang;doc.title=L.title;$('nurse-title').textContent=L.title;$('nurse-test').textContent=L.test;$('nurse-hpi-label').textContent=L.hpi;$('nurse-footer').textContent=L.footer;$('nurse-prov').textContent=lang==='es'?STR.es.provisional:'';$('nurse-prov').hidden=lang!=='es';
+  if(doc.documentElement)doc.documentElement.lang=lang;doc.title=L.title;$('nurse-title').textContent=L.title;$('nurse-test').textContent=L.test;$('nurse-hpi-label').textContent=L.hpi;$('nurse-footer').textContent=L.footer;if($('nurse-suggest')&&root.AskLinks){$('nurse-suggest').textContent=root.AskLinks.SUGGEST_TEXT[lang==='es'?'es':'en'].link;$('nurse-suggest').href=root.AskLinks.suggestMailto(lang==='es'?'es':'en','');}$('nurse-prov').textContent=lang==='es'?STR.es.provisional:'';$('nurse-prov').hidden=lang!=='es';
   if($('nurse-lang'))$('nurse-lang').hidden=true;$('nurse-main').hidden=false;$('nurse-hpi').value='';render();}
  function render(){r=N.evaluate(s,prior);prior=r.locked?r:{alerts:r.alerts,locked:false};
   const list=screens(s,r);if(!list.includes(screen)&&screen!=='protocols')screen='catch';
