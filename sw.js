@@ -1,4 +1,4 @@
-// OBHG CLINICAL TRIAGE service worker. v39b (15 Nov 2026, TEST): section jump boxes on the substance use and UTI cards (instant jump, ↑ Sections back link); UTI and substance use algorithm titles shortened.
+// OBHG CLINICAL TRIAGE service worker. v39 (15 Nov 2026): section jump boxes on the substance use and UTI cards (instant jump, ↑ Sections back link); UTI and substance use algorithm titles shortened.
 // v38 (15 Nov 2026): ANT-SUD substance use in pregnancy card and FD-ANT-SUD algorithm; Ask a question link-out and Suggest a card released.
 // v37 (15 Nov 2026): Ask a question link-out (OpenEvidence/Grok, online only) and Suggest a card in Clinician and Nurse.
 // v36 (14 Nov 2026): house answers applied to trauma, STI and UTI (RhIG, delayed-presentation monitoring, case management, TP-PA, test-of-cure timing, postpartum suppression).
@@ -16,7 +16,7 @@
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v39b-2026-11-15-jump-test';
+const CACHE = PREFIX + 'v39-2026-11-15-jump';
 const ASSETS = [
   './',
   './index.html',
