@@ -67,7 +67,7 @@ test('algorithm has the In labor / admitted vs OB ED triage start, with assets c
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-SUD.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v39-2026-11-15-jump-test'));
+  assert.ok(sw.includes('v39b-2026-11-15-jump-test'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-SUD.png'));
   const fc = fs.readFileSync(path.join(base, 'js/flow-cues.js'), 'utf8');
   assert.match(fc, /data-cue="sud-entry"/);

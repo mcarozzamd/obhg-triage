@@ -153,5 +153,6 @@ tr.amended td{background:#FFFBEA}
 .jumpgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .jumpbtn{min-height:44px;padding:6px 4px;border:1.5px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy);font-weight:700;font-size:13px;line-height:1.2;text-align:center}
 .jumpbtn:active{background:var(--navy);color:#fff}
-.jump-target{scroll-margin-top:84px}
+.jump-target{scroll-margin-top:72px}
+.jumpnav{scroll-margin-top:72px}
 .jumptop{float:right;margin:0 0 0 8px;padding:2px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--navy);font-size:12px;font-weight:700;letter-spacing:0;text-transform:none}

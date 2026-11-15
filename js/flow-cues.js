@@ -131,7 +131,7 @@
       const go = function (el) {
         let d = el.closest ? el.closest('details') : null;
         while (d) { d.open = true; d = d.parentElement && d.parentElement.closest ? d.parentElement.closest('details') : null; }
-        if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (el.scrollIntoView) el.scrollIntoView({ block: 'start' });
       };
       targets.forEach(function (el, n) {
         el.classList.add('jump-target');
