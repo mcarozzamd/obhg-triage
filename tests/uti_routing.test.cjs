@@ -27,7 +27,7 @@ test('ANT-UTI card is present, released (no PROVISIONAL tag or personal name), w
   assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 1);
   assert.match(card.html, /ALWAYS ADMIT/);
   assert.equal(D.title('ANT-UTI'), 'UTI and pyelonephritis in pregnancy');
-  assert.equal(D.title('FD-ANT-UTI'), 'UTI and pyelonephritis in pregnancy: what to do now');
+  assert.equal(D.title('FD-ANT-UTI'), 'UTI and pyelonephritis in pregnancy');
 });
 
 test('house practices: routine TOC, postpartum pyelo IV-then-oral, routine suppression after pyelo', () => {
@@ -54,7 +54,7 @@ test('algorithm has no dose amounts and points treatment to the card', () => {
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-UTI.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v38-2026-11-15-ask-sud'));
+  assert.ok(sw.includes('v39-2026-11-15-jump-test'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-UTI.png'));
 });
 

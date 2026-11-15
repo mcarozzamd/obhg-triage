@@ -114,8 +114,44 @@
     if (peds) peds.textContent = list.length ? ('Peds handoff: ' + list.join('; ') + '.') : 'Peds handoff: nothing flagged yet.';
   }
 
+  // Reusable section jump boxes for long cards. A card opts in by including
+  // <nav data-cue="jump-nav"></nav> and tagging its section headings with data-jump-label.
+  function mountJumpNav(container) {
+    if (!container || !container.querySelectorAll) return;
+    container.querySelectorAll('[data-cue="jump-nav"]').forEach(function (nav) {
+      if (nav.getAttribute('data-jump-ready')) return;
+      const scope = nav.parentElement;
+      if (!scope) return;
+      const doc = nav.ownerDocument;
+      const targets = Array.prototype.slice.call(scope.querySelectorAll('[data-jump-label]'));
+      if (!targets.length) return;
+      nav.setAttribute('data-jump-ready', '1');
+      const head = doc.createElement('p'); head.className = 'jumpnav-h'; head.textContent = 'Jump to section';
+      const grid = doc.createElement('div'); grid.className = 'jumpgrid';
+      const go = function (el) {
+        let d = el.closest ? el.closest('details') : null;
+        while (d) { d.open = true; d = d.parentElement && d.parentElement.closest ? d.parentElement.closest('details') : null; }
+        if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+      targets.forEach(function (el, n) {
+        el.classList.add('jump-target');
+        const b = doc.createElement('button'); b.type = 'button'; b.className = 'jumpbtn';
+        b.setAttribute('data-jump-to', String(n));
+        b.textContent = el.getAttribute('data-jump-label');
+        b.addEventListener('click', function () { go(el); });
+        grid.appendChild(b);
+        const up = doc.createElement('button'); up.type = 'button'; up.className = 'jumptop';
+        up.setAttribute('aria-label', 'Back to section list'); up.textContent = '↑ Sections';
+        up.addEventListener('click', function () { go(nav); });
+        el.appendChild(up);
+      });
+      nav.appendChild(head); nav.appendChild(grid);
+    });
+  }
+
   function mount(container) {
     if (!container) return;
+    mountJumpNav(container);
     const cue = container.querySelector('[data-cue="trauma-timer"]');
     if (cue) {
       const status = cue.querySelector('[data-cue-status]');
@@ -197,6 +233,7 @@
     clearTimer: clearTimer,
     storageUsed: storageUsed,
     mount: mount,
+    mountJumpNav: mountJumpNav,
     FOUR_H: FOUR_H,
     SIX_H: SIX_H
   };

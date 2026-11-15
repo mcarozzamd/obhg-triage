@@ -810,8 +810,8 @@
   },
   {
     "id": "FD-ANT-UTI",
-    "old": "UTI and pyelonephritis in pregnancy: what to do now",
-    "name": "UTI and pyelonephritis in pregnancy: what to do now",
+    "old": "UTI and pyelonephritis in pregnancy",
+    "name": "UTI and pyelonephritis in pregnancy",
     "review": "Algorithm released 13 Nov 2026",
     "aliases": [
       "ALG-ANT-UTI",
@@ -859,8 +859,8 @@
   },
   {
     "id": "FD-ANT-SUD",
-    "old": "Substance use in pregnancy: what to do now",
-    "name": "Substance use in pregnancy: what to do now",
+    "old": "Substance use in pregnancy",
+    "name": "Substance use in pregnancy",
     "review": "Algorithm released 15 Nov 2026",
     "aliases": [
       "ALG-ANT-SUD",

@@ -146,3 +146,12 @@ tr.amended td{background:#FFFBEA}
 .ask .btns button{white-space:normal}
 .ask-offline #ask-oe{background:#6b6b6b;border-color:#6b6b6b;color:#fff}
 .ask-suggest,.nf-suggest{margin:8px 0 0;font-size:14px}
+
+/* Section jump boxes for long cards (v39) */
+.jumpnav{margin:10px 0 12px;padding:10px;border:1.5px solid var(--navy);border-radius:8px;background:#f7f8fb}
+.jumpnav-h{margin:0 0 8px;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--navy)}
+.jumpgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.jumpbtn{min-height:44px;padding:6px 4px;border:1.5px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy);font-weight:700;font-size:13px;line-height:1.2;text-align:center}
+.jumpbtn:active{background:var(--navy);color:#fff}
+.jump-target{scroll-margin-top:84px}
+.jumptop{float:right;margin:0 0 0 8px;padding:2px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--navy);font-size:12px;font-weight:700;letter-spacing:0;text-transform:none}

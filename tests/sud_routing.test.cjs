@@ -29,7 +29,7 @@ test('ANT-SUD card and algorithm are present, released, with no draft text or pe
   assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 1);
   assert.doesNotMatch(card.html, /ROUTING NOTES/);
   assert.equal(D.title('ANT-SUD'), 'Substance use in pregnancy');
-  assert.equal(D.title('FD-ANT-SUD'), 'Substance use in pregnancy: what to do now');
+  assert.equal(D.title('FD-ANT-SUD'), 'Substance use in pregnancy');
 });
 
 test('house practices: consent-only UDS, labetalol first-line, OBED buprenorphine start, alcohol withdrawal admitted', () => {
@@ -50,7 +50,7 @@ test('house practices: consent-only UDS, labetalol first-line, OBED buprenorphin
 
 test('doses live only in the DOSES section of the card; the algorithm lists none', () => {
   const doseRe = /\b\d[\d,.]*\s*(mg|mcg|µg|ug|g|mL|ml)\b/i;
-  const a = card.html.indexOf('<p>DOSES ('), b = card.html.indexOf('<p><strong>CODING');
+  const a = card.html.search(/<p[^>]*>DOSES \(/), b = card.html.search(/<p[^>]*><strong>CODING/);
   assert.ok(a > 0 && b > a);
   assert.doesNotMatch(card.html.slice(0, a) + card.html.slice(b), doseRe);
   assert.match(card.html.slice(a, b), /Naloxone IV/);
@@ -67,7 +67,7 @@ test('algorithm has the In labor / admitted vs OB ED triage start, with assets c
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-SUD.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v38-2026-11-15-ask-sud'));
+  assert.ok(sw.includes('v39-2026-11-15-jump-test'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-SUD.png'));
   const fc = fs.readFileSync(path.join(base, 'js/flow-cues.js'), 'utf8');
   assert.match(fc, /data-cue="sud-entry"/);
@@ -110,4 +110,41 @@ test('cannabis with cyclic vomiting: ANT-SUD with ANT-08 as first alternate', ()
 test('epidural fentanyl in labor and non-pregnant alcohol withdrawal do not open ANT-SUD', () => {
   assert.equal(offered(triage('G1P0 at 39 weeks in labor, epidural with fentanyl, wants to push'), 'ANT-SUD'), false);
   assert.equal(offered(triage('32 yo nonpregnant woman with alcohol withdrawal'), 'ANT-SUD'), false);
+});
+
+test('v39: section jump boxes on ANT-SUD and ANT-UTI, built by the reusable FlowCues.mountJumpNav', () => {
+  const uti = C.items.find(i => i.id === 'ANT-UTI');
+  for (const [it, n] of [[card, 20], [uti, 16]]) {
+    assert.equal((it.html.match(/data-cue="jump-nav"/g) || []).length, 1, it.id);
+    assert.equal((it.html.match(/data-jump-label="/g) || []).length, n, it.id);
+    assert.match(it.html, /<p data-jump-label="Doses">DOSES \(/);
+    assert.ok(it.html.indexOf('data-cue="jump-nav"') < it.html.indexOf('Scope:'), 'boxes sit at the top of ' + it.id);
+  }
+  const others = C.items.filter(i => i.html && /data-cue="jump-nav"/.test(i.html)).map(i => i.id).sort();
+  assert.deepEqual(others, ['ANT-SUD', 'ANT-UTI']);
+  const { JSDOM } = require('jsdom');
+  const dom = new JSDOM('<div id="top"><div class="cardtext">' + card.html + '</div></div>');
+  const FC = require(base + '/js/flow-cues.js');
+  const scrolled = [];
+  dom.window.HTMLElement.prototype.scrollIntoView = function () { scrolled.push(this.getAttribute('data-jump-label') || this.className); };
+  FC.mountJumpNav(dom.window.document.getElementById('top'));
+  FC.mountJumpNav(dom.window.document.getElementById('top'));
+  const btns = [...dom.window.document.querySelectorAll('.jumpbtn')];
+  assert.equal(btns.length, 20, 'idempotent: one set of boxes');
+  assert.equal(btns[0].textContent, 'Bottom line');
+  btns.find(b => b.textContent === 'Doses').click();
+  assert.deepEqual(scrolled, ['Doses']);
+  dom.window.document.querySelector('[data-jump-label="Doses"] .jumptop').click();
+  assert.equal(scrolled[1], 'jumpnav');
+});
+
+test('v39: UTI and SUD algorithm titles no longer say "what to do now"', () => {
+  for (const id of ['FD-ANT-UTI', 'FD-ANT-SUD']) {
+    const it = C.items.find(i => i.id === id);
+    assert.doesNotMatch(it.title + D.title(id), /what to do now/i);
+  }
+  const uti = C.items.find(i => i.id === 'ANT-UTI');
+  assert.doesNotMatch(card.html + uti.html, /what to do now/i);
+  assert.match(card.html, /Open: Substance use in pregnancy algorithm/);
+  assert.match(uti.html, /Open: UTI and pyelonephritis in pregnancy algorithm/);
 });
