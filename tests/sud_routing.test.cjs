@@ -32,12 +32,14 @@ test('ANT-SUD card and algorithm are present, released, with no draft text or pe
   assert.equal(D.title('FD-ANT-SUD'), 'Substance use in pregnancy');
 });
 
-test('house practices: consent-only UDS, labetalol first-line, OBED buprenorphine start, alcohol withdrawal admitted', () => {
+test('house practices: consent-only UDS, stimulant lorazepam first-line with no beta-blockers, OBED buprenorphine start, alcohol withdrawal admitted', () => {
   const h = plain(card.html + ' ' + flow.html);
   assert.match(h, /House practice:\s*urine drug testing \(UDS\) only for a clinical question and only with informed consent/i);
   assert.match(h, /GC\/MS or LC-MS\/MS/);
-  assert.match(h, /labetalol first-line/i);
-  assert.match(h, /never a pure beta-blocker|No pure beta-blockers/i);
+  assert.match(h, /lorazepam \(Ativan\) 2–4 mg IV[^.]*repeat as needed/i);
+  assert.match(h, /nifedipine or hydralazine as needed/i);
+  assert.match(h, /beta-blockers, including labetalol/i);
+  assert.doesNotMatch(h, /labetalol first-line|labetalol first\b/i);
   assert.match(h, /House practice: OBED may start buprenorphine/);
   assert.match(h, /Fentanyl[^.]*low-dose[^.]*ADMIT/i);
   assert.match(h, /any pregnant patient in alcohol withdrawal (is admitted|→ ADMIT)/i);
@@ -67,7 +69,7 @@ test('algorithm has the In labor / admitted vs OB ED triage start, with assets c
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-SUD.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v39-2026-11-15-jump'));
+  assert.ok(sw.includes('v40-2026-11-16-stimulant'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-SUD.png'));
   const fc = fs.readFileSync(path.join(base, 'js/flow-cues.js'), 'utf8');
   assert.match(fc, /data-cue="sud-entry"/);
