@@ -69,10 +69,9 @@ No names, “reviewed by,” or draft stamps in card text. New wording uses guid
 - Checklist already present (first commit). Observation is now specified: “at least 1 hour before discharge, and at least 1 hour after any medication change,” both in the severe-features item and as its own checklist line.
 - Delivery plan added: “chronic HTN 37+0–39+6; earlier for superimposed preeclampsia per the table.”
 - ANT-10 unmedicated row changed from **38+0–39+6 to 37+0–39+6**, so it matches the medicated row and the house rule. 38+0 was not kept for unmedicated chronic HTN.
-- Home BP call rule on the “Home BP cuff and log” line: “Call for BP ≥140/90 on two separate readings at least 4 hours apart.” No ≥160/110 severe-range call line was added (still pending Michael).
+- Home BP call rules on the “Home BP cuff and log” line, in this order: “Call for BP ≥140/90 on two separate readings at least 4 hours apart. Call right away for BP ≥160/110.”
 
-**Pending**
-- Whether to also add a severe-range home call line (≥160/110 come in now). Omitted until Michael answers.
+**Pending:** none.
 
 **Refs:** `js/content.js` items `ANT-04`, `ANT-10`.
 
@@ -123,7 +122,7 @@ No names, “reviewed by,” or draft stamps in card text. New wording uses guid
 
 ## Still pending (only)
 
-- Whether to add a severe-range home call line (≥160/110) on the chronic HTN antepartum discharge checklist. The ≥140/90 two-reading rule is already on the card.
+- None from the 19 Nov guideline queue. Michael gave the go to push live on 19 Nov 2026 at 8:58 AM CT.
 
 ---
 
@@ -133,6 +132,7 @@ No names, “reviewed by,” or draft stamps in card text. New wording uses guid
 - Playwright (headless Chromium) re-checked 12 cards after the answers were applied (LND-02, ANT-03, ANT-04, ANT-05, ANT-06, ANT-09, ANT-10, FORMULARY, ANT-TRAUMA, FD-ANT-TRAUMA, ANT-STI, ANT-UTI): all 12 passed. Expected wording was present; no “Michael,” “reviewed by,” “DRAFT,” or “at or after 24w0d.” The only console messages were goatcounter localhost warnings. Service worker cache remains `obhg-triage-v41-2026-11-19-queue`.
 - `npm test` passed: unit tests, `verify_display_images.py`, and `regression.cjs`. Decisions identical 75/78 (same three expected routing exceptions as live: ANT-05-related, ANT-TRAUMA, ANT-UTI). Full byte-identical JSON compare is skipped for this staging set, now including ANT-09 and FD-ANT-05.
 - Re-run after the home BP call rule was added to ANT-04: `npm test` still passed with the same 75/78 decisions, and Playwright still passed all 12 cards, including the new “Call for BP ≥140/90 on two separate readings at least 4 hours apart” line on ANT-04. Cache remains `obhg-triage-v41-2026-11-19-queue`.
+- Re-run after “Call right away for BP ≥160/110” was added (immediately after the 140/90 line): `npm test` passed, decisions identical 75/78 with the same three expected routing exceptions. Playwright 12/12 passed, including both home-BP call lines on ANT-04. Cache remains `obhg-triage-v41-2026-11-19-queue`.
 
 ---
 
