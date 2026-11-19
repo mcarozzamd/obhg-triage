@@ -52,7 +52,7 @@
         ? ('4 h cue in ' + fmtDuration(remain4) + '; 6 h cue in ' + fmtDuration(remain6) + '.')
         : ('Past the 4 h mark; 6 h cue in ' + fmtDuration(remain6) + '.');
     } else {
-      text += 'Past the 4–6 h monitoring window (cue only).';
+      text += 'Past the 4 h monitoring window (cue only).';
     }
     return { running: true, elapsed: elapsed, remain4: remain4, remain6: remain6, startLabel: startLabel, text: text };
   }

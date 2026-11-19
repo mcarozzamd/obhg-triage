@@ -33,7 +33,8 @@ test('ANT-UTI card is present, released (no PROVISIONAL tag or personal name), w
 test('house practices: routine TOC, postpartum pyelo IV-then-oral, routine suppression after pyelo', () => {
   const h = (card.html + flow.html).replace(/<[^>]+>/g, ' ');
   assert.match(h, /House practice:\s*after treated ASB or cystitis, obtain a routine test-of-cure culture/i);
-  assert.match(h, /ACOG and IDSA do not require routine test of cure/i);
+  assert.match(h, /ACOG Clinical Consensus No\. 4: clinicians "may consider repeating a urine culture 1–2 weeks after completing treatment,"/i);
+  assert.match(h, /IDSA 2019 finds insufficient evidence for repeat screening/i);
   assert.match(h, /House practice:\s*IV dose plus oral therapy with follow-up in 24–48 h/i);
   assert.match(h, /Pregnant pyelo is still always admitted/i);
   assert.match(h, /House practice:\s*routine suppression after a single pyelo/i);
@@ -54,7 +55,7 @@ test('algorithm has no dose amounts and points treatment to the card', () => {
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-UTI.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v40-2026-11-16-stimulant'));
+  assert.ok(sw.includes('v41-2026-11-19-queue'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-UTI.png'));
 });
 

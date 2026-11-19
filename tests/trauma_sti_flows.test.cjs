@@ -77,7 +77,7 @@ test('trauma flow includes every Doc node, viability per local policy, and a cue
   assert.match(t, /Doppler FHT/i);
   assert.match(t, /per local policy/i);
   assert.match(t, /20 weeks to under the local viability cutoff/i);
-  assert.match(t, /EFM and toco for at least 4–6 hours/i);
+  assert.match(t, /EFM and toco for at least 4 hours/i);
   assert.match(t, /extended-monitoring criterion/i);
   assert.match(t, /Contractions 1 or more per 10 minutes/i);
   assert.match(t, /extend to 24 hours/i);
@@ -202,7 +202,7 @@ test('trauma timer is a cue only and does not write storage', () => {
   assert.match(mid.text, /cue only/i);
   assert.match(mid.startLabel, /CT$/);
   const past = FlowCues.timerStatus(now, now - 7 * 60 * 60 * 1000);
-  assert.match(past.text, /Past the 4–6 h monitoring window/);
+  assert.match(past.text, /Past the 4 h monitoring window/);
   FlowCues.startTimer(now);
   assert.equal(FlowCues.storageUsed(), false);
   FlowCues.clearTimer();
@@ -232,7 +232,7 @@ test('algorithm images exist, display copies are precached, and index loads the 
     assert.ok(fs.existsSync(path.join(root, 'assets/display-diagrams/' + it.id + '.png')), it.id);
     assert.ok(sw.includes('./assets/display-diagrams/' + it.id + '.png'), it.id);
   }
-  assert.ok(sw.includes('v40-2026-11-16-stimulant'));
+  assert.ok(sw.includes('v41-2026-11-19-queue'));
   assert.ok(sw.includes('./js/flow-cues.js'));
   assert.match(html, /js\/flow-cues\.js/);
 });
@@ -253,7 +253,7 @@ test('v36 house answers: UTI suppression to 4–6 wk postpartum, 2-week test of 
   const uti = C2('ANT-UTI').html, futi = C2('FD-ANT-UTI').html, tr = C2('ANT-TRAUMA').html, ftr = C2('FD-ANT-TRAUMA').html, st = C2('ANT-STI').html, fst = C2('FD-ANT-STI').html;
   assert.match(uti, /rest of pregnancy and until 4–6 weeks postpartum \(ACOG says "may consider"\)/);
   assert.match(uti, /After pyelonephritis: test-of-cure urine culture 2 weeks after completing treatment/);
-  assert.match(uti, /routine test-of-cure culture 2 weeks after completing treatment\. ACOG and IDSA/);
+  assert.match(uti, /routine test-of-cure culture 2 weeks after completing treatment\. ACOG Clinical Consensus No\. 4/);
   assert.match(futi, /After pyelonephritis: test-of-cure urine culture 2 weeks after completing treatment/);
   assert.match(futi, /until 4–6 weeks postpartum/);
   assert.match(tr, /EFM \+ toco for 30–60 minutes \(house practice/);
