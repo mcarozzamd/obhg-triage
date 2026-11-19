@@ -2,42 +2,33 @@
 
 Local worktree only: `/workspace/obhg-triage-queue-2026-11-19`, branch `queue-2026-11-19`, from live main `86f7957` (`v40-2026-11-16-stimulant`). **Nothing was pushed.** This is not a live release.
 
-Drafts: `/workspace/grok-obgyn/cards/drafts/queue-2026-11-19/`. Line numbers in those drafts were checked against the current app copy of each card (the QR 11-09 markdown and some standalone card files have drifted; app HTML is the staged target). Pending house questions were left unchanged, and nothing in the card text assumes an answer.
+First local commit: `723b413` (non-pending queue text only). This file now describes the follow-up local commit that applies Michael's answers.
 
-Cache (local only): `obhg-triage-v41-2026-11-19-queue` in `sw.js` (`const CACHE`, line 19).
+Drafts: `/workspace/grok-obgyn/cards/drafts/queue-2026-11-19/` (Doc updated items 1, 6 and 8 at 07:46–07:47 CT; card text follows those files). Cache remains `obhg-triage-v41-2026-11-19-queue` in `sw.js` (`const CACHE`, line 19).
 
-Source cards live in `js/content.js` (single-line JSON; items below are the stable refs). No names, “reviewed by,” or draft stamps were added to card text. New wording uses guideline names, not card codes.
+No names, “reviewed by,” or draft stamps in card text. New wording uses guideline names, not card codes.
 
 ---
 
-## Item 8 — Late-preterm antenatal corticosteroids (ANT-06, ANT-10)
+## Item 8 — Late-preterm antenatal corticosteroids (ANT-06, ANT-10, ANT-05)
 
-**Applied**
-- Late-preterm line limited to a singleton with no prior course, birth likely within 7 days and before 37+0, not with clinical chorioamnionitis, and no tocolysis to buy time. Neonatal hypoglycemia warning kept; tell the neonatal team.
-- New line: not studied in late preterm, so not routine for multiples or a prior course.
-- New counseling/documentation line (short-term respiratory benefit ~1 in 35; long-term effects uncertain).
-- Bottom line: “Late preterm: singleton, never dosed, no chorioamnionitis, after counseling.”
-- Indicated late-preterm / early-term delivery (ANT-10): anticipated late-preterm course only if she is a singleton who has never had ACS and has no chorioamnionitis.
+**Applied (including Michael's 07:46 CT diabetes decision, using Doc's draft wording)**
+- ALPS limits, counseling, and matching ANT-10 singleton/no-chorio line (from the first commit) remain.
+- New pregestational-diabetes line on ANT-06, from Doc's draft: “Pregestational diabetes at 34+0–36+6: relative contraindication — not routine; shared decision only. ACOG: may not be appropriate in pregestational diabetes (neonatal hypoglycemia, maternal hyperglycemia); SMFM advises against; ALPS excluded these patients. If given: notify neonatology, intensify maternal glucose monitoring/insulin adjustment, and neonatal glucose checks.”
+- ANT-06 bottom line now includes “Pregestational diabetes: relative contraindication, shared decision, not routine.”
+- ANT-10: “Not routine with pregestational diabetes (see Antenatal corticosteroids).”
+- **ANT-05 was aligned.** The live line “SMFM Consult #58: no late-preterm (34+0–36+6) steroids in pregestational diabetes (ANT-06)” was replaced with Doc's shared-decision wording above (card code ANT-06 removed). The leading “do not withhold indicated steroids solely for hyperglycemia” sentence is unchanged and still applies to indicated steroids, including before 34 weeks.
+- The same conflict was also on the Diabetes in labor algorithm (`FD-ANT-05`) and in `js/dm-intrapartum.js` (`steroidsShort` and `ant05Steroids`). Those “do not give” SMFM lines were aligned to the shared-decision wording and now point to the Diabetes in pregnancy card, not a card code.
 
-**Pending (pregestational diabetes wording: shared decision vs do not give)**
-- ANT-06 does **not** add “pregestational diabetes: not routine; shared decision only.”
-- Diabetes in pregnancy (ANT-05) left as-is, including the live SMFM Consult #58 line against late-preterm steroids in pregestational diabetes.
-- ANT-10 does **not** add “Not routine with pregestational diabetes.”
+**Pending:** none.
 
-**Refs:** `js/content.js` items `ANT-06`, `ANT-10`. ANT-05 unchanged.
+**Refs:** `js/content.js` items `ANT-06`, `ANT-10`, `ANT-05`, `FD-ANT-05`; `js/dm-intrapartum.js`.
 
 ---
 
 ## Item 2 — Arrest-of-dilation box (First and second stage labor)
 
-**Applied (all of it; no open question)**
-- The two arrest lines are now a checkbox box: ≥6 cm, membranes ruptured, oxytocin running, 4 h adequate (>200 MVU on IUPC) or 6 h inadequate, and “adequacy measured, not guessed” (place an IUPC when active labor is protracted or external monitoring is unreliable).
-- The live “If there is no IUPC, use clinical adequacy and time” line is gone (Clinical Practice Guideline 8 recommends an IUPC).
-- Cesarean is recommended when every box is met, with a documentation list. Tagged as a conditional ACOG suggestion on low-quality evidence.
-- Cross-reference to Cervical ripening / 12–18 h of oxytocin after ROM in latent phase, so the box is not used before 6 cm.
-- Bottom line: “6 cm + ROM + oxytocin opens the arrest clock. 4 hours adequate (IUPC) / 6 hours inadequate…”
-
-**Pending:** none.
+**Applied (all of it, first commit).** Nothing further in this commit.
 
 **Refs:** `js/content.js` item `LND-02`.
 
@@ -45,57 +36,53 @@ Source cards live in `js/content.js` (single-line JSON; items below are the stab
 
 ## Item 10 — Cerclage (Clinical Practice Guideline 12)
 
-**Applied**
-- Exam-indicated: peri-procedure indomethacin + cefazolin “prolongs pregnancy; no proven neonatal benefit,” plus counseling that ≥2 cm dilation at placement is linked to earlier birth (median 27 vs 35.6 w in one study). Window wording was **not** changed.
-- Transabdominal: “Minimally invasive (laparoscopic) when available.”
-- Do not stitch: “Cervical pessary is not an alternative to cerclage.”
-- New “After the stitch” block: no routine serial cervical-length scans; adding vaginal progesterone is not the default.
-- Bottom line adds “not a pessary” and “Once placed, stop measuring.” The live “CL <25 mm” wording is kept (no “by 24 0/7”).
+**Applied (Michael: go ahead with 24.0; wording corrected to match CPG 12, which includes 24 0/7)**
+- Ultrasound-indicated window is now “16 0/7 up to and including 24 0/7 (hard stop; not after 24 0/7).”
+- Exam-indicated: “generally up to and including 24 0/7; hard stop; not after 24 0/7.”
+- History-indicated cervical-length watch window updated to the same “16 0/7 up to and including 24 0/7.”
+- Bottom line: “CL <25 mm up to and including 24 0/7.”
+- Does **not** say “at or after 24w0d.” Placement at exactly 24 0/7 is allowed; placement after 24 0/7 is not.
+- Earlier additions remain: pessary is not an alternative, no routine post-stitch CL scans, progesterone not the default, laparoscopic transabdominal when available.
 
-**Pending (24w0d hard stop vs ≤24 0/7)**
-- Ultrasound-indicated line still reads “CL <25 mm at 16–24w.”
-- Did not add “No ultrasound-indicated cerclage after 24 0/7.”
-- Did not add “generally up to and including 24 0/7” on the exam-indicated line.
+**Pending:** none.
 
 **Refs:** `js/content.js` item `ANT-03`.
 
 ---
 
-## Item 6 — Older-mother delivery timing
+## Item 6 — Older-mother delivery timing (ANT-10, ANT-09)
 
-**Applied:** nothing.
+**Applied (house threshold age ≥35, using Doc's 07:47 CT card text, with guideline names)**
+- ANT-10 new row after Prior stillbirth: “Maternal age ≥35 at delivery, well dated, no other indication | 39+0–39+6 (house practice). Guideline basis: Obstetric Care Consensus 11 (≥40); ARRIVE and the 35/39 trial support a 39-week induction offer at 35–39. Age alone is not a cesarean indication.”
+- ANT-09: 35–39 alone does not trigger routine testing (Committee Opinion 828); offer surveillance at ≥40 (Obstetric Care Consensus 11); plan delivery at 39+0–39+6 for maternal age ≥35 (house practice; see Indicated late-preterm / early-term delivery).
+- House threshold of 35 is broader than Obstetric Care Consensus 11's ≥40; that divergence is not written as a draft stamp on the card, but the guideline basis is cited on the row.
 
-**Pending (age 40+ vs 35+):** the whole timing-row and surveillance-line change is held. No rows on Indicated late-preterm / early-term delivery (ANT-10). No maternal-age line on Outpatient antenatal surveillance (ANT-09). No Obstetric Care Consensus 11 reference added.
+**Pending:** none.
 
-**Refs:** ANT-09 and ANT-10 timing table unchanged for this item. ANT-10 still has “cHTN controlled, no meds 38+0–39+6.”
+**Refs:** `js/content.js` items `ANT-10`, `ANT-09`.
 
 ---
 
-## Item 5 — Chronic hypertension antepartum discharge (Gestational HTN / preeclampsia)
+## Item 5 — Chronic hypertension antepartum discharge (ANT-04, ANT-10 timing table)
 
-**Applied (checklist parts that do not answer the open questions)**
-- New “Chronic HTN: antepartum discharge checklist” before the severe-range BP pearl: exclude superimposed preeclampsia with severe features; labs; treat/titrate at ≥140/90 (CHAP) with labetalol or nifedipine; fetus reassuring; outpatient bundle for superimposed preeclampsia without severe features (deliver at 37+0); home BP cuff and log; follow-up within 1 week (3–5 days after severe-range BP); weekly testing from 32+0 if on medication; continue aspirin 81 mg. Observation is left as “a period of observation” (no hour count).
-- Pharmacy line included.
-- Bottom line append: “exclude severe features, control at <140/90, give her a cuff, and see her within a week.”
+**Applied**
+- Checklist already present (first commit). Observation is now specified: “at least 1 hour before discharge, and at least 1 hour after any medication change,” both in the severe-features item and as its own checklist line.
+- Delivery plan added: “chronic HTN 37+0–39+6; earlier for superimposed preeclampsia per the table.”
+- ANT-10 unmedicated row changed from **38+0–39+6 to 37+0–39+6**, so it matches the medicated row and the house rule. 38+0 was not kept for unmedicated chronic HTN.
 
 **Pending**
-- Observation duration before discharge after severe-range BP that needed acute treatment: not specified.
-- Home blood-pressure call thresholds (≥160/110 come in now; ≥140/90 on 2 readings 4 h apart call for titration): omitted. Cuff and log only.
-- Unmedicated chronic HTN 38+0 vs 37w0d–39w6d: the delivery-timing table was not changed, and the draft’s “Delivery plan (house): chronic HTN on medication 37+0–39+6” line was not added, so the card does not presume an answer.
+- Home blood-pressure call thresholds (≥160/110 come in now; ≥140/90 on 2 readings 4 h apart call for titration) are still omitted. The card has “Home BP cuff and log” only.
 
-**Refs:** `js/content.js` item `ANT-04`. Timing table remains on ANT-10.
+**Refs:** `js/content.js` items `ANT-04`, `ANT-10`.
 
 ---
 
 ## Item 3 — Post-cesarean nausea / vomiting rescue ladder (Formulary)
 
-**Applied**
-- New Formulary subsection after the NVP/HG dehydrated line: Step 0 (rule out a cause), Step 1 (different class, no same-class repeat within 6 h), Step 2 (one dopamine antagonist), Step 3 (promethazine), Step 4 (ondansetron after 6 h), Step 5 (scopolamine; do not re-dose dexamethasone), still-vomiting workup (change opioids; ileus/obstruction pathway), breastfeeding compatibility, pharmacy line.
+**Applied**, including Michael's anesthesia answer:
+- New line: “Rescue for nausea from neuraxial morphine: call anesthesia (anesthesia orders rescue).”
 
-**Pending (who orders rescue for neuraxial-morphine nausea)**
-- The “call anesthesia (neuraxial-morphine options; low-dose haloperidol or droperidol…)” clause was not added.
-
-**Not applicable in the app:** there is no Page 2 index card, so the draft index row was not staged.
+**Pending:** none.
 
 **Refs:** `js/content.js` item `FORMULARY`.
 
@@ -103,14 +90,11 @@ Source cards live in `js/content.js` (single-line JSON; items below are the stab
 
 ## Item 1 — STIs on labor and delivery, discordant syphilis serology
 
-**Applied**
-- Generic second-method treponemal (TP-PA) step: call the lab; ask which assay, the immunoassay index, and how to add a different-method test to the same specimen; do not delay treatment of undocumented seropositive pregnancy.
-- Isolated EIA/CIA+ branch: CDC 2024 pregnancy data (~half seroreverted within 12 months); ask for the S/CO index.
-- New RPR/VDRL reactive / treponemal nonreactive (biologic false positive) branch.
-- Seroreversion parenthetical upgraded to the cited CDC 2024 statement (15–25% after treated primary syphilis; not after later stages; can occur with advanced HIV; no EIA/CIA data).
-- Uncertain-points item and the CDC 2024 source line updated (full text read 19 Nov 2026).
+**Applied**, including Michael's TP-PA answer (Doc's 07:47 CT card text):
+- After the generic call-the-lab step: “CSM: order the confirmatory treponemal test (e.g., TP-PA) by calling the lab.”
+- BFP and isolated CIA+ branches, CDC 2024 seroreversion and source updates remain from the first commit.
 
-**Pending (CSM TP-PA ordering workaround):** no “At CSM: …” line.
+**Pending:** none.
 
 **Refs:** `js/content.js` item `ANT-STI`.
 
@@ -118,67 +102,38 @@ Source cards live in `js/content.js` (single-line JSON; items below are the stab
 
 ## Item 9 — UTI / pyelonephritis, Clinical Consensus No. 4 re-verify
 
-**Applied (all of it; no open question).** Live app wording had already moved off the draft’s “HOUSE RULE (Michael …)” lines (names were stripped earlier), so the edits were applied to the current house-practice text.
-- Test of cure: Clinical Consensus No. 4 “may consider” a repeat culture at 1–2 weeks, or only if symptoms recur; house makes that option routine. IDSA 2019 still finds insufficient evidence for repeat screening.
-- Nitrofurantoin and fosfomycin: not when cystitis vs pyelonephritis is uncertain.
-- Amoxicillin/ampicillin: avoid before culture results because of E. coli resistance (Clinical Consensus No. 4), culture-directed only — both the rule line and the dose-table lead-in.
-- New uncertain-points line: what was verified verbatim vs still secondary-only (dose table, monthly cultures on suppression, postpartum continuation of suppression).
-- Source line expanded with the 19 Nov 2026 verification note.
-
-**Pending:** none.
+**Applied in full in the first commit.** Nothing further.
 
 **Refs:** `js/content.js` item `ANT-UTI`.
 
 ---
 
-## Item 4 — Trauma in pregnancy, ≥4 h monitoring and ROM check
+## Item 4 — Trauma in pregnancy
 
 **Applied**
-- Viable-gestation monitoring: “at least 4 h from the time of injury.” The viability threshold is unchanged: “≥22–24 wk per local viability policy.”
-- 24-h extension triggers add significant abdominal pain and fibrinogen <200 mg/dL.
-- Workup: explicit ROM check before discharge on every viable-gestation trauma (history, sterile speculum, nitrazine/fern or house ROM test); ROM = 24-h observation/admit.
-- Home: ≥4 h of reassuring monitoring from the time of injury, ROM excluded; obstetric ultrasound before discharge if monitored >4 h.
-- Delayed-presentation line: “the ≥4 h rule is timed from injury.”
-- SOGC page range corrected to 553–574. Evidence line now states SOGC ≥4 h at ≥23 wk, EAST ≥6 h at >20 wk, house ≥4 h.
-- Same clinical strings and delayed-presentation line applied on the trauma algorithm (the current app is the successor of the v31 trauma copy). Cue labels on the algorithm (“4 hour monitoring cue,” “Start 4 h cue”) and `js/flow-cues.js` (“Past the 4 h monitoring window”) were aligned so the board no longer says 4–6 h for this window. The 4 h / 6 h countdown remaining in the cue timer is unchanged (EAST’s 6 h is still visible as a later cue only).
-- Discharge instruction “contractions or tightening (≥4–6/hour)” was left alone (contraction frequency, not the monitoring window).
+- ≥4 h from injury, ROM check, fibrinogen <200, ultrasound if monitored >4 h, SOGC page correction, delayed-presentation line (first commit).
+- Viability phrasing updated to the exact wording “22–24 wk or per local policy” on ANT-TRAUMA (viable and previable lines) and on FD-ANT-TRAUMA (“Viability cutoff: 22–24 wk or per local policy.”).
 
-**Pending (GA threshold for starting monitoring):** keep “22–24 wk per local policy.” No CSM-only number (SOGC 23 / EAST 20) was set.
+**Pending:** none.
 
-**Refs:** `js/content.js` items `ANT-TRAUMA`, `FD-ANT-TRAUMA`; `js/flow-cues.js` (past-window string).
+**Refs:** `js/content.js` items `ANT-TRAUMA`, `FD-ANT-TRAUMA`; `js/flow-cues.js`.
+
+---
+
+## Still pending (only)
+
+- Chronic HTN **home blood-pressure call thresholds** on ANT-04.
 
 ---
 
 ## Verification (local only)
 
 - Served at `http://127.0.0.1:8891/` with `python3 -m http.server` (not the deploy script).
-- Headless Chromium (Playwright) opened Browse Guidelines and each changed card: LND-02, ANT-03, ANT-04, ANT-05 (unchanged control), ANT-06, ANT-10, FORMULARY, ANT-TRAUMA, FD-ANT-TRAUMA, ANT-STI, ANT-UTI. Expected new wording was present; no JavaScript `console.error` or page errors. The only console warning was goatcounter skipping localhost.
-- Service worker cache name after install/reload: `obhg-triage-v41-2026-11-19-queue`.
-- `npm test` passed, including trauma/UTI routing tests (assertions updated to the new CC4 test-of-cure wording and ≥4 h monitoring text) and regression: 75/78 decisions identical to the historical baseline; the same three expected routing exceptions as before (trauma, UTI, SYS-03 flank alternate). Full byte-identical engine output is skipped when a staged card is in the result, because card HTML changed.
+- Playwright (headless Chromium) re-checked 12 cards after the answers were applied (LND-02, ANT-03, ANT-04, ANT-05, ANT-06, ANT-09, ANT-10, FORMULARY, ANT-TRAUMA, FD-ANT-TRAUMA, ANT-STI, ANT-UTI): all 12 passed. Expected wording was present; no “Michael,” “reviewed by,” “DRAFT,” or “at or after 24w0d.” The only console messages were goatcounter localhost warnings. Service worker cache remains `obhg-triage-v41-2026-11-19-queue`.
+- `npm test` passed: unit tests, `verify_display_images.py`, and `regression.cjs`. Decisions identical 75/78 (same three expected routing exceptions as live: ANT-05-related, ANT-TRAUMA, ANT-UTI). Full byte-identical JSON compare is skipped for this staging set, now including ANT-09 and FD-ANT-05.
 
 ---
 
-## Diff stat (against 86f7957, local branch only)
-
-```
- js/content.js                      | 2 +-
- js/flow-cues.js                    | 2 +-
- sw.js                              | 4 ++--
- tests/dm_titles.test.cjs           | 2 +-
- tests/fixes-smoke.cjs              | 2 +-
- tests/fixes.test.cjs               | 2 +-
- tests/nurse/nurse_en_browser.js    | 2 +-
- tests/nurse/nurse_en_only.js       | 2 +-
- tests/regression.cjs               | 2 +-
- tests/smoke.cjs                    | 2 +-
- tests/start/start_browser.js       | 2 +-
- tests/start/start_routing.test.cjs | 2 +-
- tests/sud_routing.test.cjs         | 2 +-
- tests/trauma_sti_flows.test.cjs    | 8 ++++----
- tests/uti_routing.test.cjs         | 5 +++--
- 15 files changed, 21 insertions(+), 20 deletions(-)
-```
-
-`js/content.js` is a single-line JSON file, so the stat undercounts the clinical edits. STAGED_QUEUE.md is added in the same local commit.
+## Remotes
 
 Not pushed to `github` (`mcarozzamd/obhg-triage`) or any other remote. `/workspace/obhg-triage-app-deploy.sh` was not run.
