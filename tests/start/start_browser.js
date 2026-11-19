@@ -2,7 +2,7 @@
 // Run: BASE=http://127.0.0.1:8891/ SHOTS=/path NODE_PATH=$(npm root -g) node tests/start/start_browser.js   (playwright-core + /usr/bin/google-chrome)
 const {chromium}=require('playwright-core');const fs=require('fs');
 const BASE=(process.env.BASE||'http://127.0.0.1:8891/').replace(/\/?$/,'/');const SHOTS=process.env.SHOTS||'/tmp/start-shots';fs.mkdirSync(SHOTS,{recursive:true});
-const CACHE=process.env.CACHE||'v41-2026-11-19-queue';
+const CACHE=process.env.CACHE||'v42-2026-11-19-ldboard';
 (async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});let n=0,f=0;const ok=(c,m)=>{n++;if(!c)f++;console.log((c?'PASS ':'FAIL ')+m);};
 for(const [dev,opt] of [['phone',{viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2}],['desktop',{viewport:{width:1280,height:900}}]]){
  const ctx=await b.newContext(opt);const p=await ctx.newPage();const errs=[];p.on('pageerror',e=>errs.push('pageerror '+e.message));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});const bad=[];p.on('response',r=>{if(r.status()>=400)bad.push(r.status()+' '+r.url())});
@@ -13,9 +13,9 @@ for(const [dev,opt] of [['phone',{viewport:{width:390,height:844},isMobile:true,
  ok(await startShown(),`${dev} fresh open shows the start page`);
  const tiles=await p.$$eval('#view-start .start-tile',ts=>ts.map(t=>{const r=t.getBoundingClientRect();return {id:t.id,name:t.querySelector('.st-name').textContent,w:Math.round(r.width),h:Math.round(r.height),top:Math.round(r.top),bottom:Math.round(r.bottom)};}));
  console.log(dev,'tiles',JSON.stringify(tiles));
- ok(tiles.map(t=>t.name).join('|')==='Clinician|Nurse|Browse Guidelines|Patient log',`${dev} four choices in order`);
+ ok(tiles.map(t=>t.name).join('|')==='Clinician|Nurse|Browse Guidelines|Patient log|L&D board',`${dev} five choices in order`);
  ok(tiles.every(t=>t.h>=96&&t.w>=(dev==='phone'?340:300)),`${dev} every tile is large and thumb-friendly (≥96 px tall${dev==='phone'?', ≥340 px wide':''})`);
- ok(tiles.every(t=>t.bottom<=opt.viewport.height),`${dev} all four tiles visible without scrolling`);
+ ok(tiles.every(t=>t.bottom<=opt.viewport.height),`${dev} all five tiles visible without scrolling`);
  const nurseFont=await p.$eval('#start-nurse .st-name',e=>parseFloat(getComputedStyle(e).fontSize));ok(nurseFont>=22,`${dev} Nurse label ${nurseFont}px (was a 16 px text link)`);
  ok(await p.locator('#view-start .foot').isVisible(),`${dev} disclaimer visible on the start page`);
  await fits('start page');await shot('01-start');
@@ -42,6 +42,12 @@ for(const [dev,opt] of [['phone',{viewport:{width:390,height:844},isMobile:true,
  ok(/Decision support only: not unit policy/.test(await p.locator('#nurse-test').innerText()),`${dev} nurse banner unchanged`);await fits('nurse landing');await shot('08-nurse');
  const nb=await p.$eval('#nurse-banner',e=>Math.round(e.getBoundingClientRect().height));ok(nb<=160,`${dev} nurse pinned bar ${nb}px ≤160`);
  await p.click('#nurse-home');await p.waitForLoadState('load');ok(await startShown(),`${dev} nurse ← Start returns to the start page`);ok(await p.locator('#start-nurse .st-last').isVisible(),`${dev} last choice badge on Nurse`);
+ // L&D board
+ await p.click('#start-board');await p.waitForLoadState('load');await p.waitForTimeout(300);
+ ok(/board\.html/.test(p.url())&&await p.locator('#shareSection').isVisible()&&await p.locator('#board-home').isVisible(),`${dev} L&D board opens board.html`);
+ ok((await p.locator('#shareDisclaimer').innerText()).includes('only use encrypted OBHG or local Hospital approved email or Bluetooth functions like iPhone AirDrop'),`${dev} share disclaimer is verbatim`);
+ await fits('ld board landing');await shot('09-ld-board');
+ await p.click('#board-home');await p.waitForLoadState('load');ok(await startShown(),`${dev} board ← Start returns to the start page`);ok(await p.locator('#start-board .st-last').isVisible(),`${dev} last choice badge on L&D board`);
  // Deep links
  for(const [h,v] of [['#browse','#view-browse'],['#log','#view-log'],['#clinician','#hpi-form']]){const q=await ctx.newPage();q.on('pageerror',e=>errs.push('pageerror '+e.message));await q.goto(BASE+h);await q.waitForTimeout(200);ok(await q.locator(v).isVisible()&&!(await q.locator('#view-start').isVisible()),`${dev} deep link ${h} opens directly`);await q.close();}
  {const q=await ctx.newPage();await q.goto(BASE+'nurse.html');await q.waitForTimeout(200);ok(await q.locator('#nurse-main').isVisible()&&await q.locator('#nurse-home').isVisible(),`${dev} nurse.html opened directly still works and has ← Start`);await q.close();}

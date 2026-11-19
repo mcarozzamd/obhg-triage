@@ -114,6 +114,8 @@ tr.amended td{background:#FFFBEA}
 .start{padding-top:4px}
 .start-h{font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:#456;margin:6px 2px 10px}
 .start-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media (max-width:639px){.start-grid{gap:8px}.start-tile{min-height:96px;padding:12px 14px;gap:12px}.st-name{font-size:22px}.st-sub{font-size:13px;margin-top:2px}.start h2,.start-h{margin:8px 0 10px}}
+
 @media (min-width:640px){.start-grid{grid-template-columns:1fr 1fr;gap:16px}}
 .start-tile{display:flex;align-items:center;gap:16px;min-height:104px;width:100%;padding:16px 18px;border:2px solid var(--navy);border-radius:14px;background:#fff;color:var(--navy);text-align:left;text-decoration:none;font:inherit;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .start-tile:active{background:#E6EEF2}

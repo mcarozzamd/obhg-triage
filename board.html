@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16324f">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'">
+<meta name="robots" content="noindex, nofollow">
+<title>L&amp;D board</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OBHG Triage">
+<link rel="stylesheet" href="css/ld-board.css">
+</head>
+<body>
+  <div class="banner" id="exampleBanner" hidden>EXAMPLE DATA</div>
+  <header class="top">
+    <div class="top-row">
+      <h1 id="siteName">L&amp;D board</h1>
+      <a class="board-home" id="board-home" href="index.html">← Start</a>
+    </div>
+    <div class="meta">
+      <span id="clockLine"></span>
+      <span id="occLine"></span>
+      <span>Checkout 21:00 / 02:00</span>
+    </div>
+    <div class="site-switch">
+      <label for="siteSelect">Site</label>
+      <select id="siteSelect"></select>
+    </div>
+  </header>
+
+  <nav class="filters" aria-label="Board view">
+    <button type="button" id="viewAll" aria-pressed="false">All</button>
+    <button type="button" id="viewOcc" aria-pressed="true">Occupied <span class="count" id="occCount">0</span></button>
+    <button type="button" id="viewCheck" aria-pressed="false">Checkout <span class="count" id="gapCount">0</span></button>
+  </nav>
+
+  <section class="dictate" aria-label="Dictation update">
+    <label for="dictation">Dictation (confirm before saving)</label>
+    <div class="row">
+      <input id="dictation" type="text" enterkeyhint="done" autocomplete="off" autocapitalize="characters"
+        placeholder="236 MW 6 cm Pit Cook out epi no">
+      <button type="button" class="go" id="parseBtn">Parse</button>
+    </div>
+    <p class="hint">Room first, then tokens. Phone mic types into this box — nothing is recorded or sent. Preview appears below; nothing is saved until you confirm.</p>
+    <div id="preview" hidden></div>
+  </section>
+
+  <div id="unassignedWrap"></div>
+  <div id="board"></div>
+  <div id="anteWrap"></div>
+
+  <section class="share" id="shareSection" aria-label="Share">
+    <h2>Share</h2>
+    <p class="disclaimer" id="shareDisclaimer">only use encrypted OBHG or local Hospital approved email or Bluetooth functions like iPhone AirDrop</p>
+    <div class="actions-row">
+      <button type="button" class="share-btn" id="shareBtn">Share board</button>
+      <button type="button" class="load-shared" id="loadSharedBtn">Load shared board</button>
+      <input id="loadShared" type="file" accept="application/json,.json" hidden>
+    </div>
+    <p id="loadSharedStatus" role="status" hidden></p>
+  </section>
+
+  <footer class="foot">
+    <p><strong>Local-only:</strong> data stays on this device; clear at checkout. Nothing is sent to a server. Patient data leaves the device only if you share or save a file yourself.</p>
+    <p>Saved in this browser only (IndexedDB; no network, no sync, no analytics). Auto-clears 24 hours after the last save on this device. Stale fields turn amber after 3 hours.</p>
+    <p id="savedLine"></p>
+    <button type="button" class="load-ex" id="loadExample">Load example snapshot</button>
+    <button type="button" class="danger" id="clearBtn">Clear board</button>
+  </footer>
+
+  <div class="confirm-mask" id="clearMask" role="dialog" aria-labelledby="clearQ">
+    <div class="confirm-box">
+      <p id="clearQ">Clear all patients from this device? This cannot be undone.</p>
+      <div class="actions">
+        <button type="button" class="no" id="clearNo">Cancel</button>
+        <button type="button" class="yes" id="clearYes">Clear board</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="confirm-mask" id="shareMask" role="dialog" aria-labelledby="shareQ" aria-describedby="shareDlgText">
+    <div class="confirm-box">
+      <h2 id="shareQ">Share board</h2>
+      <p id="shareDlgText"></p>
+      <div class="actions">
+        <button type="button" class="no" id="shareCancel">Cancel</button>
+        <button type="button" class="yes share-yes" id="shareConfirm">I understand, share</button>
+      </div>
+    </div>
+  </div>
+
+<script src="js/ld-board-sites.js"></script>
+<script src="js/ld-board.js"></script>
+</body>
+</html>

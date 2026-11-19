@@ -21,7 +21,7 @@
 
   // ---------- start page + sections (13 Nov 2026) ----------
   // A fresh open (no #hash) always shows the start page. #clinician, #browse and #log open one section;
-  // the nurse section is nurse.html. Only the last-used section name is remembered (never clinical text).
+  // the nurse section is nurse.html; the L&D board is board.html. Only the last-used section name is remembered (never clinical text).
   const SECTIONS = { clinician: { view: 'triage', title: 'Clinician triage' }, browse: { view: 'browse', title: 'Browse guidelines', back: 'Back to guideline list' }, log: { view: 'log', title: 'Patient log', back: 'Back to patient log' } };
   const LAST_KEY = 'obhg_start_last';
   let section = 'start';
@@ -64,6 +64,7 @@
   window.addEventListener('popstate', onHistory);
   $('sec-back').onclick = () => { if (SECTIONS[section]) tab(SECTIONS[section].view); };
   $('start-nurse').addEventListener('click', () => remember('nurse'));
+  const boardTile = $('start-board'); if (boardTile) boardTile.addEventListener('click', () => remember('board'));
   self.OBHGStart = { go, section: () => section, SECTIONS };
 
   // ---------- rendering ----------

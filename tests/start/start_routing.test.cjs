@@ -22,12 +22,13 @@ async function open(hash = '', pre = {}) {
 const VIEWS = ['view-start', 'view-triage', 'view-browse', 'view-log'];
 const only = (t, id) => { for (const v of VIEWS) assert.equal(t.vis(v), v === id, v + (v === id ? ' should be visible' : ' should be hidden')); };
 
-test('fresh open shows only the start page with four large choices, disclaimer and no section bar', async () => {
+test('fresh open shows only the start page with five large choices, disclaimer and no section bar', async () => {
   const t = await open(); only(t, 'view-start'); assert.equal(t.vis('section-bar'), false);
   const tiles = [...t.d.querySelectorAll('#view-start .start-tile')];
-  assert.deepEqual(tiles.map(x => x.querySelector('.st-name').textContent), ['Clinician', 'Nurse', 'Browse Guidelines', 'Patient log']);
-  assert.deepEqual(tiles.map(x => x.id), ['start-clinician', 'start-nurse', 'start-browse', 'start-log']);
+  assert.deepEqual(tiles.map(x => x.querySelector('.st-name').textContent), ['Clinician', 'Nurse', 'Browse Guidelines', 'Patient log', 'L&D board']);
+  assert.deepEqual(tiles.map(x => x.id), ['start-clinician', 'start-nurse', 'start-browse', 'start-log', 'start-board']);
   assert.equal(t.$('start-nurse').tagName, 'A'); assert.equal(t.$('start-nurse').getAttribute('href'), 'nurse.html');
+  assert.equal(t.$('start-board').tagName, 'A'); assert.equal(t.$('start-board').getAttribute('href'), 'board.html');
   assert.match(t.$('view-start').textContent, /Decision support only · not unit policy · not the medical record · enter no PHI\./);
   assert.equal(t.d.querySelector('.tabs, [role=tablist], .nurse-link'), null, 'old tab bar and small nurse link removed');
   assert.deepEqual(t.errors, []); t.close();
@@ -65,7 +66,7 @@ for (const [hash, view, title] of [['#clinician', 'view-triage', 'Clinician tria
   });
 test('unknown hash falls back to the start page', async () => { const t = await open('#nope'); only(t, 'view-start'); t.close(); });
 test('remembered last choice is only a badge: a fresh open still shows the start page', async () => {
-  for (const last of ['log', 'nurse', 'browse', 'clinician']) {
+  for (const last of ['log', 'nurse', 'browse', 'clinician', 'board']) {
     const t = await open('', {obhg_start_last: last}); only(t, 'view-start');
     const marked = [...t.d.querySelectorAll('.start-tile.last')].map(x => x.id); assert.deepEqual(marked, ['start-' + last]); t.close();
   }
@@ -76,16 +77,24 @@ test('Nurse tile remembers "nurse" and nurse.html has a Start link back to index
   const html = fs.readFileSync(path.join(base, 'nurse.html'), 'utf8'); assert.match(html, /<a id="nurse-home" class="hdr-home" href="index\.html">← Start<\/a>/);
   assert.doesNotMatch(html, /data-act="lang"/, 'nurse section stays English-only');
 });
+test('L&D board tile remembers "board" and board.html has a Start link back to index.html', async () => {
+  const t = await open(); const a = t.$('start-board'); a.addEventListener('click', e => e.preventDefault()); a.click();
+  assert.equal(t.w.localStorage.getItem('obhg_start_last'), 'board'); t.close();
+  const html = fs.readFileSync(path.join(base, 'board.html'), 'utf8');
+  assert.match(html, /<a class="board-home" id="board-home" href="index\.html">← Start<\/a>/);
+  assert.match(html, /only use encrypted OBHG or local Hospital approved email or Bluetooth functions like iPhone AirDrop/);
+  assert.doesNotMatch(html, /reviewed by|Michael|DRAFT/);
+});
 test('browser history: Back from a section returns to the start page', async () => {
   const t = await open(); t.click('start-browse'); assert.equal(t.w.location.hash, '#browse');
   t.w.history.back(); await new Promise(r => setTimeout(r, 50)); only(t, 'view-start'); t.close();
 });
 test('start-page shell plus ANT-TRAUMA/ANT-STI card and algorithm files plus the v34–v35 release cleanup are the only app-path diffs from live 3ae4907', () => {
-  const allowed = ['css/app.css', 'index.html', 'js/app.js', 'js/content.js', 'js/display-names.js', 'js/engine.js', 'js/review.js', 'js/flow-cues.js', 'nurse.html', 'sw.js', 'assets/diagrams/ANT-TRAUMA_FLOW_2026-11-13.png', 'assets/diagrams/ANT-STI_FLOW_2026-11-13.png', 'assets/display-diagrams/FD-ANT-TRAUMA.png', 'assets/display-diagrams/FD-ANT-STI.png', 'assets/display-diagrams/FD-ANT-UTI.png', 'assets/diagrams/ANT-UTI_FLOW_2026-11-13.png', 'assets/display-diagrams/manifest.json', 'assets/diagrams/DM_INTRAPARTUM_FLOW_2026-11-11.png', 'assets/display-diagrams/FD-ANT-05.png', 'css/nurse.css', 'js/dm-intrapartum.js', 'js/engine.js.bak-batch2-2026-10-18', 'js/nurse-cards.js', 'js/nurse-engine.js', 'js/nurse-flow.js', 'js/nurse-protocols.js', 'js/nurse-red-flags.js', 'js/nurse-safety-vocabulary.js', 'js/nurse-ui.js', 'js/routine_codes.js', 'js/shiftlog.js', 'js/ask.js', 'assets/diagrams/ANT-SUD_FLOW_2026-11-15.png', 'assets/display-diagrams/FD-ANT-SUD.png'];
-  const changed = execFileSync('git', ['diff', '--name-only', '3ae4907', '--', 'js', 'css', 'codes', 'assets', 'index.html', 'nurse.html', 'sw.js', 'manifest.webmanifest'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean)
-    .concat(execFileSync('git', ['ls-files', '--others', '--exclude-standard', 'js', 'css', 'codes', 'assets'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean));
+  const allowed = ['css/app.css', 'index.html', 'js/app.js', 'js/content.js', 'js/display-names.js', 'js/engine.js', 'js/review.js', 'js/flow-cues.js', 'nurse.html', 'sw.js', 'assets/diagrams/ANT-TRAUMA_FLOW_2026-11-13.png', 'assets/diagrams/ANT-STI_FLOW_2026-11-13.png', 'assets/display-diagrams/FD-ANT-TRAUMA.png', 'assets/display-diagrams/FD-ANT-STI.png', 'assets/display-diagrams/FD-ANT-UTI.png', 'assets/diagrams/ANT-UTI_FLOW_2026-11-13.png', 'assets/display-diagrams/manifest.json', 'assets/diagrams/DM_INTRAPARTUM_FLOW_2026-11-11.png', 'assets/display-diagrams/FD-ANT-05.png', 'css/nurse.css', 'js/dm-intrapartum.js', 'js/engine.js.bak-batch2-2026-10-18', 'js/nurse-cards.js', 'js/nurse-engine.js', 'js/nurse-flow.js', 'js/nurse-protocols.js', 'js/nurse-red-flags.js', 'js/nurse-safety-vocabulary.js', 'js/nurse-ui.js', 'js/routine_codes.js', 'js/shiftlog.js', 'js/ask.js', 'assets/diagrams/ANT-SUD_FLOW_2026-11-15.png', 'assets/display-diagrams/FD-ANT-SUD.png', 'board.html', 'css/ld-board.css', 'js/ld-board.js', 'js/ld-board-sites.js'];
+  const changed = execFileSync('git', ['diff', '--name-only', '3ae4907', '--', 'js', 'css', 'codes', 'assets', 'index.html', 'nurse.html', 'board.html', 'sw.js', 'manifest.webmanifest'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean)
+    .concat(execFileSync('git', ['ls-files', '--others', '--exclude-standard', 'js', 'css', 'codes', 'assets', 'board.html'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean));
   assert.deepEqual(changed.sort(), allowed.slice().sort());
-  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v41-2026-11-19-queue';/);
+  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v42-2026-11-19-ldboard';/);
   const nurseDiff = execFileSync('git', ['diff', '3ae4907', '--', 'nurse.html'], {cwd: base, encoding: 'utf8'}); const nurseLines = (nurseDiff.match(/^[+-](?![+-]).*$/gm) || []); assert.equal(nurseLines.length, 4, 'nurse.html: the header line gains the Start link; plus the suggest-a-card line and the ask.js script (15 Nov 2026)'); assert.ok(nurseLines.some(l => /nurse-suggest/.test(l)) && nurseLines.some(l => /js\/ask\.js/.test(l)));
 });
 test('every clinical view element from 3ae4907 is still in index.html (only the tab bar and small nurse link were replaced)', () => {

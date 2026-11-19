@@ -1,4 +1,4 @@
-// OBHG CLINICAL TRIAGE service worker. v41 (19 Nov 2026): local staging of guideline queue (late-preterm ACS limits, arrest-of-dilation box, cerclage additions, chronic HTN discharge checklist, post-cesarean antiemetic ladder, syphilis discordant serology, UTI CC4 re-verify, trauma ≥4 h monitoring). Nothing in this cache name is live. Previous: v40 (16 Nov 2026): substance use in pregnancy card and algorithm: stimulant toxicity now lorazepam first-line, nifedipine or hydralazine for severe-range BP, no beta-blockers including labetalol. Previous: v39 (15 Nov 2026): section jump boxes on the substance use and UTI cards (instant jump, ↑ Sections back link); UTI and substance use algorithm titles shortened.
+// OBHG CLINICAL TRIAGE service worker. v42 (19 Nov 2026): adds the on-device L&D labor board (board.html; site-configured rooms and checklist; IndexedDB; Share and Load shared board). Previous: v41 (19 Nov 2026): local staging of guideline queue (late-preterm ACS limits, arrest-of-dilation box, cerclage additions, chronic HTN discharge checklist, post-cesarean antiemetic ladder, syphilis discordant serology, UTI CC4 re-verify, trauma ≥4 h monitoring). Nothing in this cache name is live. Previous: v40 (16 Nov 2026): substance use in pregnancy card and algorithm: stimulant toxicity now lorazepam first-line, nifedipine or hydralazine for severe-range BP, no beta-blockers including labetalol. Previous: v39 (15 Nov 2026): section jump boxes on the substance use and UTI cards (instant jump, ↑ Sections back link); UTI and substance use algorithm titles shortened.
 // v38 (15 Nov 2026): ANT-SUD substance use in pregnancy card and FD-ANT-SUD algorithm; Ask a question link-out and Suggest a card released.
 // v37 (15 Nov 2026): Ask a question link-out (OpenEvidence/Grok, online only) and Suggest a card in Clinician and Nurse.
 // v36 (14 Nov 2026): house answers applied to trauma, STI and UTI (RhIG, delayed-presentation monitoring, case management, TP-PA, test-of-cure timing, postpartum suppression).
@@ -16,7 +16,7 @@
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v41-2026-11-19-queue';
+const CACHE = PREFIX + 'v42-2026-11-19-ldboard';
 const ASSETS = [
   './',
   './index.html',
@@ -32,6 +32,10 @@ const ASSETS = [
   './js/app.js',
   './js/flow-cues.js',
   './js/ask.js',
+  './board.html',
+  './css/ld-board.css',
+  './js/ld-board-sites.js',
+  './js/ld-board.js',
   './nurse.html',
   './css/nurse.css',
   './js/nurse-safety-vocabulary.js',
