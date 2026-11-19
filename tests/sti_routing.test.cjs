@@ -21,7 +21,7 @@ test('ANT-STI card is present, released (no PROVISIONAL tag or personal name), w
   assert.deepEqual(card.flags, []);
   assert.ok(!card.flags.some(f => /PROVISIONAL|Michael|Carozza/i.test(f)));
   assert.doesNotMatch(card.html + card.text, /PROVISIONAL|Michael|Carozza|Not live/i);
-  assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 9);
+  assert.equal((card.html.match(/Doses to be checked against the pharmacy build\./g) || []).length, 9);
   assert.match(card.html, /<strong>CODING<\/strong>/);
   assert.match(card.html, /Only TWO things on this card change the WAY she delivers/);
   assert.match(card.html, /Benzathine penicillin G 2\.4 million units IM x1/);
@@ -131,13 +131,13 @@ test('HPI triage of syphilis in labor shows the ANT-STI card', async () => {
   t.close();
 });
 
-test('house decisions applied on ANT-STI: SMFM #69, always-treat trich, inpatient pyelo, J-H house practice; LactMed-not-CDC removed', () => {
+test('local decisions applied on ANT-STI: SMFM #69, always-treat trich, inpatient pyelo, J-H local policy; LactMed-not-CDC removed', () => {
   const h = card.html;
   assert.match(h, /SMFM Consult #69, vaccine plus HBIG within 12 h|infant HepB vaccine \+ HBIG within 12 h \(SMFM Consult #69/);
   assert.match(h, /always treat, including an incidental finding in an asymptomatic patient/i);
   assert.match(h, /ADMIT as an inpatient for IV antibiotics/);
   assert.doesNotMatch(h, /Outpatient pyelo only in highly selected/);
-  assert.match(h, /House practice \(not a cited rule\)/);
+  assert.match(h, /Local policy \(not a cited rule\)/);
   assert.match(h, /From 24 wk on, with primary, secondary or early latent syphilis/);
   assert.doesNotMatch(h, /LactMed — not a CDC statement/);
   assert.doesNotMatch(h, /supported by LactMed, not by the CDC STI guideline text/);
@@ -146,9 +146,9 @@ test('house decisions applied on ANT-STI: SMFM #69, always-treat trich, inpatien
   assert.doesNotMatch(h, /per maternal HBsAg\/weight rules above/);
 
   // remaining pending tags only
-  assert.doesNotMatch(h, /Pending house decision/);
+  assert.doesNotMatch(h, /Pending local decision/);
   assert.match(h, /regimen per ID and pharmacy/i);
-  assert.match(h, /TP-PA is available at CSM/);
+  assert.match(h, /TP-PA is available \(call the lab\)/);
 });
 
 function offered(r, id) {
@@ -179,7 +179,7 @@ test('GYNB-06 is never offered in pregnancy or postpartum; ANT-STI is primary fo
   assert.equal(rNP.top && rNP.top.id, 'GYNB-06', 'non-pregnant pyelo still opens GYNB-06');
 });
 
-test('ANT-STI OBED test-of-cure is labeled house practice, not attributed to ACOG', () => {
-  assert.match(card.html, /test of cure culture 2 weeks after treatment \(house practice\)/);
+test('ANT-STI OBED test-of-cure is labeled local policy, not attributed to ACOG', () => {
+  assert.match(card.html, /test of cure culture 2 weeks after treatment \(local policy\)/);
   assert.doesNotMatch(card.html, /test of cure culture after treatment \(ACOG\)/);
 });

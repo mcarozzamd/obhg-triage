@@ -3,12 +3,12 @@
  *       (Nov 12: all nurses read English); titles are bilingual (ES provisional).
  * EA-*: NB4 emergency action cards, bilingual (ES provisional, NB14), shown in the page language.
  * Doses: only doses already approved in this app (js/content.js FORMULARY) are printed, plus the epinephrine
- * anaphylaxis dose set Nov 12 (pending CSM pharmacy sign-off); all others
- * say "per CSM pharmacy/order set". Sources: only guidelines verified by title/number on Nov 12 2026. */
+ * anaphylaxis dose set Nov 12 (pending pharmacy sign-off); all others
+ * say "per the pharmacy/order set". Sources: only guidelines verified by title/number on Nov 12 2026. */
 (function(root){
  'use strict';
- const PROV_EN='Not unit policy. Check every dose against the CSM pharmacy build.';
- const PROV_ES='No es política de la unidad. Verifique cada dosis con la farmacia de CSM.';
+ const PROV_EN='Not unit policy. Check every dose against the pharmacy build.';
+ const PROV_ES='No es política de la unidad. Verifique cada dosis con la farmacia de la unidad.';
  const ul=a=>'<ul>'+a.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
  const sec=(h,a)=>'<h3>'+h+'</h3>'+ul(a);
  const CARDS={
@@ -22,19 +22,19 @@
      'Confirm FHR now; keep your hand in during transfer to the OR.'])+
     sec('While preparing for birth',['Continuous EFM; IV access; prepare for immediate birth (cesarean unless the provider judges vaginal birth imminent and quicker).',
      'If birth will be delayed (e.g., transfer): bladder filling — Foley catheter, instill 500–750 mL saline, clamp. EMPTY the bladder again just before any delivery attempt.',
-     'Tocolysis may be considered by the provider for persistent FHR abnormalities while preparing for cesarean: agent and dose per CSM pharmacy/order set.',
+     'Tocolysis may be considered by the provider for persistent FHR abnormalities while preparing for cesarean: agent and dose per the pharmacy/order set.',
      'None of these measures may delay birth.'])},
   'NC-ANAPH':{title:{en:'Anaphylaxis in pregnancy / postpartum',es:'Anafilaxia en el embarazo o posparto'},
-   sources:['House card: SYS-01 (maternal critical illness / cardiac arrest)','Golden DBK et al. Anaphylaxis: A 2023 practice parameter update (AAAAI/ACAAI Joint Task Force on Practice Parameters). Ann Allergy Asthma Immunol 2024','Jeejeebhoy FM et al. Cardiac Arrest in Pregnancy: A Scientific Statement From the American Heart Association. Circulation 2015;132:1747–1773','Supplementary (international): ASCIA Guidelines: Acute Management of Anaphylaxis in Pregnancy (Australasian Society of Clinical Immunology and Allergy)','Supplementary (international): Dribin TE et al. Anaphylaxis definition, overview, and clinical support tool: 2024 consensus report — a GA2LEN project. J Allergy Clin Immunol 2025'], // ND4
+   sources:['Card: SYS-01 (maternal critical illness / cardiac arrest)','Golden DBK et al. Anaphylaxis: A 2023 practice parameter update (AAAAI/ACAAI Joint Task Force on Practice Parameters). Ann Allergy Asthma Immunol 2024','Jeejeebhoy FM et al. Cardiac Arrest in Pregnancy: A Scientific Statement From the American Heart Association. Circulation 2015;132:1747–1773','Supplementary (international): ASCIA Guidelines: Acute Management of Anaphylaxis in Pregnancy (Australasian Society of Clinical Immunology and Allergy)','Supplementary (international): Dribin TE et al. Anaphylaxis definition, overview, and clinical support tool: 2024 consensus report — a GA2LEN project. J Allergy Clin Immunol 2025'], // ND4
    html:sec('First actions',['Stop the suspected trigger (infusion, antibiotic, latex). Call for help: rapid response/code and the OB provider.',
-     '<b>Epinephrine IM FIRST. Epinephrine 1 mg/mL: give 0.5 mg = 0.5 mL IM, anterolateral mid-thigh; repeat every 5–15 min if no improvement. Do not use the 0.1 mg/mL (IV/code) syringe for IM.</b> <span class="nf-provtag">Doses to be checked against the CSM pharmacy build.</span> Do not withhold or delay epinephrine because of pregnancy.', // ND3 (house approved)
+     '<b>Epinephrine IM FIRST. Epinephrine 1 mg/mL: give 0.5 mg = 0.5 mL IM, anterolateral mid-thigh; repeat every 5–15 min if no improvement. Do not use the 0.1 mg/mL (IV/code) syringe for IM.</b> <span class="nf-provtag">Doses to be checked against the pharmacy build.</span> Do not withhold or delay epinephrine because of pregnancy.', // ND3 (locally approved)
      'Airway and breathing: high-flow oxygen; prepare for airway support.',
      'Position: lie flat with legs raised if hypotensive (left lateral tilt if ≥20 wk); sitting if short of breath. Do not let her stand or walk.'])+
     sec('Then',['IV access; rapid isotonic fluid bolus if hypotensive — volume per order set.','Continuous maternal vitals and SpO2; continuous EFM if ≥20 wk once the mother is being resuscitated.',
      'Antihistamines and steroids are adjuncts only and never replace epinephrine.','Refractory hypotension or airway compromise: escalate per code team (anesthesia/ICU).',
      '<b>Cardiac arrest: start CPR with manual left uterine displacement — open SYS-01.</b>','Observe for biphasic reaction per provider.'])},
   'NC-BIRTH':{title:{en:'Imminent / precipitous birth',es:'Parto inminente o precipitado'},
-   sources:['House card: FD-LND-06 (shoulder dystocia), FD-PP-01 (postpartum hemorrhage)','App FORMULARY (oxytocin) — already approved in this app','ACOG Committee Opinion No. 814, Delayed Umbilical Cord Clamping After Birth (2020)','Aziz K et al. Part 5: Neonatal Resuscitation. 2020 American Heart Association Guidelines for CPR and ECC (with AAP). Circulation 2020;142(suppl 2):S524–S550'], // ND4
+   sources:['Card: FD-LND-06 (shoulder dystocia), FD-PP-01 (postpartum hemorrhage)','App FORMULARY (oxytocin) — already approved in this app','ACOG Committee Opinion No. 814, Delayed Umbilical Cord Clamping After Birth (2020)','Aziz K et al. Part 5: Neonatal Resuscitation. 2020 American Heart Association Guidelines for CPR and ECC (with AAP). Circulation 2020;142(suppl 2):S524–S550'], // ND4
    html:sec('First actions',['Do not leave her. Call for help: OB provider, a delivery nurse, and the neonatal/NRP team. Open the delivery (precip) kit; turn on the radiant warmer; note the time.',
      'Gloves; position of comfort (semi-recumbent or side-lying). Warm blankets/towels ready.',
      'Controlled delivery: support the perineum and gently control the head; do not pull. Check for a nuchal cord — slip it over the head if loose.',
@@ -42,20 +42,20 @@
     sec('Baby',['Dry, warm, stimulate; assess breathing and tone. Skin-to-skin if vigorous.','Apneic, gasping, or HR &lt;100 after initial steps: start positive-pressure ventilation within 60 seconds of birth and call the NRP team (AHA/AAP 2020). Open the newborn emergency card.',
      'Record the time of birth. Vigorous baby: delay cord clamping 30–60 s (ACOG CO 814), then clamp and cut per unit policy.',
      'Confirm you are hearing the baby/maternal pulse, not each other’s.'])+
-    sec('Mother',['After the baby is born (and a second baby is excluded): oxytocin per CSM order set (FORMULARY lists 10 U IM).','Watch for postpartum hemorrhage: quantify blood loss; open the PPH algorithm (FD-PP-01) if bleeding is heavy.',
+    sec('Mother',['After the baby is born (and a second baby is excluded): oxytocin per the unit order set (FORMULARY lists 10 U IM).','Watch for postpartum hemorrhage: quantify blood loss; open the PPH algorithm (FD-PP-01) if bleeding is heavy.',
      'Do not pull on the cord to deliver the placenta; await the provider or follow unit policy.'])},
   'NC-ECL':{title:{en:'Eclampsia / seizure — magnesium first',es:'Eclampsia o convulsión — primero magnesio'},
-   sources:['House card: FD-ANT-04 / ANT-04 (severe hypertension)','App FORMULARY (magnesium, calcium gluconate, antihypertensive ladders) — already approved in this app','ACOG Practice Bulletin No. 222, Gestational Hypertension and Preeclampsia (2020)','ACOG Committee Opinion No. 767, Emergent Therapy for Acute-Onset, Severe Hypertension During Pregnancy and the Postpartum Period (2019)'], // ND4
+   sources:['Card: FD-ANT-04 / ANT-04 (severe hypertension)','App FORMULARY (magnesium, calcium gluconate, antihypertensive ladders) — already approved in this app','ACOG Practice Bulletin No. 222, Gestational Hypertension and Preeclampsia (2020)','ACOG Committee Opinion No. 767, Emergent Therapy for Acute-Onset, Severe Hypertension During Pregnancy and the Postpartum Period (2019)'], // ND4
    html:sec('During the seizure',['Call for help: OB provider, anesthesia, rapid response. Do not leave her. Note the time.','Protect from injury; turn her on her side (left lateral). Do not restrain her and put nothing in her mouth. Suction and oxygen ready.'])+
     sec('Immediately after',['Airway, breathing, SpO2; oxygen as needed; left lateral; IV access.','<b>Check point-of-care glucose</b> (hypoglycemia mimics eclampsia).',
      'Seizure &gt;5 min or recurrent despite magnesium: anesthesia now for airway/benzodiazepine per provider.',
-     '<b>Magnesium sulfate (FORMULARY): 4–6 g IV load over 20–30 min, then 1–2 g/h. If no IV: 5 g IM in each buttock (10 g).</b> Continue 24 h after birth / last seizure. Recurrent seizure on magnesium: additional dose per provider/order set. Check every dose against the CSM pharmacy build.',
+     '<b>Magnesium sulfate (FORMULARY): 4–6 g IV load over 20–30 min, then 1–2 g/h. If no IV: 5 g IM in each buttock (10 g).</b> Continue 24 h after birth / last seizure. Recurrent seizure on magnesium: additional dose per provider/order set. Check every dose against the pharmacy build.',
      'Magnesium toxicity (loss of reflexes, respiratory depression): stop the infusion; calcium gluconate 1 g IV over 3 min (FORMULARY). Monitor reflexes, respiratory rate, urine output; lower the infusion if oliguric (creatinine).',
      'Treat BP ≥160/110 within 30–60 min on one first-line ladder (FD-ANT-04 / FORMULARY).'])+
     sec('Then',['Continuous EFM if ≥20 wk once the mother is stabilized; fetal bradycardia during a seizure often recovers — stabilize the mother first. Delivery timing is the provider’s decision.',
      'Focal deficits, persistent confusion, or seizure without preeclampsia features: activate the stroke/neurology pathway; pregnancy does not exclude stroke-team evaluation.'])},
   'NC-APH':{title:{en:'Antepartum hemorrhage / abruption / previa (≥20 wk or status unknown)',es:'Hemorragia anteparto, desprendimiento o placenta previa (≥20 semanas o estado desconocido)'},
-   sources:['House card: FD-PP-01 (postpartum hemorrhage), ANT-06 (antenatal steroids), ANT-07 (placenta accreta spectrum)','SMFM Consult Series #37: Diagnosis and management of vasa previa. Am J Obstet Gynecol 2015;213(5):615–619','ACOG Practice Bulletin No. 205, Vaginal Birth After Cesarean Delivery. Obstet Gynecol 2019;133:e110–e127','ACOG/SMFM Obstetric Care Consensus No. 7, Placenta Accreta Spectrum. Obstet Gynecol 2018;132:e259–e275','Supplementary (international): RCOG Green-top Guideline No. 63, Antepartum Haemorrhage (2011)','Supplementary (international): RCOG Green-top Guideline No. 27a, Placenta Praevia and Placenta Accreta: Diagnosis and Management (2018)','Supplementary (international): RCOG Green-top Guideline No. 27b, Vasa Praevia: Diagnosis and Management (2018)'], // ND4
+   sources:['Card: FD-PP-01 (postpartum hemorrhage), ANT-06 (antenatal steroids), ANT-07 (placenta accreta spectrum)','SMFM Consult Series #37: Diagnosis and management of vasa previa. Am J Obstet Gynecol 2015;213(5):615–619','ACOG Practice Bulletin No. 205, Vaginal Birth After Cesarean Delivery. Obstet Gynecol 2019;133:e110–e127','ACOG/SMFM Obstetric Care Consensus No. 7, Placenta Accreta Spectrum. Obstet Gynecol 2018;132:e259–e275','Supplementary (international): RCOG Green-top Guideline No. 63, Antepartum Haemorrhage (2011)','Supplementary (international): RCOG Green-top Guideline No. 27a, Placenta Praevia and Placenta Accreta: Diagnosis and Management (2018)','Supplementary (international): RCOG Green-top Guideline No. 27b, Vasa Praevia: Diagnosis and Management (2018)'], // ND4
    html:sec('First actions',['<b>≥20 wk antepartum: NO digital cervical (or rectal) exam until ultrasound has excluded previa.</b>',
      '<b>No uterotonics and no fundal massage before delivery.</b>',
      'Continuous EFM, left lateral, 2 large-bore IVs, type &amp; crossmatch, OB at bedside now. Activate the obstetric hemorrhage response if bleeding is heavy or she is unstable.',
@@ -69,7 +69,7 @@
    sources:['App red-flag text for harm_intent / intrusive thoughts — already approved in this app','ACOG Clinical Practice Guideline No. 4, Screening and Diagnosis of Mental Health Conditions During Pregnancy and Postpartum (2023)','ACOG Clinical Practice Guideline No. 5, Treatment and Management of Mental Health Conditions During Pregnancy and Postpartum (2023)','NIMH Ask Suicide-Screening Questions (ASQ) Toolkit'], // ND4
    html:sec('Now',['Keep her in sight: constant observation by a capable person for any plan, intent, means, recent attempt or uncertain intent. She does not leave before assessment.',
      'Remove means from the room per policy (sharps, ligatures, medicines). Search belongings for means per policy. Ask about firearm access.',
-     'If she tries to leave while at imminent or uncertain risk: do not let her leave alone; call the provider and security per CSM policy.',
+     'If she tries to leave while at imminent or uncertain risk: do not let her leave alone; call the provider and security per local policy.',
      'Infant safety: she is not alone caring for the baby while risk is high or uncertain.',
      'Call the OB provider and behavioral health now for a risk assessment (intent, plan, means, recency, safety) with a validated tool (ASQ or C-SSRS).'])+
     sec('How',['Nonpunitive, nonjudgmental wording: these thoughts are common and treatable. No reflex police involvement or punitive assumptions.',
@@ -81,7 +81,7 @@
      'Call the OB provider and request urgent psychiatric evaluation now; psychiatric hospitalization is generally indicated (risk of suicide and infanticide).',
      'Assess risk of harm to self and to the infant (open the suicide-risk card).',
      'Calm, low-stimulation room; remove means from the room per policy.'])+
-    sec('Also',['Nurse now: vitals, point-of-care glucose, SpO2; note recent sleep, substances and medicines.','The provider evaluates for medical causes of acute confusion or psychosis.','Medicines while awaiting psychiatry: per provider/CSM order set (no doses on this card).',
+    sec('Also',['Nurse now: vitals, point-of-care glucose, SpO2; note recent sleep, substances and medicines.','The provider evaluates for medical causes of acute confusion or psychosis.','Medicines while awaiting psychiatry: per the provider/unit order set (no doses on this card).',
      'No reflex police involvement or punitive separation; involve support persons she trusts.'])},
   'NC-IPV':{title:{en:'Intimate partner violence / safety planning',es:'Violencia de pareja / plan de seguridad'},
    sources:['App: Tex. Fam. Code §91.003 (family-violence information notice); Tex. Fam. Code §261.101 (child abuse report); Tex. Hum. Res. Code ch. 48 — already cited in this app','ACOG Committee Opinion No. 518, Intimate Partner Violence (2012)','National Domestic Violence Hotline 1-800-799-7233'], // ND4
@@ -92,7 +92,7 @@
      'Strangulation ever: medical evaluation even without visible injury — voice change, trouble swallowing, neck pain, petechiae or LOC need provider imaging decision.',
      'Document injuries with body map/photos with her consent.','Sexual assault: SANE / forensic examination.',
      'Give resources privately (National Domestic Violence Hotline 1-800-799-7233); she can save numbers under another name.'])+
-    sec('Reporting (Texas; confirm with CSM legal/social work)',['Report suspected abuse of a child (Tex. Fam. Code §261.101) or of an elderly or disabled adult (Tex. Hum. Res. Code ch. 48).',
+    sec('Reporting (Texas; confirm with legal/social work)',['Report suspected abuse of a child (Tex. Fam. Code §261.101) or of an elderly or disabled adult (Tex. Hum. Res. Code ch. 48).',
      'Provide the family-violence information notice (Tex. Fam. Code §91.003). Competent-adult IPV is not otherwise mandatory to report.','Document her words, injuries and the safety plan.'])},
  };
  // NB4 generic lines (both languages; ES provisional, NB14).

@@ -26,7 +26,7 @@ howto(c, "<b>HOW TO READ THIS CHART:</b> Step 1 on admission. Each FSBG: find th
 key(c, [(WHITE, "WHITE = monitor / set-up"), (LIGHT, "LIGHT GRAY = admission, no-drip rule"), (MID, "MID GRAY = insulin running"), (DARK, "DARK GRAY = hypoglycemia, DKA")])
 pill(c, 20, 84, 150, 80, "STEP 0: DIABETES IN LABOR", m(T["step0"]), tag="s0")
 arrow(c, [(170, 124), (182, 124)])
-action(c, 182, 84, 330, 80, "STEP 1: ON ADMISSION (CSM) \u00b7 LIGHT GRAY", m(T["step1"]), fill=LIGHT, tsize=7.2, bsize=6.6, tag="s1")
+action(c, 182, 84, 330, 80, "STEP 1: ON ADMISSION \u00b7 LIGHT GRAY", m(T["step1"]), fill=LIGHT, tsize=7.2, bsize=6.6, tag="s1")
 arrow(c, [(512, 124), (528, 124)])
 action(c, 528, 84, 244, 80, "DRIP SET-UP \u00b7 WHITE", m(T["setup"]), fill=WHITE, tsize=7.2, bsize=6.6, tag="setup")
 action(c, 20, 172, 150, 120, "MONITORING \u00b7 WHITE", "<br/>".join(m(x) for x in X["mon"]), fill=WHITE, tsize=7.0, bsize=6.3, tag="mon")
@@ -61,7 +61,7 @@ action(c, 20, ytop, 500, 150, "HYPOGLYCEMIA <70 OR SYMPTOMS: RESCUE NOW (CSM ADU
 action(c, 528, ytop, 244, 150, "SICK, KETONES, VOMITING? \u2192 DKA \u00b7 DARK GRAY", m(T["dka"], True), fill=DARK, fg=WHITE, tsize=7.0, bsize=6.4, tag="dka")
 ys = ytop + 158
 yend = strips(c, ys, [
-    ("A \u00b7 AFTER DELIVERY (CSM)", m(T["after"]), 30),
+    ("A \u00b7 AFTER DELIVERY", m(T["after"]), 30),
     ("B \u00b7 NEWBORN", m(T["newborn"]), 20),
     ("C \u00b7 STEROIDS / TIMING", m(T["steroidsShort"]), 22),
     ("D \u00b7 NOTIFY", m(T["notify"]), 22),

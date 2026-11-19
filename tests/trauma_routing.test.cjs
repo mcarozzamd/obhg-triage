@@ -27,7 +27,7 @@ test('ANT-TRAUMA card is present, released (no PROVISIONAL tag or personal name)
   assert.match(card.html, /Mother first: primary survey \(ABCDE\) before the fetus/);
   assert.match(card.html, /RhIG 300 mcg IM within 72 h/);
   assert.match(card.html, /Betamethasone 12 mg IM q24h x 2/);
-  assert.match(card.html, /to be checked against CSM pharmacy build/);
+  assert.match(card.html, /to be checked against the pharmacy build/);
   assert.match(card.html, /SOGC Clinical Practice Guideline No\. 325/);
   assert.match(card.html, /J Trauma 2010;69\(1\):211–214/);
   assert.equal(D.title('ANT-TRAUMA'), 'Trauma in pregnancy');
@@ -145,6 +145,6 @@ test('routes to ANT-TRAUMA: OBED walk-in after strangulation', () => {
   assert.equal(r.top.id, 'ANT-TRAUMA');
   assert.equal(r.top.diagram && r.top.diagram.id, 'FD-ANT-TRAUMA');
   assert.match(r.top.card.html, /1-800-799-7233/);
-  assert.doesNotMatch(r.top.card.html, /Pending house decision|UNVERIFIED|before card goes live/);
+  assert.doesNotMatch(r.top.card.html, /Pending local decision|UNVERIFIED|before card goes live/);
   assert.match(r.top.diagram.html, /OBED walk-in/);
 });

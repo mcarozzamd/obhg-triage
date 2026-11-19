@@ -1,4 +1,4 @@
-// ANT-SUD routing, house practices, and algorithm (15 Nov 2026). Synthetic HPIs only; no holdout/blind files.
+// ANT-SUD routing, local policies, and algorithm (15 Nov 2026). Synthetic HPIs only; no holdout/blind files.
 const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path');
 const base = path.resolve(__dirname, '..');
@@ -23,24 +23,24 @@ test('ANT-SUD card and algorithm are present, released, with no draft text or pe
   assert.equal(card.lastReviewed, 'Nov 2026');
   for (const it of [card, flow]) {
     assert.deepEqual(it.flags, []);
-    assert.doesNotMatch(it.html + it.text + it.source, /PROVISIONAL|DRAFT|v0\.1|Michael|Carozza|reviewed by|pending|UNVERIFIED|re-verify|house decision #|\bconfirm\)|house — confirm|policy to confirm|legal to confirm|TEST site/i);
+    assert.doesNotMatch(it.html + it.text + it.source, /PROVISIONAL|DRAFT|v0\.1|Michael|Carozza|reviewed by|pending|UNVERIFIED|re-verify|local decision #|\bconfirm\)|house — confirm|policy to confirm|legal to confirm|TEST site/i);
   }
   assert.doesNotMatch(card.source + flow.source, /_DRAFT_|\/drafts\//);
-  assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 1);
+  assert.equal((card.html.match(/Doses to be checked against the pharmacy build\./g) || []).length, 1);
   assert.doesNotMatch(card.html, /ROUTING NOTES/);
   assert.equal(D.title('ANT-SUD'), 'Substance use in pregnancy');
   assert.equal(D.title('FD-ANT-SUD'), 'Substance use in pregnancy');
 });
 
-test('house practices: consent-only UDS, stimulant lorazepam first-line with no beta-blockers, OBED buprenorphine start, alcohol withdrawal admitted', () => {
+test('local policies: consent-only UDS, stimulant lorazepam first-line with no beta-blockers, OBED buprenorphine start, alcohol withdrawal admitted', () => {
   const h = plain(card.html + ' ' + flow.html);
-  assert.match(h, /House practice:\s*urine drug testing \(UDS\) only for a clinical question and only with informed consent/i);
+  assert.match(h, /Local policy:\s*urine drug testing \(UDS\) only for a clinical question and only with informed consent/i);
   assert.match(h, /GC\/MS or LC-MS\/MS/);
   assert.match(h, /lorazepam \(Ativan\) 2–4 mg IV[^.]*repeat as needed/i);
   assert.match(h, /nifedipine or hydralazine as needed/i);
   assert.match(h, /beta-blockers, including labetalol/i);
   assert.doesNotMatch(h, /labetalol first-line|labetalol first\b/i);
-  assert.match(h, /House practice: OBED may start buprenorphine/);
+  assert.match(h, /Local policy: OBED may start buprenorphine/);
   assert.match(h, /Fentanyl[^.]*low-dose[^.]*ADMIT/i);
   assert.match(h, /any pregnant patient in alcohol withdrawal (is admitted|→ ADMIT)/i);
   assert.match(h, /NST on presentation/);
@@ -69,7 +69,7 @@ test('algorithm has the In labor / admitted vs OB ED triage start, with assets c
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-SUD.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v42-2026-11-19-ldboard'));
+  assert.ok(sw.includes('v43-2026-11-19-oncall'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-SUD.png'));
   const fc = fs.readFileSync(path.join(base, 'js/flow-cues.js'), 'utf8');
   assert.match(fc, /data-cue="sud-entry"/);

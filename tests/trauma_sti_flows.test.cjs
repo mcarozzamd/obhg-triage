@@ -111,11 +111,11 @@ test('STI flow starts with an entry choice and a filled OB ED triage branch', ()
   assert.match(triage, /always treat, including an incidental finding/i);
   assert.match(triage, /ADMIT as an inpatient/i);
   assert.match(triage, /SMFM Consult #69, vaccine plus HBIG within 12 h/);
-  assert.match(triage, /House practice \(not a cited rule\)/);
-  assert.doesNotMatch(triage, /Pending house decision/);
+  assert.match(triage, /Local policy \(not a cited rule\)/);
+  assert.doesNotMatch(triage, /Pending local decision/);
   assert.match(triage, /regimen per ID and pharmacy/);
-  assert.doesNotMatch(triage, /Pending house decision\s+HIV test/);
-  assert.doesNotMatch(triage, /Pending house decision\s+Postpartum endometritis/);
+  assert.doesNotMatch(triage, /Pending local decision\s+HIV test/);
+  assert.doesNotMatch(triage, /Pending local decision\s+Postpartum endometritis/);
   assert.doesNotMatch(triage, /oral therapy 7–10 days/);
   assert.doesNotMatch(triage, /treat 5–7 days \(fosfomycin single-dose/);
   assert.doesNotMatch(triage, /14 days total/);
@@ -217,7 +217,7 @@ test('trauma flow has an OBED walk-in node; no pending tags', () => {
   assert.match(t, /OBED walk-in \/ delayed presentation/);
   assert.match(t, /strangulation/);
   assert.match(t, /1-800-799-7233/);
-  assert.doesNotMatch(t, /Pending house decision/);
+  assert.doesNotMatch(t, /Pending local decision/);
   assert.doesNotMatch(t, /300 mcg/);
   const card = traumaCard.html;
   assert.match(card, /OBED TRIAGE NOTE/);
@@ -232,7 +232,7 @@ test('algorithm images exist, display copies are precached, and index loads the 
     assert.ok(fs.existsSync(path.join(root, 'assets/display-diagrams/' + it.id + '.png')), it.id);
     assert.ok(sw.includes('./assets/display-diagrams/' + it.id + '.png'), it.id);
   }
-  assert.ok(sw.includes('v42-2026-11-19-ldboard'));
+  assert.ok(sw.includes('v43-2026-11-19-oncall'));
   assert.ok(sw.includes('./js/flow-cues.js'));
   assert.match(html, /js\/flow-cues\.js/);
 });
@@ -256,15 +256,15 @@ test('v36 house answers: UTI suppression to 4–6 wk postpartum, 2-week test of 
   assert.match(uti, /routine test-of-cure culture 2 weeks after completing treatment\. ACOG Clinical Consensus No\. 4/);
   assert.match(futi, /After pyelonephritis: test-of-cure urine culture 2 weeks after completing treatment/);
   assert.match(futi, /until 4–6 weeks postpartum/);
-  assert.match(tr, /EFM \+ toco for 30–60 minutes \(house practice/);
+  assert.match(tr, /EFM \+ toco for 30–60 minutes \(local policy/);
   assert.match(tr, /always give RhIG if indicated, including &gt;72 h/);
   assert.match(tr, /including &lt;12 wk/);
   assert.match(tr, /Always consult case management for hospital and community policy/);
   assert.doesNotMatch(tr + ftr, /confirm with CSM social work\/legal|house decides minimum|house to confirm|confirm with CSM blood bank/);
   assert.match(ftr, /EFM \+ toco for 30–60 minutes/);
   assert.match(ftr, /consult case management for hospital and community policy/);
-  assert.match(st, /TP-PA is available at CSM/);
+  assert.match(st, /TP-PA is available \(call the lab\)/);
   assert.doesNotMatch(st, /availability at CSM unknown/);
-  assert.match(fst, /TP-PA is available at CSM/);
+  assert.match(fst, /TP-PA is available \(call the lab\)/);
   assert.match(st + fst, /regimen per ID and pharmacy/i);
 });

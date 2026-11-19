@@ -23,7 +23,7 @@ test('ask box: placement, placeholder, disclaimer, no names or reviewed-by text'
   const box = index.match(/<section id="ask-box"[\s\S]*?<\/section>/)[0];
   assert.ok(index.indexOf('id="view-triage"') < index.indexOf('id="ask-box"') && index.indexOf('id="ask-box"') < index.indexOf('id="view-browse"'), 'ask box is in the Clinician section');
   assert.match(box, /placeholder="e\.g\. methamphetamine withdrawal in the third trimester"/);
-  assert.match(box, /Outside resource, not CSM or OBHG policy\./);
+  assert.match(box, /Outside resource, not unit policy\./);
   assert.doesNotMatch((box + askSrc).replace(/mcarozza@obhg\.com/g, ''), /Michael|Carozza|reviewed by/i);
   assert.match(index, /<script src="js\/ask\.js"><\/script>/);
   assert.match(fs.readFileSync(path.join(root, 'sw.js'), 'utf8'), /'\.\/js\/ask\.js'/);
@@ -69,7 +69,7 @@ test('suggest a card: Clinician mailto carries the subject and the typed topic',
   const a = d.getElementById('ask-suggest');
   assert.equal(a.textContent, "Can't find it? Suggest a card");
   d.getElementById('ask-q').value = 'meth withdrawal'; d.getElementById('ask-q').dispatchEvent(new w.Event('input'));
-  assert.match(a.href, /^mailto:mcarozza@obhg\.com\?subject=Triage%20app%20card%20suggestion&body=/);
+  assert.match(a.href, /^mailto:\?subject=Triage%20app%20card%20suggestion&body=/);
   assert.match(decodeURIComponent(a.href), /meth withdrawal$/);
 });
 

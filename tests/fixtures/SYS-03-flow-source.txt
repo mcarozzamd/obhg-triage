@@ -1,4 +1,4 @@
-MATERNAL SEPSIS: SCREEN, 1-HOUR BUNDLE, ESCALATE CHRISTUS St. Michael / OBHG · Texarkana
+MATERNAL SEPSIS: SCREEN, 1-HOUR BUNDLE, ESCALATE Decision support only
 SYS-03 · With SYS-01, LND-04 · SMFM CS #67 (2023) · CMQCC Sepsis Toolkit (2020) · ACOG CO 712, PB 211 · All units, ED · Decision support only, not unit policy
 18 October 2026
 HOW TO READ THIS CHART: start at Step 0. Hexagons are questions; shaded rectangles are actions. Fever is not required. No single screening tool alone (SMFM); qSOFA missed half of maternal sepsis (sensitivity 50%) and SIRS over-calls in pregnancy (specificity 63%) (CMQCC).
@@ -19,7 +19,7 @@ Infection still suspected (eg, CVA tenderness with low-grade temp; prolonged
 ROM with maternal or fetal tachycardia): do Step 2 labs anyway (CMQCC).
 YES
 SCREEN POSITIVE = TIME ZERO · 1-HOUR BUNDLE
-RN notifies the OBHG hospitalist and charge RN now; hospitalist to the
+RN notifies the hospitalist and charge RN now; hospitalist to the
 bedside. Within 1 h: lactate; blood cultures x2 before antibiotics if no delay;
 broad-spectrum antibiotics by source (strips A1, A2); 1 to 2 L balanced
 crystalloid if hypotension or hypoperfusion (strip B). Step 2 labs: CBC with
@@ -46,7 +46,7 @@ fluids (Sepsis-3, PB 211)?
 NO
 SEPSIS CONFIRMED · MID GRAY
 Fluids per strip B, reassessing after each bolus; repeat lactate; close surveillance
-and rapid response team per CSM; escalate as needed. Source control (Step 4).
+and rapid response team per local protocol; escalate as needed. Source control (Step 4).
 Worse at any reassessment: back to Step 3.
 YES
 SEPTIC SHOCK · ICU NOW (SYS-01)
@@ -64,7 +64,7 @@ STEP 5: STILL PREGNANT?
 Stabilize her first; maternal resuscitation usually improves the FHR.
 Strip D.
 SURGERY OR TRANSFUSION NEEDED
-OBHG hospitalist notifies the private attending. No routine call otherwise.
+the hospitalist notifies the private attending. No routine call otherwise.
 A1 · ANTIBIOTICS BY
 SOURCE
 IAI/chorio (LND-04 card; CO 712): ampicillin 2 g IV q6h + gentamicin 5 mg/kg IV q24h (or 2 mg/kg, then 1.5 mg/kg q8h); add clindamycin 900 mg or metronidazole 500 mg IV q8h for cesarean. Endometritis
@@ -72,9 +72,9 @@ IAI/chorio (LND-04 card; CO 712): ampicillin 2 g IV q6h + gentamicin 5 mg/kg IV 
 (CMQCC): ceftriaxone 2 g IV q24h or cefepime 2 g IV q12h; severe penicillin allergy: aztreonam 1 g IV q8h; MDRO risk: ertapenem 1 g IV q24h or meropenem 1 g IV q8h.
 A2 · ANTIBIOTICS (CONT.)
 Septic abortion or retained products (CMQCC): cefoxitin 2 g IV q6h or cefotetan 2 g IV q12h + doxycycline 100 mg PO or IV q12h; or clindamycin 900 mg IV q8h + gentamicin 3 to 5 mg/kg IV daily. Septic
-abortion or periviable sepsis: alert house supervisor or CMO. Necrotizing wound (CMQCC): piperacillin-tazobactam 3.375 g IV q8h extended infusion (or 4.5 g q6h) + vancomycin per protocol + clindamycin
-900 mg IV q8h; GAS or clostridia: penicillin G 4 million U IV q4h + clindamycin 900 mg IV q8h. Non-necrotizing wound (CSM house regimen): PO amoxicillin-clavulanate 875/125 mg BID x 7 days; IV
-ampicillin-sulbactam 3 g IV q6h, OR piperacillin-tazobactam 4.5 g IV q8h (confirm infusion schedule with CSM pharmacy). Unknown source or septic shock (CMQCC Table 9): piperacillin-tazobactam 3.375 g IV
+abortion or periviable sepsis: alert the nursing supervisor or CMO. Necrotizing wound (CMQCC): piperacillin-tazobactam 3.375 g IV q8h extended infusion (or 4.5 g q6h) + vancomycin per protocol + clindamycin
+900 mg IV q8h; GAS or clostridia: penicillin G 4 million U IV q4h + clindamycin 900 mg IV q8h. Non-necrotizing wound (local regimen): PO amoxicillin-clavulanate 875/125 mg BID x 7 days; IV
+ampicillin-sulbactam 3 g IV q6h, OR piperacillin-tazobactam 4.5 g IV q8h (confirm the infusion schedule with pharmacy). Unknown source or septic shock (CMQCC Table 9): piperacillin-tazobactam 3.375 g IV
 q8h extended (or 4.5 g q6h), or meropenem 1 g IV q8h if MDRO risk, plus vancomycin 15 to 20 mg/kg IV q8 to 12h (load 25 to 30 mg/kg if critically ill). Doses assume normal renal function.
 B · FLUIDS AND
 REASSESSMENT
@@ -84,17 +84,17 @@ gelatin. Reassess after each bolus with dynamic measures (passive leg raise with
 Lactate: repeat if >2 mmol/L (CMQCC order set: at 3 h); CMS also treats lactate ≥4 as shock (CMQCC App A); read with caution in labor. MAP and temp q30 min until lactate <2; urine hourly (CMQCC).
 C · SOURCE CONTROL
 Uterine source (IAI, infected retained tissue, septic abortion): prompt delivery or evacuation regardless of GA (SMFM); IAI alone is not a cesarean indication (LND-04). Retained products: ultrasound, D&C. Septic
-abortion or periviable sepsis: alert house supervisor or CMO. Wound: open and culture; deep or organ space: CT and ultrasound; necrotizing: early surgical debridement, hysterectomy if myometrial necrosis.
-Pyelonephritis/obstruction: renal ultrasound antepartum, CT with contrast postpartum; drainable abscess: IR; obstructed infected kidney: urology decompresses (CSM). Pelvic abscess: ultrasound or CT; IR
+abortion or periviable sepsis: alert the nursing supervisor or CMO. Wound: open and culture; deep or organ space: CT and ultrasound; necrotizing: early surgical debridement, hysterectomy if myometrial necrosis.
+Pyelonephritis/obstruction: renal ultrasound antepartum, CT with contrast postpartum; drainable abscess: IR; obstructed infected kidney: urology decompresses. Pelvic abscess: ultrasound or CT; IR
 drainage. Percutaneous over open surgery, except necrotizing infection (SMFM).
 D · FETUS AND DELIVERY
 Sepsis alone is not an immediate indication for delivery, except IAI (SMFM). Deliver for the usual obstetric indications; cesarean is usually reserved for obstetric indications after she is stabilized (CMQCC). Fetal
-monitoring after maternal stabilization if viable; at the limit of viability, include her or her family's preferences. Septic abortion or periviable sepsis: alert house supervisor or CMO. Antenatal steroids are not
+monitoring after maternal stabilization if viable; at the limit of viability, include her or her family's preferences. Septic abortion or periviable sepsis: alert the nursing supervisor or CMO. Antenatal steroids are not
 contraindicated. Strongly consider avoiding neuraxial in sepsis or shock; anesthesia decides (CMQCC).
 E · NOTIFY AND ESCALATE
-RN: positive screen to OBHG hospitalist and charge RN. Hospitalist: critical care or ICU (SYS-01), anesthesia, neonatology; MFM via the local MFM call schedule posted in the call lounge; ID or surgery as needed.
-Private attending: only if surgery or transfusion is needed. Concern about the plan: charge RN, then nursing director, then OBHG Site Director. Septic abortion or periviable sepsis: alert house supervisor or CMO.
-Doses to be checked against CSM pharmacy build. GA = gestational age; IAI = intraamniotic infection; MDRO = multidrug-resistant organism; POCUS = point-of-care ultrasound. Decision support only, not unit policy. Cite: SMFM
+RN: positive screen to the hospitalist and charge RN. Hospitalist: critical care or ICU (SYS-01), anesthesia, neonatology; MFM via the local MFM call schedule posted in the call lounge; ID or surgery as needed.
+Private attending: only if surgery or transfusion is needed. Concern about the plan: charge RN, then nursing director, then the site director. Septic abortion or periviable sepsis: alert the nursing supervisor or CMO.
+Doses to be checked against the pharmacy build. GA = gestational age; IAI = intraamniotic infection; MDRO = multidrug-resistant organism; POCUS = point-of-care ultrasound. Decision support only, not unit policy. Cite: SMFM
 Consult Series #67, Maternal sepsis, Am J Obstet Gynecol 2023;229:B2-B19; CMQCC, Improving Diagnosis and Treatment of Maternal Sepsis (2020, errata 2022), Box 1, Tables 3, 5, 9, 10, 11; ACOG CO 712, Obstet Gynecol
 2017;130:e95-e101; ACOG PB 211, Obstet Gynecol 2019;133:e303-19.
 18 October 2026

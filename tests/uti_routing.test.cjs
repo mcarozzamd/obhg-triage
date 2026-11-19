@@ -1,4 +1,4 @@
-// ANT-UTI routing, house practices, and algorithm (13 Nov 2026). Synthetic HPIs only; no holdout/blind files.
+// ANT-UTI routing, local policies, and algorithm (13 Nov 2026). Synthetic HPIs only; no holdout/blind files.
 const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path');
 const base = path.resolve(__dirname, '..');
@@ -24,23 +24,23 @@ test('ANT-UTI card is present, released (no PROVISIONAL tag or personal name), w
     assert.doesNotMatch(it.html + it.text, /PROVISIONAL|Michael|Carozza|Not live/i);
   }
   assert.equal(card.lastReviewed, 'Nov 2026');
-  assert.equal((card.html.match(/Doses to be checked against CSM pharmacy build\./g) || []).length, 1);
+  assert.equal((card.html.match(/Doses to be checked against the pharmacy build\./g) || []).length, 1);
   assert.match(card.html, /ALWAYS ADMIT/);
   assert.equal(D.title('ANT-UTI'), 'UTI and pyelonephritis in pregnancy');
   assert.equal(D.title('FD-ANT-UTI'), 'UTI and pyelonephritis in pregnancy');
 });
 
-test('house practices: routine TOC, postpartum pyelo IV-then-oral, routine suppression after pyelo', () => {
+test('local policies: routine TOC, postpartum pyelo IV-then-oral, routine suppression after pyelo', () => {
   const h = (card.html + flow.html).replace(/<[^>]+>/g, ' ');
-  assert.match(h, /House practice:\s*after treated ASB or cystitis, obtain a routine test-of-cure culture/i);
+  assert.match(h, /Local policy:\s*after treated ASB or cystitis, obtain a routine test-of-cure culture/i);
   assert.match(h, /ACOG Clinical Consensus No\. 4: clinicians "may consider repeating a urine culture 1–2 weeks after completing treatment,"/i);
   assert.match(h, /IDSA 2019 finds insufficient evidence for repeat screening/i);
-  assert.match(h, /House practice:\s*IV dose plus oral therapy with follow-up in 24–48 h/i);
+  assert.match(h, /Local policy:\s*IV dose plus oral therapy with follow-up in 24–48 h/i);
   assert.match(h, /Pregnant pyelo is still always admitted/i);
-  assert.match(h, /House practice:\s*routine suppression after a single pyelo/i);
+  assert.match(h, /Local policy:\s*routine suppression after a single pyelo/i);
   assert.match(h, /ACOG says ["“]may consider["”]/i);
-  assert.doesNotMatch(card.html, /Pending house decision/);
-  assert.doesNotMatch(flow.html, /Pending house decision/);
+  assert.doesNotMatch(card.html, /Pending local decision/);
+  assert.doesNotMatch(flow.html, /Pending local decision/);
   assert.doesNotMatch(card.html + card.text, /re-check|re-verify|before publishing|UNVERIFIED/i);
 });
 
@@ -55,7 +55,7 @@ test('algorithm has no dose amounts and points treatment to the card', () => {
   assert.ok(fs.existsSync(path.join(base, flow.img)));
   assert.ok(fs.existsSync(path.join(base, 'assets/display-diagrams/FD-ANT-UTI.png')));
   const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('v42-2026-11-19-ldboard'));
+  assert.ok(sw.includes('v43-2026-11-19-oncall'));
   assert.ok(sw.includes('./assets/display-diagrams/FD-ANT-UTI.png'));
 });
 

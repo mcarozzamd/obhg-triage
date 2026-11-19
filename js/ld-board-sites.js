@@ -1,7 +1,7 @@
 /* Site configs and example snapshots for the L&D board. No patient data. */
 self.LD_BOARD_SITES = {
-  "csm": {
-    "siteName": "CHRISTUS St. Michael",
+  "unit": {
+    "siteName": "My unit",
     "rooms": [
       212,
       214,
@@ -108,7 +108,7 @@ self.LD_BOARD_SITES = {
           "label": "Who delivered",
           "type": "chip",
           "options": [
-            "OBHG",
+            "hospitalist",
             "CNM",
             "private"
           ],
@@ -139,7 +139,7 @@ self.LD_BOARD_SITES = {
           "label": "Who delivered",
           "type": "chip",
           "options": [
-            "OBHG",
+            "hospitalist",
             "CNM",
             "private"
           ],
@@ -358,7 +358,7 @@ self.LD_BOARD_SITES = {
           "label": "Who delivered",
           "type": "chip",
           "options": [
-            "OBHG",
+            "hospitalist",
             "CNM",
             "private"
           ],
@@ -396,7 +396,7 @@ self.LD_BOARD_SITES = {
           "label": "Who delivered",
           "type": "chip",
           "options": [
-            "OBHG",
+            "hospitalist",
             "CNM",
             "private"
           ],
@@ -512,20 +512,20 @@ self.LD_BOARD_SITES = {
   }
 };
 self.LD_BOARD_EXAMPLES = {
-  "csm": {
+  "unit": {
     "example": true,
     "label": "EXAMPLE DATA",
-    "site": "csm",
+    "site": "unit",
     "as_of": "2026-11-18T01:30:00-06:00",
     "title": "EXAMPLE DATA — 2 AM checkout snapshot",
-    "notes": "Layout review only. Patterned on the 17-18 Nov 2026 CSM shift. Unknown fields left blank. Local-only: data stays on this device; clear at checkout.",
+    "notes": "Layout review only. Fictional example census. Unknown fields left blank. Local-only: data stays on this device; clear at checkout.",
     "unassigned": [
       {
         "initials": "AG",
         "gp": "4/4",
         "ga": "37w",
-        "provider": "OBHG",
-        "clinic": "Genesis",
+        "provider": "hospitalist",
+        "clinic": "Clinic A",
         "indication": "TOLAC (1 prior C/S, 2 prior VBACs)",
         "mode": "postpartum",
         "next_step": "Routine PP care; watch bleeding",
@@ -538,7 +538,7 @@ self.LD_BOARD_EXAMPLES = {
             "updated": "2026-11-17T09:24:00-06:00"
           },
           "who_delivered": {
-            "value": "OBHG",
+            "value": "hospitalist",
             "updated": "2026-11-17T09:24:00-06:00"
           },
           "ebl": {
@@ -557,8 +557,8 @@ self.LD_BOARD_EXAMPLES = {
         "initials": "JB2",
         "gp": "5/4",
         "ga": "39w3d",
-        "provider": "OBHG",
-        "clinic": "De Queen HD",
+        "provider": "hospitalist",
+        "clinic": "Clinic B",
         "indication": "PROM; prior C/S x1, SVD x3; chronic hep B; BMI 40",
         "mode": "postpartum",
         "next_step": "Repeat lactate due ~00:00; AM echo + CBC; enoxaparin if stable; confirm infant HBIG + HBV vaccine",
@@ -593,7 +593,7 @@ self.LD_BOARD_EXAMPLES = {
             "updated": "2026-11-17T13:40:00-06:00"
           },
           "who_delivered": {
-            "value": "OBHG",
+            "value": "hospitalist",
             "updated": "2026-11-17T13:40:00-06:00"
           },
           "pph": {
@@ -690,8 +690,8 @@ self.LD_BOARD_EXAMPLES = {
         "initials": "JB1",
         "gp": "1/0",
         "ga": "36w6d",
-        "provider": "OBHG",
-        "clinic": "Genesis",
+        "provider": "hospitalist",
+        "clinic": "Clinic A",
         "indication": "PROM at 01:00 (preterm, <37w); h/o chlamydia (azithromycin on admission)",
         "mode": "postpartum",
         "next_step": "Routine PP care",
@@ -712,7 +712,7 @@ self.LD_BOARD_EXAMPLES = {
             "updated": "2026-11-17T21:27:00-06:00"
           },
           "who_delivered": {
-            "value": "OBHG",
+            "value": "hospitalist",
             "updated": "2026-11-17T21:27:00-06:00"
           },
           "pph": {
@@ -751,7 +751,7 @@ self.LD_BOARD_EXAMPLES = {
             "updated": "2026-11-17T21:27:00-06:00"
           },
           "who_delivered": {
-            "value": "OBHG",
+            "value": "hospitalist",
             "updated": "2026-11-17T21:27:00-06:00"
           },
           "pph": {
@@ -814,7 +814,7 @@ self.LD_BOARD_EXAMPLES = {
         "initials": "RS",
         "gp": "3/2",
         "ga": "38w0d",
-        "provider": "OBHG",
+        "provider": "hospitalist",
         "clinic": "",
         "indication": "Spontaneous labor",
         "mode": "postpartum",
@@ -832,7 +832,7 @@ self.LD_BOARD_EXAMPLES = {
             "updated": "2026-11-17T21:00:00-06:00"
           },
           "who_delivered": {
-            "value": "OBHG",
+            "value": "hospitalist",
             "updated": "2026-11-17T21:00:00-06:00"
           },
           "ebl": {
@@ -857,7 +857,7 @@ self.LD_BOARD_EXAMPLES = {
         "initials": "PW",
         "gp": "1/0",
         "ga": "31w4d",
-        "provider": "OBHG",
+        "provider": "hospitalist",
         "clinic": "",
         "indication": "PPROM",
         "mode": "antepartum",

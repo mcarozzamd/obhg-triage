@@ -5,10 +5,10 @@
  * Nothing typed here is stored. Suggestions go by the user's own mail app (mailto), sent only if they choose. */
 (function (root) {
   'use strict';
-  const SUGGEST_TO = 'mcarozza@obhg.com';
+  const SUGGEST_TO = '';
   const SUGGEST_SUBJECT = 'Triage app card suggestion';
   const OFFLINE = 'Needs internet. Use the cards or call the on-call provider.';
-  const DISCLAIMER = 'Outside resource, not CSM or OBHG policy.';
+  const DISCLAIMER = 'Outside resource, not unit policy.';
   const OE_URL = 'https://www.openevidence.com/';
   const SUGGEST_TEXT = {
     en: { link: "Can't find it? Suggest a card", body: 'Suggested card topic (no patient identifiers): ' },

@@ -1,4 +1,4 @@
-/* OBHG Shift Patient Log — pure logic: shift window, validation, storage, purge, PDF.
+/* Shift Patient Log — pure logic: shift window, validation, storage, purge, PDF.
  * Storage is device-local (localStorage, keys prefixed 'shiftlog_'). External lookups are explicit, reviewed actions; no automatic transmission. */
 (function (root) {
   'use strict';
@@ -153,7 +153,7 @@
     const mk = (o, t) => { let id = 's' + t.getTime(); while (o[id]) id += 'b'; o[id] = { id, start: t.toISOString(), end: null, entries: [] }; return o[id]; };
     const api = {
       getProfile: () => read(K_PROFILE, null),
-      setProfile: p => { const r = Number(p.retention); ls.setItem(K_PROFILE, JSON.stringify({ name: String(p.name || '').slice(0, 80), title: String(p.title || '').slice(0, 40), site: String(p.site || 'CHRISTUS St. Michael').slice(0, 80), retention: RETENTION_OPTS.includes(r) ? r : 30 })); },
+      setProfile: p => { const r = Number(p.retention); ls.setItem(K_PROFILE, JSON.stringify({ name: String(p.name || '').slice(0, 80), title: String(p.title || '').slice(0, 40), site: String(p.site || 'My unit').slice(0, 80), retention: RETENTION_OPTS.includes(r) ? r : 30 })); },
       retention: () => { const p = api.getProfile(); return p && RETENTION_OPTS.includes(p.retention) ? p.retention : 30; },
       allLogs: load,
       // Returns the open shift, applying automatic 08:00 rollover (closes a shift that crossed a boundary).
@@ -277,7 +277,7 @@
     };
     const header = () => {
       y = H - M - 4;
-      T(M, y, 'OBHG SHIFT PATIENT LOG', 16, true); y -= 18;
+      T(M, y, 'SHIFT PATIENT LOG', 16, true); y -= 18;
       T(M, y, 'Provider: ' + profile.name + (profile.title ? ', ' + profile.title : '') + '    Site: ' + profile.site, 10, false); y -= 13;
       T(M, y, 'Shift: ' + shiftLabel(shift), 10, false); y -= 16;
       let x = M; COLS.forEach((c, i) => { wrap(c, widths[i] - 4, 7).forEach((ln, j) => T(x + 2, y - j * 9, ln, 7, true)); x += widths[i]; }); y -= 14; L(M, y, W - M, y, 1); y -= 11;
@@ -474,9 +474,9 @@
       const icd = r.coding.icd.filter(c => !c.alt && c.verified).map(c => c.code + ' ' + c.label);
       L.push('', 'CODES (suggested, verify): ' + icd.join('; ') + (r.coding.cpt.length ? ' | CPT ' + r.coding.cpt.slice(0, 2).map(c => c.code).join(', ') : ''));
     }
-    if (src.flags && src.flags.length) L.push('Card has ' + src.flags.length + ' item(s) flagged for verification against house policy.');
+    if (src.flags && src.flags.length) L.push('Card has ' + src.flags.length + ' item(s) flagged for verification against local policy.');
     L.push('Disposition: ' + (fl.disposition || '[select]') + '.');
-    L.push('', 'Generated on-device by rules from OBHG cards. Not the medical record. Verify every element.');
+    L.push('', 'Generated on-device from the clinical cards. Not the medical record. Verify every element.');
     return { text: L.join('\n'), sources: [top.id].concat((r.alternates || []).map(a => a.id)) };
   }
 
@@ -500,7 +500,7 @@
   // opts: { delivered: bool, patient: 'NEW'|'EST', obs: ''|'same'|'multi', surgeon: bool }
   function routineFill(R, id, fl, opts) {
     const set = R.sets.find(x => x.id === id); if (!set) return null; fl = fl || {}; opts = opts || {}; const w = gaWeeks(fl.ga);
-    const ER = R.em_rules, LB = R.em_labels || {}, TRK = ' (OBHG tracking, not billed)';
+    const ER = R.em_rules, LB = R.em_labels || {}, TRK = ' (tracking, not billed)';
     const alts = []; const notes = (set.notes || []).slice();
     const alt = (code, kind, label, rationale) => { if (!alts.some(a => a.code === code && a.kind === kind)) alts.push({ code, kind, label: label || LB[code] || '', rationale: rationale || '' }); };
     let icd = set.icd.filter(c => !c.alt && gaOk(c, w)).map(c => c.code);
@@ -517,7 +517,7 @@
       if (opts.delivered) { delivery.filter(c => !c.alt).forEach(c => cpt.push(c.code)); delivery.filter(c => c.alt).forEach(c => alt(c.code, 'CPT', c.label, c.rationale)); }
       else delivery.forEach(c => alt(c.code, 'CPT', c.label, c.rationale + ' (when delivered)'));
       if (opts.obs) obsMulti(); else { cpt.push(ER.admit.default + (opts.delivered ? TRK : '')); ER.admit.alts.forEach(c => alt(c, 'CPT', LB[c], ER.admit.label)); }
-      if (opts.delivered) notes.push('Admit E/M logged with delivery code: tracking only (OBHG), not billed.');
+      if (opts.delivered) notes.push('Admit E/M logged with delivery code: tracking only, not billed.');
     } else if (set.em === 'ed' || (set.em === 'surgeon' && !opts.surgeon)) {
       if (opts.obs) obsMulti(); else { cpt.push(ER.ed.default); ER.ed.alts.forEach(c => alt(c, 'CPT', LB[c], ER.ed.label)); }
       office(); if (set.admitAlt) [ER.admit.default].concat(ER.admit.alts).forEach(c => alt(c, 'CPT', LB[c], 'If admitted'));

@@ -35,7 +35,7 @@ action(c, 404, 148, 368, 36, "OB ED TRIAGE \u00b7 WHITE",
        fill=WHITE, tsize=6.6, bsize=6.1, tag="triage")
 
 action(c, 20, 190, 752, 36, "1. UNIVERSAL FIRST STEP \u00b7 LIGHT GRAY",
-       "Vitals with sepsis screen (CSM tool). GA/viability; FHT or EFM/toco. Contractions, bleeding, ROM or abnormal FHR \u2192 L&D in parallel. "
+       "Vitals with sepsis screen (unit tool). GA/viability; FHT or EFM/toco. Contractions, bleeding, ROM or abnormal FHR \u2192 L&D in parallel. "
        "Sepsis screen positive or any red flag \u2192 node 5 (SYS-03) now. Otherwise: 2 ASB, 3 cystitis, or 4 pyelo.",
        fill=LIGHT, tsize=6.6, bsize=6.2, tag="n1")
 
@@ -57,13 +57,13 @@ action(c, 20, 352, 752, 40, "5. SEPSIS RED FLAGS \u2014 SYS-03 FIRST \u00b7 DARK
 
 action(c, 20, 398, 752, 48, "6. POSTPARTUM (\u226412 WK) \u00b7 LIGHT GRAY",
        "No ASB screening or treatment postpartum. Cystitis \u2192 node 3 (lactation check on the card). Admit pyelo if any admit criterion (sepsis/red flag, unable to take PO, vomiting, immunocompromise, obstruction/stone, failed oral therapy, unreliable follow-up, within the delivery admission or \u22641 wk after cesarean). "
-       "<b>House practice:</b> well-appearing, no admit criteria \u2014 IV dose plus oral therapy with follow-up in 24\u201348 h; see ANT-UTI card. Pregnant pyelo is still always admitted. GYNB-06 is still not used.",
+       "<b>Local policy:</b> well-appearing, no admit criteria \u2014 IV dose plus oral therapy with follow-up in 24\u201348 h; see ANT-UTI card. Pregnant pyelo is still always admitted. GYNB-06 is still not used.",
        fill=LIGHT, tsize=6.5, bsize=6.0, tag="n6")
 
 action(c, 20, 452, 752, 48, "7. DISPOSITION AND RETURN PRECAUTIONS \u00b7 WHITE",
        "Home (ASB, cystitis, or postpartum per node 6): afebrile, no CVA tenderness, tolerating PO, call-back named, GBS flag if applicable. Admit: any pyelo in pregnancy; sepsis; postpartum admit criterion. "
        "Return for fever, flank pain, vomiting, contractions, bleeding, leaking, decreased FM, shortness of breath, or symptoms not better in 48 h. "
-       "<b>House practice:</b> routine test-of-cure culture 2 weeks after completing treatment for ASB or cystitis (ACOG and IDSA do not require it); after pyelo, test-of-cure culture 2 weeks after completing treatment. <b>House practice:</b> routine suppression after a single pyelo, until 4\u20136 weeks postpartum \u2014 see ANT-UTI card.",
+       "<b>Local policy:</b> routine test-of-cure culture 2 weeks after completing treatment for ASB or cystitis (ACOG and IDSA do not require it); after pyelo, test-of-cure culture 2 weeks after completing treatment. <b>Local policy:</b> routine suppression after a single pyelo, until 4\u20136 weeks postpartum \u2014 see ANT-UTI card.",
        fill=WHITE, tsize=6.4, bsize=6.0, tag="n7")
 
 y = 452 + 48 + 8

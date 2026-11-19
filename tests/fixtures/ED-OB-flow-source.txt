@@ -1,6 +1,6 @@
 ED TO OB PATHWAY: TRIAGE DECISION TREE
-Rebuild of the CSM ED to OB Pathway Guideline (created 10/2026) · Decision support only, not unit policy
-CHRISTUS St. Michael / OBHG - Texarkana
+Rebuild of the ED to OB pathway guideline (created 10/2026) · Decision support only, not unit policy
+Decision support only
 14 October 2026
 HOW TO READ THIS CHART: pick a branch, start at STEP 0, follow the arrows, and answer each yes/no question. Hexagons are questions; shaded rectangles are actions; follow any THEN arrow.
 SHADING KEY: WHITE = patient stays in the Main ED LIGHT GRAY = give report, then transfer to OBED DARK GRAY = delivery imminent: L&D team to the ED
@@ -36,8 +36,7 @@ STEP 3: IS DELIVERY
 IMMINENT?
 YES
 DELIVERY IMMINENT · DARK GRAY
-Call L&D at 427-2606
-The Neo/L&D team comes to the ED.
+Call L&D. The Neo/L&D team comes to the ED.
 NO
 TO OBED · LIGHT GRAY
 Contact OBED RN or L&D charge RN to give report
@@ -63,7 +62,7 @@ patient to OBED.
 Preeclampsia S&S apply from 20 weeks
 gestation through 6 weeks postpartum (criteria in
 band below). Listed with OB S&S.
-L&D: 427-2606
+L&D: call per the local directory
 NON-OB S&S
 (YES at STEP 2 / 1P)
 Any cardiac complaint(s) · SOB/respiratory infection · Trauma/non-OB injury · Suicide attempt · Communicable diseases · Sore throat/ear infections · GI symptoms ·
@@ -77,5 +76,5 @@ SBP 160 or higher and/or DBP 110 or higher, OR SBP 140 to 159 and/or DBP 90 to 1
 ABBREVIATIONS
 ED = emergency department; OBED = obstetric emergency department; L&D = labor and delivery; S&S = signs and symptoms; US = ultrasound; Neo = neonatal; PP =
 postpartum; HTN = hypertension; SOB = shortness of breath; RUQ = right upper quadrant.
-Decision support only, not unit policy. Source: CSM ED to OB Pathway Guideline (10/2026) + annotated paper copy; checked vs ED to OB Fast Pass (rev. 10/2026) and OB Triage ED/OBED guideline. 14 October 2026
+Decision support only, not unit policy. Source: the ED to OB pathway guideline (10/2026) + annotated paper copy; checked vs ED to OB Fast Pass (rev. 10/2026) and OB Triage ED/OBED guideline. 14 October 2026
 

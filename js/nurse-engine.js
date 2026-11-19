@@ -1,6 +1,6 @@
 /* Nurse-section copy of the Doc-reviewed safety triage engine (staging nursebypass 2026-11-12).
  * Loaded ONLY by nurse.html. The physician app (index.html) keeps js/engine.js unchanged. */
-/* OBHG Clinical Triage — deterministic, auditable triage engine.
+/* OB OnCall — deterministic, auditable triage engine.
  * Runs entirely in the browser (and in Node for tests). No network, no storage.
  * Every score comes from an explicit rule below; each rule carries a human-readable "why". */
 (function (root) {
@@ -426,7 +426,7 @@
     ['GYNB-04', 88, f => f.kw.torsion && !f.kw.sob, () => 'Torsion / sudden unilateral pain keyword'],
     ['GYNB-04', 50, f => f.kw.pelvicPain && f.kw.mass && !f.hcgPositive, () => 'Pelvic pain with adnexal mass'],
     ['GYNB-04', 88, f => f.kw.mass && (f.kw.suddenPain || (f.kw.pelvicPain && f.kw.nausea)) && !f.pregnant, () => 'Sudden or vomiting-associated pain with an ovarian cyst/mass → suspected torsion'],
-    ['GYNB-04', 86, f => f.kw.hemCyst && !f.pregnant, () => 'Ruptured / hemorrhagic cyst → GYN-04 tree (CSM house pathway: stable = observe, serial Hgb; unstable = OR)'],
+    ['GYNB-04', 86, f => f.kw.hemCyst && !f.pregnant, () => 'Ruptured / hemorrhagic cyst → GYN-04 tree (local pathway: stable = observe, serial Hgb; unstable = OR)'],
     ['GYNB-04', 40, f => f.kw.pelvicPain && f.kw.notPregnant, () => 'Pelvic pain, not pregnant'],
     ['GYNB-05', 70, f => f.kw.mass && !f.hcgPositive, () => 'Adnexal mass / cyst keyword'],
     ['GYNB-06', 83, f => f.kw.pyelo && /pyelo|CVA|costovertebral|flank pain|kidney stone|renal colic|nephrolith|ureteral stone|hydronephrosis/i.test(f.positiveText), () => 'Pyelonephritis / stone / CVA tenderness keyword'],

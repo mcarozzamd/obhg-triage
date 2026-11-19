@@ -270,7 +270,7 @@
   },
   {
     "id": "GYNB-02",
-    "old": "Acute abnormal uterine bleeding (CO 557 + PB 128 / 136 / 228 + house)",
+    "old": "Acute abnormal uterine bleeding (CO 557 + PB 128 / 136 / 228 + local policy)",
     "name": "Acute abnormal uterine bleeding",
     "review": "Doc naming review (11 Nov 2026)",
     "aliases": [
@@ -283,7 +283,7 @@
   },
   {
     "id": "GYNB-03",
-    "old": "PID / tubo-ovarian abscess (CDC STI 2021 + house drainage)",
+    "old": "PID / tubo-ovarian abscess (CDC STI 2021 + local drainage)",
     "name": "Pelvic inflammatory disease and tubo-ovarian abscess",
     "review": "Doc naming review (11 Nov 2026)",
     "aliases": [
@@ -339,7 +339,7 @@
   },
   {
     "id": "GYNB-08",
-    "old": "Chronic pelvic pain (ACOG PB 218 + house PT)",
+    "old": "Chronic pelvic pain (ACOG PB 218 + local PT)",
     "name": "Chronic pelvic pain",
     "review": "Doc naming review (11 Nov 2026)",
     "codes": [

@@ -4,11 +4,11 @@ const base = require('../js/dm-intrapartum.js');
 const D = process.env.DM_SWITCHES ? base.create(JSON.parse(process.env.DM_SWITCHES)) : base;
 const T = D.TEXT;
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const mark = s => esc(s).replace(/(♦ PENDING HOUSE DECISION \([^)]*\)\.?)/g, '<strong class="pending">$1</strong>');
+const mark = s => esc(s).replace(/(♦ PENDING LOCAL DECISION \([^)]*\)\.?)/g, '<strong class="pending">$1</strong>');
 const rows = D.table().map(r => '<tr><td>' + esc(r.band.label) + '</td><td>' + mark(r.cells.gdm) + '</td><td>' + mark(r.cells.t1) + '</td><td>' + esc(r.cells.fluid) + '</td></tr>').join('');
 const fd = [
   '<p><strong>STEP 0.</strong> ' + mark(T.step0) + '</p>',
-  '<p><strong>STEP 1: ON ADMISSION (CSM).</strong> ' + mark(T.step1) + '</p>',
+  '<p><strong>STEP 1: ON ADMISSION.</strong> ' + mark(T.step1) + '</p>',
   '<p><strong>DRIP SET-UP.</strong> ' + mark(T.setup) + '</p>',
   '<p><strong>MONITORING.</strong></p><ul>' + D.MONITORING.map(m => '<li>' + mark(m) + '</li>').join('') + '</ul>',
   '<p><strong>STEP 2: FSBG NOW — WHICH ROW?</strong> ' + mark(T.step2) + '</p>',
@@ -17,9 +17,9 @@ const fd = [
   '<p><strong>DIET-CONTROLLED GDM OR ORAL AGENTS: NO DRIP.</strong> ' + mark(T.f4) + '</p>',
   '<p><strong>TYPE 1: NEVER ZERO BASAL.</strong> ' + mark(T.t1) + '</p>',
   '<p><strong>TYPE 1 ON PLAIN LR (≥121): KETONES.</strong> ' + mark(T.ketones) + '</p>',
-  '<p><strong>HYPOGLYCEMIA &lt;70 OR SYMPTOMS: RESCUE NOW (CSM Adult Hypoglycemic Protocol).</strong></p><ul>' + D.RESCUE.map(o => '<li><strong>' + esc(o.order) + ':</strong> ' + mark(o.when) + '</li>').join('') + D.RESCUE_AFTER.map(x => '<li>' + mark(x) + '</li>').join('') + '</ul>',
+  '<p><strong>HYPOGLYCEMIA &lt;70 OR SYMPTOMS: RESCUE NOW (the adult hypoglycemic protocol).</strong></p><ul>' + D.RESCUE.map(o => '<li><strong>' + esc(o.order) + ':</strong> ' + mark(o.when) + '</li>').join('') + D.RESCUE_AFTER.map(x => '<li>' + mark(x) + '</li>').join('') + '</ul>',
   '<p><strong>SICK, KETONES, VOMITING? → DKA.</strong> ' + mark(T.dka) + '</p>',
-  '<p><strong>A · AFTER DELIVERY (CSM).</strong> ' + mark(T.after) + '</p>',
+  '<p><strong>A · AFTER DELIVERY.</strong> ' + mark(T.after) + '</p>',
   '<p><strong>B · NEWBORN.</strong> ' + mark(T.newborn) + '</p>',
   '<p><strong>C · STEROIDS / TIMING.</strong> ' + mark(T.steroidsShort) + '</p>',
   '<p><strong>D · NOTIFY.</strong> ' + mark(T.notify) + '</p>',
@@ -31,6 +31,6 @@ const ant05 = '<ul><li>GDM A1 = diet-controlled. GDM A2 = medication. Pregestati
   '<li>' + mark(T.ant05NoDrip) + '</li>' +
   '<li>Shoulder counseling: consider scheduled cesarean at EFW ≥4500 g with diabetes, ≥5000 g without (LND-06). Counseling threshold, not an absolute safety cutoff.</li>' +
   '<li>' + mark(T.ant05Steroids) + '</li>' +
-  '<li>Postpartum: notify the provider at delivery to start the CSM Postpartum Diabetes Management Order Set (doses there). Screen A1/A2 with a 75-g 2-hour OGTT at 4–12 weeks postpartum.</li></ul>\n' +
-  '<p class="bottomline">BOTTOM LINE. A1 can wait to 40+6. A2 and well-controlled pregestational diabetes: 39 weeks. In labor: CSM nomogram, below 70 = low, hourly FSBG on the drip, type 1 never zero basal. EFW ≥4500 g with diabetes: consider cesarean (counseling, not a limit).</p>';
+  '<li>Postpartum: notify the provider at delivery to start the postpartum diabetes order set (doses there). Screen A1/A2 with a 75-g 2-hour OGTT at 4–12 weeks postpartum.</li></ul>\n' +
+  '<p class="bottomline">BOTTOM LINE. A1 can wait to 40+6. A2 and well-controlled pregestational diabetes: 39 weeks. In labor: the insulin nomogram, below 70 = low, hourly FSBG on the drip, type 1 never zero basal. EFW ≥4500 g with diabetes: consider cesarean (counseling, not a limit).</p>';
 process.stdout.write(process.argv[2] === 'ant05' ? ant05 : fd);

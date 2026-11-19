@@ -94,7 +94,7 @@ y = strips(c, 598, [
      "A normal ultrasound does not rule out abruption.", 28),
     ("OBED WALK-IN",
      "Walk-in after minor trauma (not via ED/trauma): send to ED / activate trauma for any red flag, head strike with LOC, suspected fracture, injury beyond the uterus, or care OBED cannot provide. "
-     "Delayed (&gt;24 h): still evaluate fully. Asymptomatic with a reassuring exam: EFM + toco 30–60 min (house practice). Any contractions, bleeding, pain, leaking or decreased FM → extended monitoring. "
+     "Delayed (&gt;24 h): still evaluate fully. Asymptomatic with a reassuring exam: EFM + toco 30–60 min (local policy). Any contractions, bleeding, pain, leaking or decreased FM → extended monitoring. "
      "Rh-negative: always give RhIG if indicated, including beyond 72 h; send KB (dose on the card).", 42),
     ("MECHANISM / IPV / FOLLOW-UP",
      "Document mechanism in her words. Strangulation (any neck compression) is a high-lethality marker → ED/forensic evaluation. "

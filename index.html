@@ -5,21 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B3D5C">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://obhgtriage.goatcounter.com; style-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://obhgtriage.goatcounter.com; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'">
 <meta name="robots" content="noindex, nofollow">
-<title>OBHG CLINICAL TRIAGE</title>
+<title>OB OnCall</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="OBHG Triage">
+<meta name="apple-mobile-web-app-title" content="OB OnCall">
 <link rel="stylesheet" href="css/app.css">
-<script data-goatcounter="https://obhgtriage.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <header class="hdr">
-  <div class="hdr-org">CHRISTUS ST. MICHAEL · OBHG · TEXARKANA</div>
-  <h1>OBHG CLINICAL TRIAGE</h1>
+  <div class="hdr-org">CLINICAL DECISION SUPPORT</div>
+  <h1>OB OnCall</h1>
 </header>
 
 <nav id="section-bar" class="secbar" aria-label="Section" hidden>
@@ -89,8 +88,8 @@
     <p class="privacy-line">General questions only. No names, initials, ages, dates, MRNs or other identifiers.</p>
     <div class="btns"><button type="button" id="ask-oe" class="primary">Ask OpenEvidence (copies question)</button><button type="button" id="ask-grok">Ask Grok</button></div>
     <p id="ask-status" class="alt-tag" role="status" hidden></p>
-    <p id="ask-disclaimer" class="alt-tag">Outside resource, not CSM or OBHG policy.</p>
-    <p class="ask-suggest"><a id="ask-suggest" href="mailto:mcarozza@obhg.com?subject=Triage%20app%20card%20suggestion">Can't find it? Suggest a card</a></p>
+    <p id="ask-disclaimer" class="alt-tag">Outside resource, not unit policy.</p>
+    <p class="ask-suggest"><a id="ask-suggest" href="mailto:?subject=Triage%20app%20card%20suggestion">Can't find it? Suggest a card</a></p>
   </section>
   <p class="foot"><b>Decision support only · not unit policy · not the medical record · enter no PHI.</b><br>All matching runs on this device. Triage text is not sent, saved, or logged. Shift log entries stay on-device; optional lookup links send only your reviewed clinical query. Works offline after first load.</p>
 </section>
@@ -104,7 +103,7 @@
     <h3>PROVIDER PROFILE (STORED ON THIS DEVICE ONLY)</h3>
     <label class="lbl" for="pf-name">Provider name</label><input id="pf-name" maxlength="80" autocomplete="off">
     <label class="lbl" for="pf-title">Credentials / title</label><input id="pf-title" maxlength="40" placeholder="MD, DO, CNM..." autocomplete="off">
-    <label class="lbl" for="pf-site">Site</label><input id="pf-site" maxlength="80" value="CHRISTUS St. Michael" autocomplete="off">
+    <label class="lbl" for="pf-site">Site</label><input id="pf-site" maxlength="80" value="My unit" autocomplete="off">
     <label class="lbl" for="pf-ret">Keep closed shift logs for</label><select id="pf-ret"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option><option value="0">Keep until I delete</option></select>
     <div class="btns"><button id="pf-save" class="primary" type="button">Save profile</button></div>
   </div>
@@ -135,7 +134,7 @@
           <label>Observation<select id="lg-obs"><option value="">No (OBED/triage)</option><option value="same">Same-day (99234-99236)</option><option value="multi">Multi-day (99221-99223 + 99238/99239)</option></select></label>
           <label>My group did surgery<select id="lg-surg"><option value="no">No</option><option value="yes">Yes</option></select></label>
         </div>
-        <p class="alt-tag">OBED default E/M 99281-99285; office new/established are alternates. Admit E/M is logged with delivery codes for OBHG tracking (not billed). Observation requires an order. Verify with OBHG coding.</p>
+        <p class="alt-tag">OBED default E/M 99281-99285; office new/established are alternates. Admit E/M is logged with delivery codes for tracking (not billed). Observation requires an order. Verify with your coding team.</p>
         <div class="subh">OB</div><div id="lg-routine" class="qpick"></div>
         <div class="subh">GYN</div><div id="lg-routine-gyn" class="qpick"></div>
         <div id="lg-routine-alts" class="alt-tag"></div>

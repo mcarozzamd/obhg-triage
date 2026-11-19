@@ -5,16 +5,16 @@ const EXAMPLES = self.LD_BOARD_EXAMPLES;
 const CHECKOUT_TIMES = ["21:00", "02:00"];
 const STALE_H = 3;
 const PURGE_H = 24;
-const PROVIDERS = ["OBHG", "CNM", "private"];
+const PROVIDERS = ["hospitalist", "CNM", "private"];
 const TZ = "America/Chicago";
-const SHARE_DISCLAIMER = "only use encrypted OBHG or local Hospital approved email or Bluetooth functions like iPhone AirDrop";
+const SHARE_DISCLAIMER = "only use encrypted, hospital-approved email or Bluetooth functions like iPhone AirDrop";
 const DB_NAME = "obhg-ld-board";
 const DB_STORE = "boards";
 
 const params = new URLSearchParams(location.search);
-const siteId = (params.get("site") || "csm").toLowerCase();
-const SITE = SITES[siteId] || SITES.csm;
-const EXAMPLE = EXAMPLES[siteId] || EXAMPLES.csm || {};
+const siteId = (params.get("site") || "unit").toLowerCase();
+const SITE = SITES[siteId] || SITES.unit;
+const EXAMPLE = EXAMPLES[siteId] || EXAMPLES.unit || {};
 const STORAGE_KEY = "ldb.v2." + siteId;
 
 function openDb() {
@@ -309,8 +309,9 @@ function parseDictation(text) {
     result.applied.ebl = m[1] + " mL";
     result.tokens.push("EBL " + m[1] + " mL");
   });
-  take(/\b(obhg|cnm|private)\b/i, m => {
-    result.applied.provider = m[1].toLowerCase() === "obhg" ? "OBHG" : (m[1].toLowerCase() === "cnm" ? "CNM" : "private");
+  take(/\b(hospitalist|obhg|cnm|private)\b/i, m => {
+    const tok = m[1].toLowerCase();
+    result.applied.provider = (tok === "cnm") ? "CNM" : (tok === "private" ? "private" : "hospitalist");
     result.tokens.push("Provider " + result.applied.provider);
   });
   take(/\b(g(\d+)p(\d+)|(\d+)\s*\/\s*(\d+))\b/i, m => {
@@ -350,7 +351,7 @@ function applyParsed(parsed) {
   const room = parsed.room;
   if (!room) return;
   let p = patientAt(room) ? JSON.parse(JSON.stringify(patientAt(room))) : {
-    initials: "", gp: "", ga: "", provider: "OBHG", clinic: "", indication: "",
+    initials: "", gp: "", ga: "", provider: "hospitalist", clinic: "", indication: "",
     mode: "labor", next_step: "", next_due: null, status: "", updated: ts, fields: {}
   };
   p.fields = p.fields || {};
@@ -609,7 +610,7 @@ function addPatientToRoom(room, initials, mode) {
   const ts = iso(clock());
   const existing = patientAt(room);
   const p = existing ? JSON.parse(JSON.stringify(existing)) : {
-    initials: "", gp: "", ga: "", provider: "OBHG", clinic: "", indication: "",
+    initials: "", gp: "", ga: "", provider: "hospitalist", clinic: "", indication: "",
     mode: "labor", next_step: "", next_due: null, status: "", updated: ts, fields: {}
   };
   p.initials = init;

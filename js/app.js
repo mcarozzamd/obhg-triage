@@ -1,4 +1,4 @@
-/* OBHG Clinical Triage UI (with Shift Patient Log; log stored on device only, keys prefixed 'shiftlog_'). No automatic transmission of clinical text; reviewed external lookups are opt-in. No storage of the HPI. */
+/* OB OnCall UI (with Shift Patient Log; log stored on device only, keys prefixed 'shiftlog_'). No automatic transmission of clinical text; reviewed external lookups are opt-in. No storage of the HPI. */
 (function () {
   'use strict';
   const C = self.CONTENT, T = self.CODE_TABLES, V = self.CODE_VALIDATION, E = self.TriageEngine, D = self.DisplayNames;
@@ -381,10 +381,10 @@
     const pf = store.getProfile(), sh = store.get(id); if (!sh) return;
     const str = SL.buildPDF(pf, sh);
     const bytes = new Uint8Array(str.length); for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i) & 255;
-    const name = 'OBHG_Shift_Log_' + SL.shiftLabel(sh).slice(0, 16).replace(' ', '_').replace(':', '') + '.pdf';
+    const name = 'Shift_Log_' + SL.shiftLabel(sh).slice(0, 16).replace(' ', '_').replace(':', '') + '.pdf';
     const file = new File([bytes], name, { type: 'application/pdf' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: 'OBHG SHIFT PATIENT LOG' }); return 'shared'; } catch (err) { if (err && err.name === 'AbortError') return 'cancelled'; }
+      try { await navigator.share({ files: [file], title: 'SHIFT PATIENT LOG' }); return 'shared'; } catch (err) { if (err && err.name === 'AbortError') return 'cancelled'; }
     }
     const url = URL.createObjectURL(file); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 10000); return 'downloaded';
@@ -408,9 +408,9 @@
   };
   $('pf-save').onclick = () => {
     const name = $('pf-name').value.trim(); if (!name) { $('pf-name').focus(); return; }
-    store.setProfile({ name, title: $('pf-title').value.trim(), site: $('pf-site').value.trim() || 'CHRISTUS St. Michael', retention: +$('pf-ret').value }); renderLog();
+    store.setProfile({ name, title: $('pf-title').value.trim(), site: $('pf-site').value.trim() || 'My unit', retention: +$('pf-ret').value }); renderLog();
   };
-  $('pf-edit').onclick = () => { const pf = store.getProfile() || {}; $('pf-name').value = pf.name || ''; $('pf-title').value = pf.title || ''; $('pf-site').value = pf.site || 'CHRISTUS St. Michael'; $('pf-ret').value = String(store.retention()); $('profile-box').hidden = false; $('log-main').hidden = true; };
+  $('pf-edit').onclick = () => { const pf = store.getProfile() || {}; $('pf-name').value = pf.name || ''; $('pf-title').value = pf.title || ''; $('pf-site').value = pf.site || 'My unit'; $('pf-ret').value = String(store.retention()); $('profile-box').hidden = false; $('log-main').hidden = true; };
   // Structured fields (initials/age/G/P/GA/HPI) drive the engine; summary auto-fills them first.
   let lastR = null, lastAP = null, amending = null; const auto = new Set();
   const fieldsNow = () => ({ initials: $('lg-initials').value.trim(), age: $('lg-age').value.trim(), gp: $('lg-gp').value.trim(), ga: $('lg-ga').value.trim(), hpi: $('lg-hpi2').value.trim(), disposition: $('lg-disposition').value });
@@ -435,7 +435,7 @@
     $('lg-routine-alts').innerHTML = (rf.needsGA ? '<p><b>Enter GA for Z3A.xx.</b></p>' : '') +
       (rf.notes.length ? '<ul class="rules">' + rf.notes.map(n => '<li>' + esc(n) + '</li>').join('') + '</ul>' : '') +
       (rf.alts.length ? '<div>Also: ' + rf.alts.map(c => '<button type="button" class="small altcode" data-addcode="' + esc(c.code) + '" data-kind="' + c.kind + '" title="' + esc(c.rationale) + '">+ ' + esc(c.code) + ' ' + esc(c.label) + '</button>').join('') + '</div>' : '') +
-      '<p class="alt-tag"><b>' + esc(RC.disclaimer) + '</b> Verify with OBHG coding.</p>';
+      '<p class="alt-tag"><b>' + esc(RC.disclaimer) + '</b> Verify with your coding team.</p>';
     if (force) { flash(['lg-diagnosis', 'lg-icd', 'lg-cpt', 'lg-disposition']); toast(/OTHER$/.test(id) ? 'Cleared for manual entry' : 'Filled: ' + rf.set.label); }
     return rf;
   }

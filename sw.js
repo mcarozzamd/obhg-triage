@@ -1,4 +1,4 @@
-// OBHG CLINICAL TRIAGE service worker. v42 (19 Nov 2026): adds the on-device L&D labor board (board.html; site-configured rooms and checklist; IndexedDB; Share and Load shared board). Previous: v41 (19 Nov 2026): local staging of guideline queue (late-preterm ACS limits, arrest-of-dilation box, cerclage additions, chronic HTN discharge checklist, post-cesarean antiemetic ladder, syphilis discordant serology, UTI CC4 re-verify, trauma ≥4 h monitoring). Nothing in this cache name is live. Previous: v40 (16 Nov 2026): substance use in pregnancy card and algorithm: stimulant toxicity now lorazepam first-line, nifedipine or hydralazine for severe-range BP, no beta-blockers including labetalol. Previous: v39 (15 Nov 2026): section jump boxes on the substance use and UTI cards (instant jump, ↑ Sections back link); UTI and substance use algorithm titles shortened.
+// OB OnCall service worker. v43 (19 Nov 2026): de-branded (institution names removed). Previous: v42 (19 Nov 2026): adds the on-device L&D labor board (board.html; site-configured rooms and checklist; IndexedDB; Share and Load shared board). Previous: v41 (19 Nov 2026): local staging of guideline queue (late-preterm ACS limits, arrest-of-dilation box, cerclage additions, chronic HTN discharge checklist, post-cesarean antiemetic ladder, syphilis discordant serology, UTI CC4 re-verify, trauma ≥4 h monitoring). Nothing in this cache name is live. Previous: v40 (16 Nov 2026): substance use in pregnancy card and algorithm: stimulant toxicity now lorazepam first-line, nifedipine or hydralazine for severe-range BP, no beta-blockers including labetalol. Previous: v39 (15 Nov 2026): section jump boxes on the substance use and UTI cards (instant jump, ↑ Sections back link); UTI and substance use algorithm titles shortened.
 // v38 (15 Nov 2026): ANT-SUD substance use in pregnancy card and FD-ANT-SUD algorithm; Ask a question link-out and Suggest a card released.
 // v37 (15 Nov 2026): Ask a question link-out (OpenEvidence/Grok, online only) and Suggest a card in Clinician and Nurse.
 // v36 (14 Nov 2026): house answers applied to trauma, STI and UTI (RhIG, delayed-presentation monitoring, case management, TP-PA, test-of-cure timing, postpartum suppression).
@@ -8,7 +8,7 @@
 // v32 (13 Nov 2026): ANT-TRAUMA, ANT-STI and ANT-UTI cards and algorithms with OBED triage (live).
 // v31 (13 Nov 2026): adds ANT-UTI and FD-ANT-UTI (test build).
 // v30 (13 Nov 2026): Doc review fixes — GYNB-06 pregnancy gate, stiLD flank/CVA, SMFM #69 HBIG dose line (test build).
-// v29 (13 Nov 2026): adds OBED triage branches and house decisions to the trauma and STI algorithms (test build).
+// v29 (13 Nov 2026): adds OBED triage branches and local decisions to the trauma and STI algorithms (test build).
 // v28 (13 Nov 2026): adds FD-ANT-TRAUMA and FD-ANT-STI algorithms (test build).
 // v27 (13 Nov 2026): adds ANT-TRAUMA (trauma in pregnancy) clinician card.
 // v26 (13 Nov 2026): start page with four sections (Clinician, Nurse, Browse Guidelines, Patient log).
@@ -16,7 +16,7 @@
 // v24 (11 Nov 2026): precaches the plain-name diagram images the app shows; original diagram files are cached on first use.
 // Only deletes caches with its own prefix. Cache-first assets, network-first navigation. No network calls carry user input.
 const PREFIX = 'obhg-triage-';
-const CACHE = PREFIX + 'v42-2026-11-19-ldboard';
+const CACHE = PREFIX + 'v43-2026-11-19-oncall';
 const ASSETS = [
   './',
   './index.html',

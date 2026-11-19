@@ -5,8 +5,8 @@ const fs=require('fs');
 const path=require('path');
 const BASE=(process.env.BASE||'http://127.0.0.1:8899/').replace(/\/?$/,'/');
 const SHOTS=process.env.SHOTS||'/workspace/medical/meddir/site-director/ld-board/app-preview';
-const CACHE=process.env.CACHE||'v42-2026-11-19-ldboard';
-const DISCLAIMER='only use encrypted OBHG or local Hospital approved email or Bluetooth functions like iPhone AirDrop';
+const CACHE=process.env.CACHE||'v43-2026-11-19-oncall';
+const DISCLAIMER='only use encrypted, hospital-approved email or Bluetooth functions like iPhone AirDrop';
 fs.mkdirSync(SHOTS,{recursive:true});
 
 (async()=>{

@@ -1,7 +1,7 @@
 # Build: FD-ANT-STI STIs on L&D router, 13 Nov 2026.
 # Labor-path wording is the reviewed nodes only. No dose numbers.
 # Entry choice (13 Nov 2026): In labor / admitted vs OB ED triage.
-# OB ED triage branch (13 Nov 2026); house decisions applied.
+# OB ED triage branch (13 Nov 2026); local decisions applied.
 import os, sys, subprocess
 sys.dont_write_bytecode = True
 sys.path.insert(0, "/workspace/grok-obgyn/cards/flow-diagrams/")
@@ -84,7 +84,7 @@ action(c, 20, 604, 752, 48, "5. PEDS HANDOFF SUMMARY \u00b7 LIGHT GRAY",
        "Use the peds-handoff cue with this algorithm. Nothing is stored.",
        fill=LIGHT, tsize=7.2, bsize=6.8, tag="n5")
 
-# OB ED TRIAGE BRANCH (house decisions, 13 Nov 2026)
+# OB ED TRIAGE BRANCH (local decisions, 13 Nov 2026)
 action(c, 20, 662, 752, 36, "OB ED TRIAGE BRANCH · LIGHT GRAY",
        "Not in labor (any GA) or postpartum ≤12 wk. Early pregnancy, location unknown, or pain/bleeding <20 wk: confirm pregnancy and location first; ectopic and septic abortion outrank every STI diagnosis.",
        fill=LIGHT, tsize=7.0, bsize=6.4, tag="obed-h")
@@ -104,7 +104,7 @@ action(c, 404, 788, 368, 48, "d) DYSURIA · WHITE",
        "UA, culture, and GC/CT/trich NAAT. Pyelonephritis: admit as an inpatient for IV antibiotics. Cystitis/ASB: treatment per the card.",
        fill=WHITE, tsize=6.6, bsize=6.2, tag="od")
 action(c, 20, 838, 372, 52, "e) SYPHILIS SCREEN · WHITE",
-       "Treat in OBED; do not send her home for the shot. House practice (not a cited rule): J-H — before ~24 wk, discharge with return precautions; from 24 wk, first early-syphilis dose on L&D with fetal monitoring for several hours.",
+       "Treat in OBED; do not send her home for the shot. Local policy (not a cited rule): J-H — before ~24 wk, discharge with return precautions; from 24 wk, first early-syphilis dose on L&D with fetal monitoring for several hours.",
        fill=WHITE, tsize=6.5, bsize=6.1, tag="oe")
 action(c, 404, 838, 368, 52, "f) PARTNER / EPT  g) HIV OR HEP B UNKNOWN · WHITE",
        "Test and treat exposures per the card. EPT permitted in Texas for GC/CT, not syphilis. Unknown HIV: opt-out test, link to care. Unknown hep B: SMFM #69 — newborn vaccine plus HBIG within 12 h.",

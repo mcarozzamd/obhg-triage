@@ -33,34 +33,34 @@ action(c, 20, 148, 752, 30, "0. OVERDOSE / ARREST \u00b7 DARK GRAY",
 
 action(c, 20, 184, 372, 92, "L. IN LABOR / ADMITTED \u00b7 WHITE",
        "Verify MOUD dose (PMP / prescriber / OTP) and CONTINUE it \u2014 never hold for labor, NPO or cesarean. Early anesthesia consult. Neuraxial preferred; NO nalbuphine or butorphanol. "
-       "BP \u2265140/90 in a stimulant user = preeclampsia until proven otherwise \u2192 ANT-04; <b>house practice:</b> lorazepam first; nifedipine or hydralazine for severe BP; no beta-blockers, including labetalol. "
+       "BP \u2265140/90 in a stimulant user = preeclampsia until proven otherwise \u2192 ANT-04; <b>local policy:</b> lorazepam first; nifedipine or hydralazine for severe BP; no beta-blockers, including labetalol. "
        "Recent meth/cocaine \u2192 abruption watch (LND-01). CIWA / COWS \u2192 treat (see ANT-SUD card). Peds/NICU and social work on admission \u2192 N, S. Postpartum \u2192 P.",
        fill=WHITE, tsize=7.0, bsize=7.2, tag="labor")
 action(c, 404, 184, 368, 92, "1. OB ED TRIAGE \u2014 UNIVERSAL FIRST STEP \u00b7 LIGHT GRAY",
        "Vitals with CSM early warning tool; GA; FHT or EFM/toco. Red flags \u2192 attending now (severe BP, chest pain, seizure, hyperthermia, psychosis, suicidality, abruption, Cat II\u2013III). "
-       "Verbal screen every patient (4Ps / NIDA / CRAFFT). <b>House practice:</b> UDS only for a clinical question and with informed consent; confirm positives (GC/MS or LC-MS/MS) \u2192 node 2. "
+       "Verbal screen every patient (4Ps / NIDA / CRAFFT). <b>Local policy:</b> UDS only for a clinical question and with informed consent; confirm positives (GC/MS or LC-MS/MS) \u2192 node 2. "
        "Then by substance \u2192 nodes 3\u20138.",
        fill=LIGHT, tsize=7.0, bsize=7.2, tag="n1")
 
 action(c, 20, 282, 372, 56, "3. METH INTOXICATION \u00b7 MID GRAY",
-       "HTN = preeclampsia workup (ANT-04), not \u201cjust meth.\u201d <b>House practice:</b> lorazepam first for HTN and agitation; severe BP \u2192 nifedipine or hydralazine (see ANT-SUD card); no beta-blockers, including labetalol. EFM while hypertensive. Admit if severe BP or preeclampsia not excluded.",
+       "HTN = preeclampsia workup (ANT-04), not \u201cjust meth.\u201d <b>Local policy:</b> lorazepam first for HTN and agitation; severe BP \u2192 nifedipine or hydralazine (see ANT-SUD card); no beta-blockers, including labetalol. EFM while hypertensive. Admit if severe BP or preeclampsia not excluded.",
        fill=MID, tsize=7.0, bsize=7.2, tag="n3")
 action(c, 404, 282, 368, 56, "4. STIMULANT WITHDRAWAL (CRASH) \u00b7 WHITE",
-       "Supportive care; no FDA-approved drug. Rule out oversedation. Suicidality screen (CSM tool, e.g., C-SSRS); positive \u2192 sitter + psychiatry. <b>House practice:</b> NST on presentation; EFM if recent use, HTN, contractions, bleeding or pain; growth US if none in 3\u20134 wk.",
+       "Supportive care; no FDA-approved drug. Rule out oversedation. Suicidality screen (CSM tool, e.g., C-SSRS); positive \u2192 sitter + psychiatry. <b>Local policy:</b> NST on presentation; EFM if recent use, HTN, contractions, bleeding or pain; growth US if none in 3\u20134 wk.",
        fill=WHITE, tsize=7.0, bsize=7.2, tag="n4")
 
 action(c, 20, 344, 372, 64, "5. OPIOIDS \u2014 OUD / MOUD / WITHDRAWAL \u00b7 WHITE",
-       "Continue MOUD; never taper. COWS \u2192 treat promptly. <b>House practice: OBED may start buprenorphine</b> (standard start for discharge; see ANT-SUD card). Fentanyl \u2192 low-dose start, ADMIT. No nalbuphine/butorphanol (EHR allergy/intolerance field). Naloxone kit in hand.",
+       "Continue MOUD; never taper. COWS \u2192 treat promptly. <b>Local policy: OBED may start buprenorphine</b> (standard start for discharge; see ANT-SUD card). Fentanyl \u2192 low-dose start, ADMIT. No nalbuphine/butorphanol (EHR allergy/intolerance field). Naloxone kit in hand.",
        fill=WHITE, tsize=7.0, bsize=7.2, tag="n5")
 action(c, 404, 344, 368, 64, "6. COCAINE \u00b7 MID GRAY",
-       "Abdominal pain or bleeding = abruption until proven otherwise \u2192 L&amp;D, EFM, CBC/fibrinogen/coags. <b>House practice:</b> lorazepam first; severe BP \u2192 nifedipine or hydralazine; no beta-blockers, including labetalol. Chest pain \u2192 ECG, troponin, cardiology.",
+       "Abdominal pain or bleeding = abruption until proven otherwise \u2192 L&amp;D, EFM, CBC/fibrinogen/coags. <b>Local policy:</b> lorazepam first; severe BP \u2192 nifedipine or hydralazine; no beta-blockers, including labetalol. Chest pain \u2192 ECG, troponin, cardiology.",
        fill=MID, tsize=7.0, bsize=7.2, tag="n6")
 
 action(c, 20, 414, 372, 52, "7. ALCOHOL \u00b7 MID GRAY",
-       "CIWA-Ar. <b>House practice:</b> any pregnant patient in withdrawal \u2192 ADMIT. Benzodiazepines (short-acting near term); thiamine; no valproate \u2014 see ANT-SUD card. Seizure / DTs \u2192 attending now.",
+       "CIWA-Ar. <b>Local policy:</b> any pregnant patient in withdrawal \u2192 ADMIT. Benzodiazepines (short-acting near term); thiamine; no valproate \u2014 see ANT-SUD card. Seizure / DTs \u2192 attending now.",
        fill=MID, tsize=7.0, bsize=7.2, tag="n7")
 action(c, 404, 414, 368, 52, "8. CANNABIS / CHS \u00b7 WHITE",
-       "Counsel. CHS vs hyperemesis (ANT-08). Refractory: <b>house practice:</b> capsaicin and/or haloperidol allowed with ECG/QTc first \u2014 see ANT-SUD card. Positive UDS alone is not a report.",
+       "Counsel. CHS vs hyperemesis (ANT-08). Refractory: <b>local policy:</b> capsaicin and/or haloperidol allowed with ECG/QTc first \u2014 see ANT-SUD card. Positive UDS alone is not a report.",
        fill=WHITE, tsize=7.0, bsize=7.2, tag="n8")
 
 action(c, 20, 472, 752, 46, "9. OBED DISPOSITION \u00b7 LIGHT GRAY",

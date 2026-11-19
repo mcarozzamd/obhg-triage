@@ -2,7 +2,7 @@
 // Run: BASE=http://127.0.0.1:8891/ SHOTS=/path NODE_PATH=$(npm root -g) node tests/start/start_browser.js   (playwright-core + /usr/bin/google-chrome)
 const {chromium}=require('playwright-core');const fs=require('fs');
 const BASE=(process.env.BASE||'http://127.0.0.1:8891/').replace(/\/?$/,'/');const SHOTS=process.env.SHOTS||'/tmp/start-shots';fs.mkdirSync(SHOTS,{recursive:true});
-const CACHE=process.env.CACHE||'v42-2026-11-19-ldboard';
+const CACHE=process.env.CACHE||'v43-2026-11-19-oncall';
 (async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});let n=0,f=0;const ok=(c,m)=>{n++;if(!c)f++;console.log((c?'PASS ':'FAIL ')+m);};
 for(const [dev,opt] of [['phone',{viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2}],['desktop',{viewport:{width:1280,height:900}}]]){
  const ctx=await b.newContext(opt);const p=await ctx.newPage();const errs=[];p.on('pageerror',e=>errs.push('pageerror '+e.message));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});const bad=[];p.on('response',r=>{if(r.status()>=400)bad.push(r.status()+' '+r.url())});
@@ -45,7 +45,7 @@ for(const [dev,opt] of [['phone',{viewport:{width:390,height:844},isMobile:true,
  // L&D board
  await p.click('#start-board');await p.waitForLoadState('load');await p.waitForTimeout(300);
  ok(/board\.html/.test(p.url())&&await p.locator('#shareSection').isVisible()&&await p.locator('#board-home').isVisible(),`${dev} L&D board opens board.html`);
- ok((await p.locator('#shareDisclaimer').innerText()).includes('only use encrypted OBHG or local Hospital approved email or Bluetooth functions like iPhone AirDrop'),`${dev} share disclaimer is verbatim`);
+ ok((await p.locator('#shareDisclaimer').innerText()).includes('only use encrypted, hospital-approved email or Bluetooth functions like iPhone AirDrop'),`${dev} share disclaimer is verbatim`);
  await fits('ld board landing');await shot('09-ld-board');
  await p.click('#board-home');await p.waitForLoadState('load');ok(await startShown(),`${dev} board ← Start returns to the start page`);ok(await p.locator('#start-board .st-last').isVisible(),`${dev} last choice badge on L&D board`);
  // Deep links

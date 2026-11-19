@@ -1,6 +1,6 @@
 {
  "version": "0.4.0-pending",
- "status": "Clinical review 1 and house override (admit E/M tracking with delivery; OBED 9928x default) applied 2026-10-23. ICD-10-CM validated against CMS FY2026/FY2027 by codes/build_routine.py; CPT/E-M are suggestions (AMA CPT not machine-verified). Codes are suggestions; provider verifies before billing.",
+ "status": "Clinical review 1 and local override (admit E/M tracking with delivery; OBED 9928x default) applied 2026-10-23. ICD-10-CM validated against CMS FY2026/FY2027 by codes/build_routine.py; CPT/E-M are suggestions (AMA CPT not machine-verified). Codes are suggestions; provider verifies before billing.",
  "z3a_rule": "Z3A.xx from GA field (for inpatient, GA on the admission date). No Z3A when GA blank. Not with Z03.7x primary unless an O code is present. 'optional' sets offer Z3A as an add-on; 'ifga' adds only if GA entered; GYN non-pregnant sets never.",
  "icd_rules": [
   "O80 requires Z37.0",
@@ -9,7 +9,7 @@
  ],
  "obs_note": "Observation requires a physician order: same-day 99234-99236; multi-day 99221-99223 + 99238/99239. OB triage/OBED alone uses ED E/M 99281-99285.",
  "disclaimer": "Codes are suggestions; provider verifies before billing.",
- "verify_tag": "verify with OBHG coding",
+ "verify_tag": "verify with your coding team",
  "em_rules": {
   "new": {
    "default": "99203",
@@ -48,7 +48,7 @@
     "99223"
    ],
    "label": "Initial hospital inpatient/observation care",
-   "tracking": "tracking only (OBHG), not billed"
+   "tracking": "tracking only, not billed"
   },
   "ed": {
    "default": "99283",
@@ -156,7 +156,7 @@
     {
      "code": "59410",
      "label": "Vaginal delivery + postpartum care",
-     "rationale": "If OBHG provides postpartum care.",
+     "rationale": "If the hospitalist team provides postpartum care.",
      "alt": true,
      "when": "delivered"
     },
@@ -175,7 +175,7 @@
     }
    ],
    "notes": [
-    "Admit E/M 99221-99223 logged with delivery codes for OBHG tracking; when delivered it is tracking only (OBHG), not billed.",
+    "Admit E/M 99221-99223 logged with delivery codes for tracking; when delivered it is tracking only, not billed.",
     "O80/Z37.0 apply to the delivery encounter."
    ]
   },
@@ -220,7 +220,7 @@
     {
      "code": "59410",
      "label": "Vaginal delivery + postpartum care",
-     "rationale": "If OBHG provides postpartum care.",
+     "rationale": "If the hospitalist team provides postpartum care.",
      "alt": true,
      "when": "delivered"
     },
@@ -233,7 +233,7 @@
     }
    ],
    "notes": [
-    "Admit E/M logged with delivery code; tracking only (OBHG), not billed, when delivered."
+    "Admit E/M logged with delivery code; tracking only, not billed, when delivered."
    ]
   },
   {
@@ -364,7 +364,7 @@
     {
      "code": "59515",
      "label": "Cesarean delivery + postpartum care",
-     "rationale": "If OBHG provides postpartum care.",
+     "rationale": "If the hospitalist team provides postpartum care.",
      "alt": true,
      "when": "delivered"
     },
@@ -377,7 +377,7 @@
     }
    ],
    "notes": [
-    "Admit E/M logged with delivery code; tracking only (OBHG), not billed, when delivered."
+    "Admit E/M logged with delivery code; tracking only, not billed, when delivered."
    ]
   },
   {
@@ -466,7 +466,7 @@
     }
    ],
    "notes": [
-    "Inpatient PP after an OBHG delivery is in the global (59410/59515/59430): no separate 99231 or Z39.2 (verify with OBHG coding)."
+    "Inpatient PP after a hospitalist delivery is in the global (59410/59515/59430): no separate 99231 or Z39.2 (verify with your coding team)."
    ]
   },
   {
