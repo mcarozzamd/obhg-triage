@@ -65,11 +65,11 @@
   },
   {
     "id": "FD-SYS-02",
-    "original": "assets/diagrams/SYS-02_VTE_POSTPARTUM_DECISION_TREE_FINAL_2026-10-01.png",
+    "original": "assets/diagrams/SYS-02_VTE_POSTPARTUM_DECISION_TREE_2026-11-20.png",
     "output": "assets/display-diagrams/FD-SYS-02.png",
-    "titleBandHeight": 128,
-    "bodySha256": "e4f6764213f0e3a70676ada60083655fca78026c46a60b94ad94d4d9dca5b352",
-    "originalSha256": "1ff01d66bf24e60ec4666e5f3bf33986aefb79c6109454aff177cbba555578bf"
+    "titleBandHeight": 100,
+    "bodySha256": "18f48125a7693f4a74d494b56b088707c1b69fd848c237651914ca2439d84b07",
+    "originalSha256": "727091a04daa88e6e38e4353db45a439c84049e697a66f21c2be01b1a9b212a8"
   },
   {
     "id": "FD-LND-04",
