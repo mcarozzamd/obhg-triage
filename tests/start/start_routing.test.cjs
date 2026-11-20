@@ -94,7 +94,7 @@ test('app-path diffs from live 3ae4907 stay on the known start/nurse/board/debra
   const changed = execFileSync('git', ['diff', '--name-only', '3ae4907', '--', 'js', 'css', 'codes', 'assets', 'index.html', 'nurse.html', 'board.html', 'sw.js', 'manifest.webmanifest'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean)
     .concat(execFileSync('git', ['ls-files', '--others', '--exclude-standard', 'js', 'css', 'codes', 'assets', 'board.html'], {cwd: base, encoding: 'utf8'}).split('\n').filter(Boolean));
   assert.deepEqual(changed.sort(), allowed.slice().sort());
-  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v44-2026-11-20-sys02-vte';/);
+  const sw = fs.readFileSync(path.join(base, 'sw.js'), 'utf8'); assert.match(sw, /const CACHE = PREFIX \+ 'v45-2026-11-20-live';/);
   const nurseDiff = execFileSync('git', ['diff', '3ae4907', '--', 'nurse.html'], {cwd: base, encoding: 'utf8'}); const nurseLines = (nurseDiff.match(/^[+-](?![+-]).*$/gm) || []); assert.equal(nurseLines.length, 4, 'nurse.html: the header line gains the Start link; plus the suggest-a-card line and the ask.js script (15 Nov 2026)'); assert.ok(nurseLines.some(l => /nurse-suggest/.test(l)) && nurseLines.some(l => /js\/ask\.js/.test(l)));
 });
 test('every clinical view element from 3ae4907 is still in index.html (only the tab bar and small nurse link were replaced)', () => {

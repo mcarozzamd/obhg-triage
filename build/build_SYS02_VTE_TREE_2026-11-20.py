@@ -375,7 +375,7 @@ def build():
     c.drawString(maj_x + 4, col_top - 9, "MAJOR FACTORS (count each)")
     c.drawString(min_x + 4, col_top - 9, "MINOR FACTORS (count each)")
     major = [
-        "BMI >35 at delivery",
+        "BMI ≥35 at delivery",
         "Low-risk thrombophilia",
         "PPH needing transfusion, further operation, or IR",
         "Infection needing antibiotics",
@@ -534,7 +534,7 @@ def build():
          "Intermediate 40 mg SC q12h (not a CMQCC default). Therapeutic 1 mg/kg SC q12h. Anti-Xa: measure 4 h (3 to 5 h) after a dose; therapeutic target 0.6 to 1.0 IU/mL (q12h). "
          "Higher BMI (physician judgment): 50–90 kg 40 mg daily · 91–130 kg 60 mg daily · 131–170 kg 80 mg daily · >170 kg or <50 kg: pharmacy/hematology. "
          "UFH (ACOG PB 196 Table 2): prophylactic 5,000–7,500 units SC q12h first trimester; 7,500–10,000 second; 10,000 third unless the aPTT is elevated. "
-         "Therapeutic UFH: ≥10,000 units SC q12h, aPTT 1.5–2.5× control 6 h after injection. Postpartum prophylactic UFH: confirm the dose with pharmacy. "
+         "Therapeutic UFH: ≥10,000 units SC q12h, aPTT 1.5–2.5× control 6 h after injection. Postpartum prophylactic UFH: 5,000 units SC q12h. "
          "Renal: if CrCl <30 mL/min, enoxaparin 30 mg SC daily (label; verify with pharmacy) or use UFH; therapeutic LMWH needs dose reduction, hematology, and anti-Xa."),
         ("NEURAXIAL AND RESTART",
          "Restart at whichever is later: the post-birth window (no sooner than 4 to 6 h after vaginal birth or 6 to 12 h after cesarean) or the neuraxial interval. "
